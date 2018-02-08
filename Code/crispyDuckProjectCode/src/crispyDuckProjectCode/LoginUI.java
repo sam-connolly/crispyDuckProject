@@ -7,31 +7,33 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class LoginUI extends JFrame implements ActionListener{
-	private JButton test;
+	private JButton login;
 	
 	public static void main(String[] args) {
 		LoginUI app = new LoginUI();
-		app.setVisible(true);
 	}
 	
 	public LoginUI() {
-		JPanel main = new JPanel();
-		main.setLayout(new BorderLayout());
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(200, 100, 250, 300);
-
-		JPanel buttons = new JPanel();
-		buttons.setLayout(new FlowLayout());
-		test = new JButton("login");
-		test.addActionListener(this);
-		main.add(test);
+		JFrame frame = new JFrame("login");
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		frame.setSize(200, 200);
 		
-		main.add(buttons);
+		JPanel pannel = new JPanel();
 		
+		frame.add(pannel);
+		
+		login = new JButton("login");
+		pannel.add(login);
 	}
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
+	public void actionPerformed(ActionEvent evt) {
+	    Object src = evt.getSource();
+	    
+	    if (src == login) {
+	    	// TODO write login code
+			
+		}
 	
 	}
 
