@@ -4,6 +4,5 @@ List of Triggers:
 	Auto-increment ID on new CaretakerCategory creation
 	
 	As deadline approaches, increase priority
-	* Aut-assign caretaker to job
 	Deletion of completed tasks after 2 months(60 days)
 	Reissue repeating tasks
