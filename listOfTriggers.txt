@@ -1,7 +1,7 @@
 List of Triggers:
-	Auto-increment ID on new user creation
-	Auto-increment ID on new task creation
-	Auto-increment ID on new CaretakerCategory creation
+	*Auto-increment ID on new user creation
+	*Auto-increment ID on new task creation
+	*Auto-increment ID on new CaretakerCategory creation
 	
 	As deadline approaches, increase priority
 	Deletion of completed tasks after 2 months(60 days)
