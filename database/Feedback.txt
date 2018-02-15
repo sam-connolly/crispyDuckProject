@@ -1,6 +1,0 @@
-User -- 
-	Needs First and last names
-	
-Task -- 
-	Feedback on how well done
-	What about >1 a day task
