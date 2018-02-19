@@ -68,6 +68,30 @@ public class Database {
 		  		
 	}
 	
+	public String getDriver() {
+			return driver;
+		}
+		public String getDb() {
+			return Db;
+		}
+		public Connection getConn() {
+			return conn;
+		}
+		public String getUrl() {
+			return url;
+		}
+		public void setDriver(String driver) {
+			this.driver = driver;
+		}
+		public void setDb(String db) {
+			Db = db;
+		}
+		public void setConn(Connection conn) {
+			this.conn = conn;
+		}
+		public void setUrl(String url) {
+			this.url = url;
+		}
 	public static void main(String [] args) {
 		Database testDb = new Database();
 		} 
