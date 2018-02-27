@@ -1,18 +1,22 @@
-import javax.swing.JFrame;
-import javax.swing.JTextField;
 import java.awt.BorderLayout;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import java.awt.GridLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.Dimension;
-import javax.swing.JToolBar;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class MainMenu extends JFrame {
 	private JTextField txtWelcomename;
+	private String name;
 	public MainMenu() {
 		setMinimumSize(new Dimension(200, 400));
 		setLocationRelativeTo(null);
@@ -23,7 +27,7 @@ public class MainMenu extends JFrame {
 		txtWelcomename = new JTextField();
 	//	txtWelcomename.setHorizontalAlignment(SwingConstants.NORTH);
 		panel.add(txtWelcomename);
-		txtWelcomename.setText("Welcome %NAME%");
+		txtWelcomename.setText("");
 		txtWelcomename.setColumns(20);
 		
 		JPanel panel_1 = new JPanel();
@@ -33,7 +37,7 @@ public class MainMenu extends JFrame {
 		JButton btnNewButton = new JButton("View my Tasks ");
 		panel_1.add(btnNewButton);
 		
-		JButton btnNewButton_1 = new JButton("View my profile\r\n\t");
+		JButton btnNewButton_1 = new JButton("View my profile");
 		panel_1.add(btnNewButton_1);
 		
 		JButton btnAddTaskm = new JButton("Add task (M)");
@@ -63,8 +67,8 @@ public class MainMenu extends JFrame {
 		
 		JPanel panel_2 = new JPanel();
 		getContentPane().add(panel_2, BorderLayout.NORTH);
-		
-		JLabel lblWelcomename = new JLabel("Welcome %name%");
+		name = getEmpName(3);
+		JLabel lblWelcomename = new JLabel("Welcome " + name);
 		panel_2.add(lblWelcomename);
 		
 		JPanel panel_3 = new JPanel();
@@ -73,6 +77,26 @@ public class MainMenu extends JFrame {
 		JButton btnNewButton_2 = new JButton("Log out");
 		
 		panel_3.add(btnNewButton_2);
+	}
+	// this will conn  to db
+	private String getEmpName(int id) {
+		Database db = new Database();
+		Connection con = db.getConn();
+		PreparedStatement sqlgetname;
+		try {
+			sqlgetname = con.prepareStatement("SELECT "
+					+ "fName FROM User where ?");
+			sqlgetname.setInt(1, id);
+			ResultSet rs = sqlgetname.executeQuery();
+			String name = rs.getString("fName");
+			return name;
+			} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	    return name;
+		
 	}
 	public static void main(String[] args) {
 		MainMenu app = new MainMenu();
