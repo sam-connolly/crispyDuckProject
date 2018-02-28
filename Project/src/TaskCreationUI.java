@@ -64,7 +64,7 @@ public class TaskCreationUI extends JFrame {
 		pnlMain.add(pnlDataEntry);
 		pnlDataEntry.setLayout(new GridLayout(0, 2, 0, 0));
 		
-		JLabel lblTaskName = new JLabel("Name");
+		JLabel lblTaskName = new JLabel("Task name");
 		lblTaskName.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblTaskName);
 		
@@ -131,7 +131,7 @@ public class TaskCreationUI extends JFrame {
 		JPanel pnlSubmission = new JPanel();
 		contentPane.add(pnlSubmission);
 		
-		JButton btnCreateAndIssue = new JButton("Create and Issue");
+		JButton btnCreateAndIssue = new JButton("Create and Assigin");
 		pnlSubmission.add(btnCreateAndIssue);
 		
 		JButton btnCreate = new JButton("Create");
