@@ -8,6 +8,7 @@ public class TaskCreationUI extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtName;
 	private JTextField txtTimeEstimate;
+	private JTextField txtLocation;
 
 	/**
 	 * Launch the application.
@@ -39,6 +40,7 @@ public class TaskCreationUI extends JFrame {
 		JPanel pnlTopButtons = new JPanel();
 		pnlTopButtons.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		pnlTopButtons.setAlignmentY(Component.TOP_ALIGNMENT);
+		pnlTopButtons.setSize(new Dimension(5, 3));
 		FlowLayout flowLayout = (FlowLayout) pnlTopButtons.getLayout();
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		flowLayout.setHgap(2);
@@ -47,24 +49,21 @@ public class TaskCreationUI extends JFrame {
 		JButton btnPlaceholder1 = new JButton("Placeholder");
 		pnlTopButtons.add(btnPlaceholder1);
 		
-		JButton btnPlaceholder2 = new JButton("Placeholder");
-		pnlTopButtons.add(btnPlaceholder2);
-		
 		JPanel pnlMain = new JPanel();
 		contentPane.add(pnlMain);
 		pnlMain.setLayout(new BoxLayout(pnlMain, BoxLayout.Y_AXIS));
 		
 		JLabel lblTaskCreation = new JLabel("Task Creation");
+		pnlMain.add(lblTaskCreation);
 		lblTaskCreation.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblTaskCreation.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTaskCreation.setFont(new Font("Tahoma", Font.PLAIN, 28));
-		pnlMain.add(lblTaskCreation);
 		
 		JPanel pnlDataEntry = new JPanel();
 		pnlMain.add(pnlDataEntry);
-		pnlDataEntry.setLayout(new GridLayout(0, 2, 0, 0));
+		pnlDataEntry.setLayout(new GridLayout(0, 2, 0, 18));
 		
-		JLabel lblTaskName = new JLabel("Task name");
+		JLabel lblTaskName = new JLabel("Task Name *");
 		lblTaskName.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblTaskName);
 		
@@ -79,7 +78,15 @@ public class TaskCreationUI extends JFrame {
 		JTextArea txtaDescription = new JTextArea();
 		pnlDataEntry.add(txtaDescription);
 		
-		JLabel lblCategory = new JLabel("Category");
+		JLabel lblLocation = new JLabel("Location *");
+		lblLocation.setHorizontalAlignment(SwingConstants.CENTER);
+		pnlDataEntry.add(lblLocation);
+		
+		txtLocation = new JTextField();
+		pnlDataEntry.add(txtLocation);
+		txtLocation.setColumns(10);
+		
+		JLabel lblCategory = new JLabel("Category *");
 		lblCategory.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblCategory);
 		
