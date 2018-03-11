@@ -1,5 +1,7 @@
 import java.sql.*;
 
+import javax.swing.JOptionPane;
+
 public class Database {
 	private String driver = "jdbc:ucanaccess://";
 	private String Db = "database//crispyDuckDatabase.accdb";
@@ -21,6 +23,27 @@ public class Database {
 			return false;
 		}
 		
+	}
+	
+	public void validateLogin() {
+		try {
+			String username = LoginUI.getUsername();
+			char[] password = LoginUI.getPassword();
+			Statement stmt = conn.createStatement();
+			String query = "SELECT Username, PasswordHash FROM User";
+			ResultSet rs = stmt.executeQuery(query);
+			boolean moreRecords = rs.next();
+			ResultSetMetaData rsmd = rs.getMetaData();
+			for (int i = 1; i < rsmd.getColumnCount(); i++) {
+				//TODO check user input against stored data (not sure how, maybe array?)
+			}
+		}
+		catch(Exception e){
+			
+		}
+		finally {
+			
+		}
 	}
 	
 	public void getusers() {
