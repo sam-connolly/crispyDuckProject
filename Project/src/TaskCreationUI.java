@@ -14,8 +14,10 @@ public class TaskCreationUI extends JFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
+		EventQueue.invokeLater(new Runnable() 
+		{
+			public void run() 
+			{
 				try {
 					TaskCreationUI frame = new TaskCreationUI();
 					frame.setVisible(true);
@@ -24,6 +26,8 @@ public class TaskCreationUI extends JFrame {
 				}
 			}
 		});
+		
+		
 	}
 
 	/**
@@ -31,7 +35,7 @@ public class TaskCreationUI extends JFrame {
 	 */
 	public TaskCreationUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 607, 552);
+		setBounds(100, 100, 605, 619);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -46,8 +50,8 @@ public class TaskCreationUI extends JFrame {
 		flowLayout.setHgap(2);
 		contentPane.add(pnlTopButtons);
 		
-		JButton btnPlaceholder1 = new JButton("Placeholder");
-		pnlTopButtons.add(btnPlaceholder1);
+		JButton btnBack = new JButton("Back");
+		pnlTopButtons.add(btnBack);
 		
 		JPanel pnlMain = new JPanel();
 		contentPane.add(pnlMain);
@@ -98,6 +102,8 @@ public class TaskCreationUI extends JFrame {
 		pnlDataEntry.add(lblPriority);
 		
 		JComboBox cmbPriority = new JComboBox();
+		cmbPriority.setModel(new DefaultComboBoxModel(new String[] {"1 (Highest)", "2", "3", "4", "5 (Lowest)"}));
+		cmbPriority.setSelectedIndex(2);
 		pnlDataEntry.add(cmbPriority);
 		
 		JLabel lblTimeEstimate = new JLabel("Time Estimate");
@@ -138,8 +144,8 @@ public class TaskCreationUI extends JFrame {
 		JPanel pnlSubmission = new JPanel();
 		contentPane.add(pnlSubmission);
 		
-		JButton btnCreateAndIssue = new JButton("Create and Assign");
-		pnlSubmission.add(btnCreateAndIssue);
+		JButton btnCreateAndAssign = new JButton("Create and Assign");
+		pnlSubmission.add(btnCreateAndAssign);
 		
 		JButton btnCreate = new JButton("Create");
 		pnlSubmission.add(btnCreate);
