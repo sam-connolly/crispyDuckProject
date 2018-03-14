@@ -138,7 +138,7 @@ public class TaskCreationUI extends JFrame {
 		JPanel pnlSubmission = new JPanel();
 		contentPane.add(pnlSubmission);
 		
-		JButton btnCreateAndIssue = new JButton("Create and Assigin");
+		JButton btnCreateAndIssue = new JButton("Create and Assign");
 		pnlSubmission.add(btnCreateAndIssue);
 		
 		JButton btnCreate = new JButton("Create");
