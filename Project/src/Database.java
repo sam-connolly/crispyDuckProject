@@ -11,7 +11,6 @@ public class Database {
 	
 	public Database() {
 		connect();
-		getusers();
 	}
 	
 	public boolean connect() {
@@ -81,22 +80,17 @@ public class Database {
 			}
 		  }
 
-	public List getCategories()
+	public ArrayList<String> getCategories()
 	{
 		try {
 			Statement stmt = conn.createStatement();
-			String query = "SELECT CatID, CastName FROM Category";
+			String query = "SELECT CatName FROM Category";
 			ResultSet rs = stmt.executeQuery(query);
 			
-			List<HashMap<Integer, String>> categories = new ArrayList<HashMap<Integer, String>>();
+			ArrayList<String> categories = new ArrayList<String>();
 			while (rs.next())
 			{
-				HashMap<Integer, String> category = new HashMap<Integer, String>();
-				for(int i=0; i<2; i++)
-				{
-					category.put(rs.getInt(i), rs.getString(i));
-				}
-				categories.add(category);
+				categories.add(rs.getString("CatName"));
 			}
 			
 			return categories;
@@ -106,7 +100,27 @@ public class Database {
 			return null;
 		}
 	}
-	
+
+	public ArrayList<String> getCaretakers()
+	{
+		try {
+			Statement stmt = conn.createStatement();
+			String query = "SELECT CatName FROM Category";
+			ResultSet rs = stmt.executeQuery(query);
+			
+			ArrayList<String> categories = new ArrayList<String>();
+			while (rs.next())
+			{
+				categories.add(rs.getString("CatName"));
+			}
+			
+			return categories;
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			return null;
+		}
+	}
 	private void displayRow (ResultSet rs, ResultSetMetaData rsmd) 	throws SQLException 
 	{
 		 for (int i = 1;  i <= rsmd.getColumnCount ();  i ++)

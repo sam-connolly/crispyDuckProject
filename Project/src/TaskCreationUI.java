@@ -2,6 +2,9 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class TaskCreationUI extends JFrame {
 
@@ -9,6 +12,8 @@ public class TaskCreationUI extends JFrame {
 	private JTextField txtName;
 	private JTextField txtTimeEstimate;
 	private JTextField txtLocation;
+	
+	Database database = new Database();
 
 	/**
 	 * Launch the application.
@@ -18,16 +23,18 @@ public class TaskCreationUI extends JFrame {
 		{
 			public void run() 
 			{
-				try {
+				try 
+				{
 					TaskCreationUI frame = new TaskCreationUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
+					frame.setVisible(true);	
+				} 
+				catch (Exception e) 
+				{
 					e.printStackTrace();
 				}
 			}
 		});
-		
-		
+
 	}
 
 	/**
@@ -94,7 +101,9 @@ public class TaskCreationUI extends JFrame {
 		lblCategory.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblCategory);
 		
-		JComboBox cmbCategory = new JComboBox();
+		ArrayList<String> categories = new ArrayList<String>();
+		categories = database.getCategories();
+		JComboBox cmbCategory = new JComboBox(categories.toArray());
 		pnlDataEntry.add(cmbCategory);
 		
 		JLabel lblPriority = new JLabel("Priority");
