@@ -10,12 +10,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class LoginUI extends JFrame {
-	private static String username;
+	private static String username, passwordString;
 	private static char[] password;
 	private JPanel contentPane;
 	private JTextField txtUsername;
 	private JPasswordField txtPassword;
-
+	private TaskCreationUI taskCreationUI;
+	Database database = new Database();
 	/**
 	 * Launch the application.
 	 */
@@ -65,7 +66,12 @@ public class LoginUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				username = txtUsername.getText();
 				password = txtPassword.getPassword();
-				
+				passwordString = new String (password);
+				Boolean valid = database.validateLogin(username, passwordString);
+				if(valid) {
+					taskCreationUI.setVisible(true);
+					setVisible(false);
+				}
 			}
 		});
 		btnLogin.setBounds(110, 111, 89, 23);
@@ -76,7 +82,7 @@ public class LoginUI extends JFrame {
 		return username;
 	}
 	
-	public static char[] getPassword() {
-		return password;
+	public static String getPassword() {
+		return passwordString;
 	}
 }

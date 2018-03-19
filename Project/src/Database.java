@@ -1,6 +1,5 @@
 import java.sql.*;
 import java.util.*;
-
 import javax.swing.JOptionPane;
 
 public class Database {
@@ -8,6 +7,7 @@ public class Database {
 	private String Db = "database//crispyDuckDatabase.accdb";
 	private Connection conn = null;
 	private String url = driver + Db;
+	private String user, password;
 	
 	public Database() {
 		connect();
@@ -26,24 +26,29 @@ public class Database {
 		
 	}
 	
-	public void validateLogin() {
+	@SuppressWarnings("finally")
+	public boolean validateLogin(String user,  String password) {
 		try {
-			String username = LoginUI.getUsername();
-			char[] password = LoginUI.getPassword();
+			this.user = user;
+			this.password = password;
 			Statement stmt = conn.createStatement();
-			String query = "SELECT Username, PasswordHash FROM User";
+			String query = "SELECT PasswordHash FROM User WHERE Username=user";
 			ResultSet rs = stmt.executeQuery(query);
 			boolean moreRecords = rs.next();
+		    if (!moreRecords) {
+			      System.out.println ("ResultSet contained no records");
+			      return false;
+		    }
 			ResultSetMetaData rsmd = rs.getMetaData();
-			for (int i = 1; i < rsmd.getColumnCount(); i++) {
-				//TODO check user input against stored data (not sure how, maybe array?)
+			if (password==rsmd.getColumnName(1)) {
+				return true;
 			}
 		}
 		catch(Exception e){
 			
 		}
 		finally {
-			
+			return false;
 		}
 	}
 	
