@@ -110,22 +110,26 @@ public class Database {
 	{
 		try {
 			Statement stmt = conn.createStatement();
-			String query = "SELECT CatName FROM Category";
+			String query = "SELECT Username, fName, sName FROM User WHERE admin = 'false'";
 			ResultSet rs = stmt.executeQuery(query);
 			
-			ArrayList<String> categories = new ArrayList<String>();
+			ArrayList<String> caretakers = new ArrayList<String>();
 			while (rs.next())
 			{
-				categories.add(rs.getString("CatName"));
+				String fullName = rs.getString("fName") + " " + rs.getString("sName");
+				caretakers.add(rs.getString("Username"));
+				caretakers.add(fullName);
 			}
 			
-			return categories;
+			return caretakers;
 		}
-		catch (Exception e) {
+		catch (Exception e) 
+		{
 			// TODO: handle exception
 			return null;
 		}
 	}
+	
 	private void displayRow (ResultSet rs, ResultSetMetaData rsmd) 	throws SQLException 
 	{
 		 for (int i = 1;  i <= rsmd.getColumnCount ();  i ++)
@@ -174,6 +178,23 @@ public class Database {
 	public void setConn(Connection conn) 
 	{
 		this.conn = conn;
+	}
+	
+	public Boolean createTask(String insertSQL)
+	{
+		try 
+		{
+			Statement stmt = conn.createStatement();	
+			stmt.executeUpdate(insertSQL);
+			
+			return true;
+		}
+		catch (Exception e) 
+		{
+			// TODO: handle exception
+			return false;
+		}
+		
 	}
 		
 	public void setUrl(String url) 

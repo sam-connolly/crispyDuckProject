@@ -1,10 +1,13 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class TaskCreationUI extends JFrame {
 
@@ -111,7 +114,8 @@ public class TaskCreationUI extends JFrame {
 		pnlDataEntry.add(lblPriority);
 		
 		JComboBox cmbPriority = new JComboBox();
-		cmbPriority.setModel(new DefaultComboBoxModel(new String[] {"1 (Highest)", "2", "3", "4", "5 (Lowest)"}));
+		cmbPriority.setModel(new DefaultComboBoxModel(new String[] {"1 (Highest)",
+				"2", "3", "4", "5 (Lowest)"}));
 		cmbPriority.setSelectedIndex(2);
 		pnlDataEntry.add(cmbPriority);
 		
@@ -124,14 +128,22 @@ public class TaskCreationUI extends JFrame {
 		pnlDataEntry.add(txtTimeEstimate);
 		txtTimeEstimate.setColumns(10);
 		
-		JLabel lblCaretaker = new JLabel("Caretaker");
-		lblCaretaker.setHorizontalAlignment(SwingConstants.CENTER);
-		pnlDataEntry.add(lblCaretaker);
+		JLabel lblCaretakers = new JLabel("Caretaker");
+		lblCaretakers.setHorizontalAlignment(SwingConstants.CENTER);
+		pnlDataEntry.add(lblCaretakers);
 		
-		JComboBox cmbCaretaker = new JComboBox();
-		pnlDataEntry.add(cmbCaretaker);
+		ArrayList<String> caretakers = new ArrayList<String>();
+		caretakers = database.getCaretakers();
+		JComboBox cmbCaretakers = new JComboBox();
+		for (int i = 0; i < caretakers.size(); i = i + 2)
+		{
+			cmbCaretakers.addItem(new KeyValue(caretakers.get(i+1), caretakers.get((i))));
+		}
+		pnlDataEntry.add(cmbCaretakers);
+		//http://tech.chitgoks.com/2009/10/05/java-use-keyvalue-pair-for-jcombobox-like-htmls-select-tag/
 		
-		JLabel lblRepeating = new JLabel("Repeating (Leave empy if not a repeating task)");
+		JLabel lblRepeating = new JLabel("Repeating (Leave empy if not a"
+				+ " repeating task)");
 		lblRepeating.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblRepeating);
 		
@@ -157,7 +169,32 @@ public class TaskCreationUI extends JFrame {
 		pnlSubmission.add(btnCreateAndAssign);
 		
 		JButton btnCreate = new JButton("Create");
+		btnCreate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				String insertSQL = "INSERT INTO Task (TaskName, TaskDesc,"
+						+ " TaskCat, Priority, Location)"
+						+ "VALUES (" + txtName.getText() + ", " 
+						+ txtaDescription.getText() + ", "
+						+ cmbCategory.getSelectedItem() + ", "
+						+ cmbPriority.getSelectedItem() + ", "
+						+ txtLocation.getText() + ");";
+				
+				Boolean created = database.createTask(insertSQL);
+				
+				if (created)
+				{
+					JOptionPane.showMessageDialog(new JFrame(), "Task successfully created");
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(new JFrame(),
+						    "Could not create task. Contact database administrator",
+						    "Database error",
+						    JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
 		pnlSubmission.add(btnCreate);
 	}
-
 }
