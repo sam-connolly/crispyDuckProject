@@ -31,9 +31,9 @@ public class Database {
 		try {
 			this.user = user;
 			this.password = password;
-			Statement stmt = conn.createStatement();
-			String query = "SELECT PasswordHash FROM User WHERE Username=user";
-			ResultSet rs = stmt.executeQuery(query);
+			PreparedStatement stmt = conn.prepareStatement("SELECT PasswordHash FROM User WHERE Username==?");
+			stmt.setString(1,user);
+			ResultSet rs = stmt.executeQuery();
 			boolean moreRecords = rs.next();
 		    if (!moreRecords) {
 			      System.out.println ("ResultSet contained no records");
