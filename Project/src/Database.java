@@ -39,17 +39,20 @@ public class Database {
 			      System.out.println ("ResultSet contained no records");
 			      return false;
 		    }
+		    boolean login;
 			ResultSetMetaData rsmd = rs.getMetaData();
 			if (password==rsmd.getColumnName(1)) {
-				return true;
+				login = true;
+			}
+			else {
+				login = false;
 			}
 		}
 		catch(Exception e){
 			
 		}
-		finally {
-			return false;
-		}
+		return login;
+	
 	}
 	
 	public void getusers() {
