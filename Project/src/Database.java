@@ -7,7 +7,8 @@ public class Database {
 	private String Db = "database//crispyDuckDatabase.accdb";
 	private Connection conn = null;
 	private String url = driver + Db;
-	private String user, password;
+	private String user, password, forename, surname;
+	private boolean admin;
 	
 	public Database() {
 		connect();
@@ -24,13 +25,11 @@ public class Database {
 			return false;
 		}
 		
-	}
+	}	
 	
 	public boolean validateLogin(String user,  String password) {
 		boolean validLogin = false;
 		try {
-			this.user = user;
-			this.password = password;
 			PreparedStatement stmt = conn.prepareStatement("SELECT PasswordHash FROM User WHERE Username==?");
 			stmt.setString(1,user);
 			ResultSet rs = stmt.executeQuery();
@@ -56,6 +55,50 @@ public class Database {
 		}
 		//Return validLogin to check if login was successful 
 		return validLogin;
+	}
+	
+	public boolean addUser(String username, String password, Boolean admin, String forename, String surname) throws SQLException{
+		PreparedStatement sqlInsert = null;
+		try {
+			sqlInsert = conn.prepareStatement("INSERT INTO User (Username, PasswordHash, Admin, fName, sName) VALUES (?,?,?,?,?)");
+		}
+		catch (SQLException sqlex) {
+			System.err.println("SQL Exception");
+			sqlex.printStackTrace();
+		}
+		sqlInsert.setString(1,user);
+		sqlInsert.setString(2, password);
+		sqlInsert.setBoolean(3, admin);
+		sqlInsert.setString(4, forename);
+		sqlInsert.setString(5, surname);
+		int result = sqlInsert.executeUpdate();
+		System.err.println("Result code from insert: " + result);
+		if (result == 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	
+	public boolean deleteEntry(String username) throws SQLException{
+		PreparedStatement sqlDelete = null;
+		try {
+			sqlDelete = conn.prepareStatement("DELETE FROM User WHERE Username = ?");
+		}
+		catch (SQLException sqlex) {
+			System.err.println("SQL Exception");
+			sqlex.printStackTrace();
+		}
+		sqlDelete.setString(1, username);
+		int result = sqlDelete.executeUpdate();
+		System.err.println("Result code from Delete: " + result);
+		if (result == 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 	
 	public void getusers() {
