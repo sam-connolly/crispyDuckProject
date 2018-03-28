@@ -26,8 +26,8 @@ public class Database {
 		
 	}
 	
-	@SuppressWarnings("finally")
 	public boolean validateLogin(String user,  String password) {
+		boolean validLogin = false;
 		try {
 			this.user = user;
 			this.password = password;
@@ -35,24 +35,27 @@ public class Database {
 			stmt.setString(1,user);
 			ResultSet rs = stmt.executeQuery();
 			boolean moreRecords = rs.next();
+			//If there are no records to show validLogin is set to false
 		    if (!moreRecords) {
 			      System.out.println ("ResultSet contained no records");
-			      return false;
+			      validLogin = false;
 		    }
 		    boolean login;
 			ResultSetMetaData rsmd = rs.getMetaData();
-			if (password==rsmd.getColumnName(1)) {
-				login = true;
+			//If the entered password matches the one stored in the database
+			//validLogin is set to true
+			if (password.equals(rsmd.getColumnName(1))) {
+				validLogin = true;
 			}
 			else {
 				login = false;
 			}
 		}
-		catch(Exception e){
-			
+		catch(Exception e) {	
+			// TODO: handle exception
 		}
-		return login;
-	
+		//Return validLogin to check if login was successful 
+		return validLogin;
 	}
 	
 	public void getusers() {
@@ -143,7 +146,7 @@ public class Database {
 		 case Types.INTEGER:
 		 case Types.NUMERIC:
 		 System.out.print (""+ rs.getInt (i) + "\t");  break;
-		 default:	// do nothing – print nothing
+		 default:	// do nothing ï¿½ print nothing
 		 }
 		 System.out.println ();  		
 	}
