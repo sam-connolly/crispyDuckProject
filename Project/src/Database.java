@@ -66,7 +66,7 @@ public class Database {
 			System.err.println("SQL Exception");
 			sqlex.printStackTrace();
 		}
-		sqlInsert.setString(1,user);
+		sqlInsert.setString(1, username);
 		sqlInsert.setString(2, password);
 		sqlInsert.setBoolean(3, admin);
 		sqlInsert.setString(4, forename);
@@ -77,6 +77,7 @@ public class Database {
 			return false;
 		}
 		else {
+			System.err.println("Inserted: " + username + forename + surname);
 			return true;
 		}
 	}
