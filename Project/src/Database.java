@@ -57,10 +57,12 @@ public class Database {
 		return validLogin;
 	}
 	
-	public boolean addUser(String username, String password, Boolean admin, String forename, String surname) throws SQLException{
+	public boolean addUser(String username, String password, Boolean admin, 
+			String forename, String surname) throws SQLException{
 		PreparedStatement sqlInsert = null;
 		try {
-			sqlInsert = conn.prepareStatement("INSERT INTO User (Username, PasswordHash, Admin, fName, sName) VALUES (?,?,?,?,?)");
+			sqlInsert = conn.prepareStatement("INSERT INTO User (Username, "
+					+ "PasswordHash, Admin, fName, sName) VALUES (?,?,?,?,?)");
 		}
 		catch (SQLException sqlex) {
 			System.err.println("SQL Exception");

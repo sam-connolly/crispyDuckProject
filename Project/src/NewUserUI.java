@@ -115,7 +115,8 @@ public class NewUserUI extends JFrame {
 				forename = txtForename.getText();
 				surname = txtSurname.getText();
 			    try {
-					boolean addUser = database.addUser(username, passwordString, admin, forename, surname);
+					boolean addUser = database.addUser(username, passwordString,
+							admin, forename, surname);
 					System.out.println(addUser);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
