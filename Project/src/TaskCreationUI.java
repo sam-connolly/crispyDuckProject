@@ -12,7 +12,7 @@ import java.awt.event.ActionEvent;
 public class TaskCreationUI extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField txtName;
+	private JTextField txtTaskName;
 	private JTextField txtTimeEstimate;
 	private JTextField txtLocation;
 	
@@ -81,9 +81,9 @@ public class TaskCreationUI extends JFrame {
 		lblTaskName.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblTaskName);
 		
-		txtName = new JTextField();
-		pnlDataEntry.add(txtName);
-		txtName.setColumns(10);
+		txtTaskName = new JTextField();
+		pnlDataEntry.add(txtTaskName);
+		txtTaskName.setColumns(10);
 		
 		JLabel lblDescription = new JLabel("Description");
 		lblDescription.setHorizontalAlignment(SwingConstants.CENTER);
@@ -106,7 +106,12 @@ public class TaskCreationUI extends JFrame {
 		
 		ArrayList<String> categories = new ArrayList<String>();
 		categories = database.getCategories();
-		JComboBox cmbCategory = new JComboBox(categories.toArray());
+		JComboBox cmbCategory = new JComboBox();
+		cmbCategory.addItem("Select a category");
+		for (int i = 0; i < categories.size(); i++)
+		{
+			cmbCategory.addItem(categories.get(i));
+		}
 		pnlDataEntry.add(cmbCategory);
 		
 		JLabel lblPriority = new JLabel("Priority");
@@ -135,6 +140,7 @@ public class TaskCreationUI extends JFrame {
 		ArrayList<String> caretakers = new ArrayList<String>();
 		caretakers = database.getCaretakers();
 		JComboBox cmbCaretakers = new JComboBox();
+		cmbCaretakers.addItem("Allocated by system");
 		for (int i = 0; i < caretakers.size(); i = i + 2)
 		{
 			cmbCaretakers.addItem(new KeyValue(caretakers.get(i+1), caretakers.get((i))));
@@ -172,26 +178,37 @@ public class TaskCreationUI extends JFrame {
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				String insertSQL = "INSERT INTO Task (TaskName, TaskDesc,"
-						+ " TaskCat, Priority, Location)"
-						+ "VALUES (" + txtName.getText() + ", " 
-						+ txtaDescription.getText() + ", "
-						+ cmbCategory.getSelectedItem() + ", "
-						+ cmbPriority.getSelectedItem() + ", "
-						+ txtLocation.getText() + ");";
-				
-				Boolean created = database.createTask(insertSQL);
-				
-				if (created)
+				if (txtTaskName.getText().equals("") || txtLocation.getText().equals("") ||
+					cmbCategory.getSelectedItem().equals("Select a category"))
 				{
-					JOptionPane.showMessageDialog(new JFrame(), "Task successfully created");
+					JOptionPane.showMessageDialog(new JFrame(),
+						    "Please fill in all fields marked with an *",
+						    "Enter all info",
+						    JOptionPane.WARNING_MESSAGE);
 				}
 				else
 				{
-					JOptionPane.showMessageDialog(new JFrame(),
-						    "Could not create task. Contact database administrator",
-						    "Database error",
-						    JOptionPane.ERROR_MESSAGE);
+					String insertSQL = "INSERT INTO Task (TaskName, TaskDesc,"
+							+ " TaskCat, Priority, Location)"
+							+ "VALUES (" + txtTaskName.getText() + ", " 
+							+ txtaDescription.getText() + ", "
+							+ cmbCategory.getSelectedItem() + ", "
+							+ cmbPriority.getSelectedItem() + ", "
+							+ txtLocation.getText() + ");";
+					
+					Boolean created = database.createTask(insertSQL);
+					
+					if (created)
+					{
+						JOptionPane.showMessageDialog(new JFrame(), "Task successfully created");
+					}
+					else
+					{
+						JOptionPane.showMessageDialog(new JFrame(),
+							    "Could not create task. Contact database administrator",
+							    "Database error",
+							    JOptionPane.ERROR_MESSAGE);
+					}
 				}
 			}
 		});
