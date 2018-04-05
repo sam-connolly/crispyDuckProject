@@ -179,6 +179,57 @@ public class Database {
 		}
 	}
 	
+	/*
+	 *  function to retrieve data from TaskList and add it to a collection
+	 *  of ActiveTask objects
+	 */
+	public ActiveTaskList getActiveTasks()
+	{
+		try {
+			// query database for data in TaskList
+			Statement stmt = conn.createStatement();
+			String query = "SELECT TaskID, Caretaker, DateIssued, DateDue, "
+					+ "Completed, TimeTaken, IssueDesc, SignedOff"
+					+ " FROM TaskList";
+			ResultSet rs = stmt.executeQuery(query);
+			
+			// create a new ActiveTaskList object to store data from results set
+			ActiveTaskList allActiveTasks = new ActiveTaskList();
+			
+			// iterate over data
+			while (rs.next())
+			{
+				// assign data to variables
+				int taskID = rs.getInt("TaskID");
+				String caretaker= rs.getString("Caretaker");
+				
+				// TODO: deal with dates
+				// String DateIssued= rs.getString("Caretaker");
+				// String DateDue= rs.getString("Caretaker");
+				
+				boolean completed = rs.getBoolean("Completed");
+				int timeTaken = rs.getInt("TimeTaken");
+				String issueDesc = rs.getString("IssueDesc");
+				boolean signedOff = rs.getBoolean("SignedOff");
+				
+				// create new ActiveTask to be added on every loop
+				ActiveTask taskToAdd = new ActiveTask(taskID, caretaker, completed, timeTaken, 
+						issueDesc, signedOff);
+				
+				// add new task to the list
+				allActiveTasks.addTask(taskToAdd);
+				
+			}
+			
+			return allActiveTasks;
+		}
+		catch (Exception e) 
+		{
+			// TODO: handle exception
+			return null;
+		}
+	}
+	
 	private void displayRow (ResultSet rs, ResultSetMetaData rsmd) 	throws SQLException 
 	{
 		 for (int i = 1;  i <= rsmd.getColumnCount ();  i ++)
