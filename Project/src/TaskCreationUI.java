@@ -9,18 +9,16 @@ import java.util.List;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+
 public class TaskCreationUI extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtTaskName;
-	private JTextField txtTimeEstimate;
 	private JTextField txtLocation;
 	
 	Database database = new Database();
 
-	/**
-	 * Launch the application.
-	 */
+	 // Launch the application.
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() 
 		{
@@ -40,9 +38,7 @@ public class TaskCreationUI extends JFrame {
 
 	}
 
-	/**
-	 * Create the frame.
-	 */
+	 // Create the frame.
 	public TaskCreationUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 605, 619);
@@ -119,8 +115,7 @@ public class TaskCreationUI extends JFrame {
 		pnlDataEntry.add(lblPriority);
 		
 		JComboBox cmbPriority = new JComboBox();
-		cmbPriority.setModel(new DefaultComboBoxModel(new String[] {"1 (Highest)",
-				"2", "3", "4", "5 (Lowest)"}));
+		cmbPriority.setModel(new DefaultComboBoxModel(new String[] {"1 (Highest)", "2", "3", "4", "5 (Lowest)"}));
 		cmbPriority.setSelectedIndex(2);
 		pnlDataEntry.add(cmbPriority);
 		
@@ -128,10 +123,18 @@ public class TaskCreationUI extends JFrame {
 		lblTimeEstimate.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblTimeEstimate);
 		
-		txtTimeEstimate = new JTextField();
-		txtTimeEstimate.setText("");
-		pnlDataEntry.add(txtTimeEstimate);
-		txtTimeEstimate.setColumns(10);
+		JPanel timeEstimatePanel = new JPanel();
+		pnlDataEntry.add(timeEstimatePanel);
+		
+		JComboBox cmbMinutes = new JComboBox();
+		timeEstimatePanel.add(cmbMinutes);
+		for (int i = 10; i <= 600; i = i + 10)
+		{
+			cmbMinutes.addItem(i);
+		}
+		
+		JLabel lblMinutes = new JLabel("minutes");
+		timeEstimatePanel.add(lblMinutes);
 		
 		JLabel lblCaretakers = new JLabel("Caretaker");
 		lblCaretakers.setHorizontalAlignment(SwingConstants.CENTER);
@@ -148,31 +151,28 @@ public class TaskCreationUI extends JFrame {
 		pnlDataEntry.add(cmbCaretakers);
 		//http://tech.chitgoks.com/2009/10/05/java-use-keyvalue-pair-for-jcombobox-like-htmls-select-tag/
 		
-		JLabel lblRepeating = new JLabel("Repeating (Leave empy if not a"
-				+ " repeating task)");
+		JLabel lblRepeating = new JLabel("");
 		lblRepeating.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblRepeating);
 		
-		JPanel panel = new JPanel();
-		pnlDataEntry.add(panel);
+		JPanel repeatingPanel = new JPanel();
+		pnlDataEntry.add(repeatingPanel);
 		
-		JComboBox cmbRepeating1 = new JComboBox();
-		panel.add(cmbRepeating1);
+		JLabel lblRepeatEvery = new JLabel("Repeat every ");
+		repeatingPanel.add(lblRepeatEvery);
 		
-		JComboBox cmbRepeating2 = new JComboBox();
-		panel.add(cmbRepeating2);
+		JComboBox cmbRepeatingDays = new JComboBox();
+		repeatingPanel.add(cmbRepeatingDays);
+		for (int i = 0; i <= 365; i++)
+		{
+			cmbRepeatingDays.addItem(i);
+		}
 		
-		JComboBox cmbRepeating3 = new JComboBox();
-		panel.add(cmbRepeating3);
-		
-		JComboBox cmbRepeating4 = new JComboBox();
-		panel.add(cmbRepeating4);
+		JLabel lblDays = new JLabel(" days (0 if not repeating)");
+		repeatingPanel.add(lblDays);
 		
 		JPanel pnlSubmission = new JPanel();
 		contentPane.add(pnlSubmission);
-		
-		JButton btnCreateAndAssign = new JButton("Create and Assign");
-		pnlSubmission.add(btnCreateAndAssign);
 		
 		JButton btnCreate = new JButton("Create");
 		btnCreate.addActionListener(new ActionListener() {
@@ -189,12 +189,14 @@ public class TaskCreationUI extends JFrame {
 				else
 				{
 					String insertSQL = "INSERT INTO Task (TaskName, TaskDesc,"
-							+ " TaskCat, Priority, Location)"
-							+ "VALUES (" + txtTaskName.getText() + ", " 
-							+ txtaDescription.getText() + ", "
-							+ cmbCategory.getSelectedItem() + ", "
-							+ cmbPriority.getSelectedItem() + ", "
-							+ txtLocation.getText() + ");";
+							+ " TaskCat, Priority, Repeating, TimeEstimate, Location)"
+							+ "VALUES ('" + txtTaskName.getText() + "', '" 
+							+ txtaDescription.getText() + "', '"
+							+ cmbCategory.getSelectedItem() + "', '"
+							+ cmbPriority.getSelectedItem() + "', '"
+							+ cmbRepeatingDays.getSelectedItem() + "', '"
+							+ cmbMinutes.getSelectedItem() + "', '"
+							+ txtLocation.getText() + "');";
 					
 					Boolean created = database.createTask(insertSQL);
 					
