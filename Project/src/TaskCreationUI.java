@@ -8,21 +8,18 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 
-public class TaskCreationUI extends JFrame {
-
-	/**
-	 * 
-	 */
+public class TaskCreationUI extends JFrame 
+{
 
 	private JPanel contentPane;
 	private JTextField txtTaskName;
 	private JTextField txtLocation;
 	
 	Database database = new Database();
-	private final Action action = new SwingAction();
 
 	 // Launch the application.
-	public static void main(String[] args) {
+	public static void main(String[] args) 
+	{
 		EventQueue.invokeLater(new Runnable() 
 		{
 			public void run() 
@@ -30,7 +27,8 @@ public class TaskCreationUI extends JFrame {
 				try 
 				{
 					TaskCreationUI frame = new TaskCreationUI();
-					frame.setVisible(true);	
+					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					frame.setVisible(true);
 				} 
 				catch (Exception e) 
 				{
@@ -42,7 +40,8 @@ public class TaskCreationUI extends JFrame {
 	}
 
 	 // Create the frame.
-	public TaskCreationUI() {
+	public TaskCreationUI() 
+	{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 605, 619);
 		contentPane = new JPanel();
@@ -60,14 +59,16 @@ public class TaskCreationUI extends JFrame {
 		contentPane.add(pnlTopButtons);
 		
 		JButton btnBack = new JButton("Back");
-		btnBack.setAction(action);
-		pnlTopButtons.add(btnBack);
-		btnBack.addActionListener(new ActionListener() {
+		btnBack.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
-				{
-					//ManagerMenu.setVisible(true);
-				}
-			});
+			{
+				dispose();
+				//ManagerMenu.setVisible(true);
+			}
+		});
+		pnlTopButtons.add(btnBack);
+		
 		
 		
 		JPanel pnlMain = new JPanel();
@@ -180,7 +181,8 @@ public class TaskCreationUI extends JFrame {
 		contentPane.add(pnlSubmission);
 		
 		JButton btnCreate = new JButton("Create");
-		btnCreate.addActionListener(new ActionListener() {
+		btnCreate.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				if (txtTaskName.getText().equals("") || txtLocation.getText().equals("") ||
@@ -225,12 +227,5 @@ public class TaskCreationUI extends JFrame {
 		});
 		pnlSubmission.add(btnCreate);
 	}
-	private class SwingAction extends AbstractAction {
-		public SwingAction() {
-			putValue(NAME, "SwingAction");
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-		public void actionPerformed(ActionEvent e) {
-		}
-	}
+
 }
