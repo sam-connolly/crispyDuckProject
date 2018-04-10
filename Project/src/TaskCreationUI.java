@@ -4,13 +4,12 @@ import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 
-public class TaskCreationUI extends JFrame {
+public class TaskCreationUI extends JFrame 
+{
 
 	private JPanel contentPane;
 	private JTextField txtTaskName;
@@ -19,7 +18,8 @@ public class TaskCreationUI extends JFrame {
 	Database database = new Database();
 
 	 // Launch the application.
-	public static void main(String[] args) {
+	public static void main(String[] args) 
+	{
 		EventQueue.invokeLater(new Runnable() 
 		{
 			public void run() 
@@ -27,7 +27,8 @@ public class TaskCreationUI extends JFrame {
 				try 
 				{
 					TaskCreationUI frame = new TaskCreationUI();
-					frame.setVisible(true);	
+					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					frame.setVisible(true);
 				} 
 				catch (Exception e) 
 				{
@@ -39,7 +40,8 @@ public class TaskCreationUI extends JFrame {
 	}
 
 	 // Create the frame.
-	public TaskCreationUI() {
+	public TaskCreationUI() 
+	{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 605, 619);
 		contentPane = new JPanel();
@@ -57,7 +59,17 @@ public class TaskCreationUI extends JFrame {
 		contentPane.add(pnlTopButtons);
 		
 		JButton btnBack = new JButton("Back");
+		btnBack.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				dispose();
+				//ManagerMenu.setVisible(true);
+			}
+		});
 		pnlTopButtons.add(btnBack);
+		
+		
 		
 		JPanel pnlMain = new JPanel();
 		contentPane.add(pnlMain);
@@ -102,7 +114,7 @@ public class TaskCreationUI extends JFrame {
 		
 		ArrayList<String> categories = new ArrayList<String>();
 		categories = database.getCategories();
-		JComboBox cmbCategory = new JComboBox();
+		JComboBox<String> cmbCategory = new JComboBox<String>();
 		cmbCategory.addItem("Select a category");
 		for (int i = 0; i < categories.size(); i++)
 		{
@@ -114,8 +126,9 @@ public class TaskCreationUI extends JFrame {
 		lblPriority.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblPriority);
 		
-		JComboBox cmbPriority = new JComboBox();
-		cmbPriority.setModel(new DefaultComboBoxModel(new String[] {"1 (Highest)", "2", "3", "4", "5 (Lowest)"}));
+		JComboBox<String> cmbPriority = new JComboBox<String>();
+		cmbPriority.setModel(new DefaultComboBoxModel<String>(new String[] {"1 (Highest)", "2", "3", "4", "5 (Lowest)"
+				+ ""}));
 		cmbPriority.setSelectedIndex(2);
 		pnlDataEntry.add(cmbPriority);
 		
@@ -126,29 +139,22 @@ public class TaskCreationUI extends JFrame {
 		JPanel timeEstimatePanel = new JPanel();
 		pnlDataEntry.add(timeEstimatePanel);
 		
-		JComboBox cmbMinutes = new JComboBox();
+		JComboBox<Integer> cmbHours = new JComboBox<Integer>();
+		cmbHours.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+				14, 15}));
+		timeEstimatePanel.add(cmbHours);
+		
+		JLabel lalHours = new JLabel("hours");
+		timeEstimatePanel.add(lalHours);
+		
+		JComboBox<Integer> cmbMinutes = new JComboBox<Integer>();
+		cmbMinutes.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50,
+				55}));
 		timeEstimatePanel.add(cmbMinutes);
-		for (int i = 10; i <= 600; i = i + 10)
-		{
-			cmbMinutes.addItem(i);
-		}
 		
 		JLabel lblMinutes = new JLabel("minutes");
 		timeEstimatePanel.add(lblMinutes);
 		
-		JLabel lblCaretakers = new JLabel("Caretaker");
-		lblCaretakers.setHorizontalAlignment(SwingConstants.CENTER);
-		pnlDataEntry.add(lblCaretakers);
-		
-		ArrayList<String> caretakers = new ArrayList<String>();
-		caretakers = database.getCaretakers();
-		JComboBox cmbCaretakers = new JComboBox();
-		cmbCaretakers.addItem("Allocated by system");
-		for (int i = 0; i < caretakers.size(); i = i + 2)
-		{
-			cmbCaretakers.addItem(new KeyValue(caretakers.get(i+1), caretakers.get((i))));
-		}
-		pnlDataEntry.add(cmbCaretakers);
 		//http://tech.chitgoks.com/2009/10/05/java-use-keyvalue-pair-for-jcombobox-like-htmls-select-tag/
 		
 		JLabel lblRepeating = new JLabel("");
@@ -161,7 +167,7 @@ public class TaskCreationUI extends JFrame {
 		JLabel lblRepeatEvery = new JLabel("Repeat every ");
 		repeatingPanel.add(lblRepeatEvery);
 		
-		JComboBox cmbRepeatingDays = new JComboBox();
+		JComboBox<Integer> cmbRepeatingDays = new JComboBox<Integer>();
 		repeatingPanel.add(cmbRepeatingDays);
 		for (int i = 0; i <= 365; i++)
 		{
@@ -175,7 +181,8 @@ public class TaskCreationUI extends JFrame {
 		contentPane.add(pnlSubmission);
 		
 		JButton btnCreate = new JButton("Create");
-		btnCreate.addActionListener(new ActionListener() {
+		btnCreate.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				if (txtTaskName.getText().equals("") || txtLocation.getText().equals("") ||
@@ -188,6 +195,10 @@ public class TaskCreationUI extends JFrame {
 				}
 				else
 				{
+					int hours = (Integer) cmbHours.getSelectedItem();
+					int minutes = (Integer) cmbMinutes.getSelectedItem();
+					
+					int timeEstimateInMinutes = (hours * 60) + minutes;
 					String insertSQL = "INSERT INTO Task (TaskName, TaskDesc,"
 							+ " TaskCat, Priority, Repeating, TimeEstimate, Location)"
 							+ "VALUES ('" + txtTaskName.getText() + "', '" 
@@ -195,7 +206,7 @@ public class TaskCreationUI extends JFrame {
 							+ cmbCategory.getSelectedItem() + "', '"
 							+ cmbPriority.getSelectedItem() + "', '"
 							+ cmbRepeatingDays.getSelectedItem() + "', '"
-							+ cmbMinutes.getSelectedItem() + "', '"
+							+ timeEstimateInMinutes + "', '"
 							+ txtLocation.getText() + "');";
 					
 					Boolean created = database.createTask(insertSQL);
@@ -216,4 +227,5 @@ public class TaskCreationUI extends JFrame {
 		});
 		pnlSubmission.add(btnCreate);
 	}
+
 }
