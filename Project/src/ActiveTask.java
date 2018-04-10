@@ -1,3 +1,5 @@
+import java.util.Date;
+
 /*
  *  class stores information pertaining to tasks which are currently active
  *  (Have been assigned, are due to be assigned or are on hold)
@@ -7,20 +9,36 @@ public class ActiveTask {
 	private int taskID; 
 	private String caretaker;
 	private boolean completed; 
-	private int dateIssued;
-	private int dateDue;
+	private Date completedOn;
+	private Date dateIssued;
+	private Date dateDue;
 	private String issueDesc; 
 	private boolean signedOff;
 	private int timeTaken;
+	private String taskName; 
+	private String taskDesc;
+	private String priority;
+	private int timeEstimate;
+	private String location;
 	
 	// constructor takes arguments for all data
-	public ActiveTask(int taskID, String caretaker, boolean completed, int timeTaken, String issueDesc, boolean signedOff) {
+	public ActiveTask(int taskID, String caretaker, boolean completed, Date completedOn, Date dateIssued, Date dateDue, int timeTaken,
+			String issueDesc, boolean signedOff,String taskName, String taskDesc, String priority,
+			int timeEstimate, String location) {
 		this.taskID = taskID;
 		this.caretaker = caretaker;
 		this.completed = completed;
+		this.completedOn = completedOn;
+		this.dateIssued = dateIssued;
+		this.dateDue = dateDue;
 		this.timeTaken = timeTaken;
 		this.issueDesc = issueDesc;
 		this.signedOff = signedOff;
+		this.taskName = taskName;
+		this.taskDesc = taskDesc;
+		this.priority = priority;
+		this.timeEstimate = timeEstimate;
+		this.location = location;
 	}
 	
 	
@@ -32,11 +50,11 @@ public class ActiveTask {
 		return caretaker;
 	}
 	
-	public int getDateIssued() {
+	public Date getDateIssued() {
 		return dateIssued;
 	}
 	
-	public int getDateDue() {
+	public Date getDateDue() {
 		return dateDue;
 	}
 	
@@ -56,11 +74,11 @@ public class ActiveTask {
 		caretaker = this.caretaker;
 	}
 	
-	public void setDateIssued(int dateIssued) {
+	public void setDateIssued(Date dateIssued) {
 		dateIssued = this.dateIssued;
 	}
 	
-	public void setDateDue(int dateDue) {
+	public void setDateDue(Date dateDue) {
 		dateDue = this.dateDue;
 	}
 	
@@ -73,18 +91,7 @@ public class ActiveTask {
 	}
 	
 	public String toString() {
-		String isCompleted;
-		
-		if (completed) {
-			isCompleted = "completed";
-		}
-		else {
-			isCompleted = "not completed";
-		}
-		String returnString = ("Task No. " + taskID + ". Caretaker: " + caretaker + ". Issued on: " + dateIssued + 
-				". Due for: " + dateDue + ". Is Currently: " + isCompleted);
-		
-		return returnString;
+		return null;
 	}
 	
 }

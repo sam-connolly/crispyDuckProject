@@ -1,5 +1,7 @@
 import java.sql.*;
 import java.util.*;
+import java.util.Date;
+
 import javax.swing.JOptionPane;
 
 public class Database {
@@ -188,9 +190,11 @@ public class Database {
 		try {
 			// query database for data in TaskList
 			Statement stmt = conn.createStatement();
-			String query = "SELECT TaskID, Caretaker, DateIssued, DateDue, "
-					+ "Completed, TimeTaken, IssueDesc, SignedOff"
-					+ " FROM TaskList";
+			String query = "SELECT TaskID, Caretaker, DateIssued, DateDue,"
+					+ " Completed, TimeTaken, IssueDesc, SignedOff,"
+					+ " CompletedOn, TaskName, TaskDesc, Priority, TimeEstimate, Location"
+					+ " FROM TaskList"
+					+ " LEFT OUTER JOIN Task ON JobID = JobID";
 			ResultSet rs = stmt.executeQuery(query);
 			
 			// create a new ActiveTaskList object to store data from results set
@@ -201,20 +205,25 @@ public class Database {
 			{
 				// assign data to variables
 				int taskID = rs.getInt("TaskID");
-				String caretaker= rs.getString("Caretaker");
-				
-				// TODO: deal with dates
-				// String DateIssued= rs.getString("Caretaker");
-				// String DateDue= rs.getString("Caretaker");
-				
+				String caretaker= rs.getString("Caretaker");	
 				boolean completed = rs.getBoolean("Completed");
+				Date completedOn = rs.getDate("CompletedOn");
+				Date dateIssued= rs.getDate("DateIssued");
+				Date dateDue = rs.getDate("DateDue");
 				int timeTaken = rs.getInt("TimeTaken");
 				String issueDesc = rs.getString("IssueDesc");
 				boolean signedOff = rs.getBoolean("SignedOff");
+				String taskName = rs.getString("TaskName");
+				String taskDesc = rs.getString("TaskDesc");
+				String priority = rs.getString("Priority");
+				int timeEstimate = rs.getInt("TimeEstimate");
+				String location = rs.getString("location");
 				
 				// create new ActiveTask to be added on every loop
-				ActiveTask taskToAdd = new ActiveTask(taskID, caretaker, completed, timeTaken, 
-						issueDesc, signedOff);
+				ActiveTask taskToAdd = new ActiveTask(taskID, caretaker, completed, completedOn, dateIssued, dateDue,
+						timeTaken, 
+						issueDesc, signedOff, taskName, taskDesc, priority,
+						timeEstimate, location);
 				
 				// add new task to the list
 				allActiveTasks.addTask(taskToAdd);
