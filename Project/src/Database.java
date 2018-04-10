@@ -59,16 +59,18 @@ public class Database {
 		return validLogin;
 	}
 	
-	public boolean addUser(String username, String password, Boolean admin, String forename, String surname) throws SQLException{
+	public boolean addUser(String username, String password, Boolean admin, 
+			String forename, String surname) throws SQLException{
 		PreparedStatement sqlInsert = null;
 		try {
-			sqlInsert = conn.prepareStatement("INSERT INTO User (Username, PasswordHash, Admin, fName, sName) VALUES (?,?,?,?,?)");
+			sqlInsert = conn.prepareStatement("INSERT INTO User (Username, "
+					+ "PasswordHash, Admin, fName, sName) VALUES (?,?,?,?,?)");
 		}
 		catch (SQLException sqlex) {
 			System.err.println("SQL Exception");
 			sqlex.printStackTrace();
 		}
-		sqlInsert.setString(1,user);
+		sqlInsert.setString(1, username);
 		sqlInsert.setString(2, password);
 		sqlInsert.setBoolean(3, admin);
 		sqlInsert.setString(4, forename);
@@ -79,6 +81,7 @@ public class Database {
 			return false;
 		}
 		else {
+			System.err.println("Inserted: " + username + forename + surname);
 			return true;
 		}
 	}

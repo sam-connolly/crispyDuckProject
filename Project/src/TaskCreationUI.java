@@ -4,24 +4,22 @@ import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class TaskCreationUI extends JFrame {
+
+public class TaskCreationUI extends JFrame 
+{
 
 	private JPanel contentPane;
-	private JTextField txtName;
-	private JTextField txtTimeEstimate;
+	private JTextField txtTaskName;
 	private JTextField txtLocation;
 	
 	Database database = new Database();
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
+	 // Launch the application.
+	public static void main(String[] args) 
+	{
 		EventQueue.invokeLater(new Runnable() 
 		{
 			public void run() 
@@ -29,7 +27,8 @@ public class TaskCreationUI extends JFrame {
 				try 
 				{
 					TaskCreationUI frame = new TaskCreationUI();
-					frame.setVisible(true);	
+					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					frame.setVisible(true);
 				} 
 				catch (Exception e) 
 				{
@@ -40,10 +39,9 @@ public class TaskCreationUI extends JFrame {
 
 	}
 
-	/**
-	 * Create the frame.
-	 */
-	public TaskCreationUI() {
+	 // Create the frame.
+	public TaskCreationUI() 
+	{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 605, 619);
 		contentPane = new JPanel();
@@ -61,7 +59,17 @@ public class TaskCreationUI extends JFrame {
 		contentPane.add(pnlTopButtons);
 		
 		JButton btnBack = new JButton("Back");
+		btnBack.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				dispose();
+				//ManagerMenu.setVisible(true);
+			}
+		});
 		pnlTopButtons.add(btnBack);
+		
+		
 		
 		JPanel pnlMain = new JPanel();
 		contentPane.add(pnlMain);
@@ -81,9 +89,9 @@ public class TaskCreationUI extends JFrame {
 		lblTaskName.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblTaskName);
 		
-		txtName = new JTextField();
-		pnlDataEntry.add(txtName);
-		txtName.setColumns(10);
+		txtTaskName = new JTextField();
+		pnlDataEntry.add(txtTaskName);
+		txtTaskName.setColumns(10);
 		
 		JLabel lblDescription = new JLabel("Description");
 		lblDescription.setHorizontalAlignment(SwingConstants.CENTER);
@@ -106,16 +114,21 @@ public class TaskCreationUI extends JFrame {
 		
 		ArrayList<String> categories = new ArrayList<String>();
 		categories = database.getCategories();
-		JComboBox cmbCategory = new JComboBox(categories.toArray());
+		JComboBox<String> cmbCategory = new JComboBox<String>();
+		cmbCategory.addItem("Select a category");
+		for (int i = 0; i < categories.size(); i++)
+		{
+			cmbCategory.addItem(categories.get(i));
+		}
 		pnlDataEntry.add(cmbCategory);
 		
 		JLabel lblPriority = new JLabel("Priority");
 		lblPriority.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblPriority);
 		
-		JComboBox cmbPriority = new JComboBox();
-		cmbPriority.setModel(new DefaultComboBoxModel(new String[] {"1 (Highest)",
-				"2", "3", "4", "5 (Lowest)"}));
+		JComboBox<String> cmbPriority = new JComboBox<String>();
+		cmbPriority.setModel(new DefaultComboBoxModel<String>(new String[] {"1 (Highest)", "2", "3", "4", "5 (Lowest)"
+				+ ""}));
 		cmbPriority.setSelectedIndex(2);
 		pnlDataEntry.add(cmbPriority);
 		
@@ -123,78 +136,96 @@ public class TaskCreationUI extends JFrame {
 		lblTimeEstimate.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblTimeEstimate);
 		
-		txtTimeEstimate = new JTextField();
-		txtTimeEstimate.setText("");
-		pnlDataEntry.add(txtTimeEstimate);
-		txtTimeEstimate.setColumns(10);
+		JPanel timeEstimatePanel = new JPanel();
+		pnlDataEntry.add(timeEstimatePanel);
 		
-		JLabel lblCaretakers = new JLabel("Caretaker");
-		lblCaretakers.setHorizontalAlignment(SwingConstants.CENTER);
-		pnlDataEntry.add(lblCaretakers);
+		JComboBox<Integer> cmbHours = new JComboBox<Integer>();
+		cmbHours.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+				14, 15}));
+		timeEstimatePanel.add(cmbHours);
 		
-		ArrayList<String> caretakers = new ArrayList<String>();
-		caretakers = database.getCaretakers();
-		JComboBox cmbCaretakers = new JComboBox();
-		for (int i = 0; i < caretakers.size(); i = i + 2)
-		{
-			cmbCaretakers.addItem(new KeyValue(caretakers.get(i+1), caretakers.get((i))));
-		}
-		pnlDataEntry.add(cmbCaretakers);
+		JLabel lalHours = new JLabel("hours");
+		timeEstimatePanel.add(lalHours);
+		
+		JComboBox<Integer> cmbMinutes = new JComboBox<Integer>();
+		cmbMinutes.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50,
+				55}));
+		timeEstimatePanel.add(cmbMinutes);
+		
+		JLabel lblMinutes = new JLabel("minutes");
+		timeEstimatePanel.add(lblMinutes);
+		
 		//http://tech.chitgoks.com/2009/10/05/java-use-keyvalue-pair-for-jcombobox-like-htmls-select-tag/
 		
-		JLabel lblRepeating = new JLabel("Repeating (Leave empy if not a"
-				+ " repeating task)");
+		JLabel lblRepeating = new JLabel("");
 		lblRepeating.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblRepeating);
 		
-		JPanel panel = new JPanel();
-		pnlDataEntry.add(panel);
+		JPanel repeatingPanel = new JPanel();
+		pnlDataEntry.add(repeatingPanel);
 		
-		JComboBox cmbRepeating1 = new JComboBox();
-		panel.add(cmbRepeating1);
+		JLabel lblRepeatEvery = new JLabel("Repeat every ");
+		repeatingPanel.add(lblRepeatEvery);
 		
-		JComboBox cmbRepeating2 = new JComboBox();
-		panel.add(cmbRepeating2);
+		JComboBox<Integer> cmbRepeatingDays = new JComboBox<Integer>();
+		repeatingPanel.add(cmbRepeatingDays);
+		for (int i = 0; i <= 365; i++)
+		{
+			cmbRepeatingDays.addItem(i);
+		}
 		
-		JComboBox cmbRepeating3 = new JComboBox();
-		panel.add(cmbRepeating3);
-		
-		JComboBox cmbRepeating4 = new JComboBox();
-		panel.add(cmbRepeating4);
+		JLabel lblDays = new JLabel(" days (0 if not repeating)");
+		repeatingPanel.add(lblDays);
 		
 		JPanel pnlSubmission = new JPanel();
 		contentPane.add(pnlSubmission);
 		
-		JButton btnCreateAndAssign = new JButton("Create and Assign");
-		pnlSubmission.add(btnCreateAndAssign);
-		
 		JButton btnCreate = new JButton("Create");
-		btnCreate.addActionListener(new ActionListener() {
+		btnCreate.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
-				String insertSQL = "INSERT INTO Task (TaskName, TaskDesc,"
-						+ " TaskCat, Priority, Location)"
-						+ "VALUES (" + txtName.getText() + ", " 
-						+ txtaDescription.getText() + ", "
-						+ cmbCategory.getSelectedItem() + ", "
-						+ cmbPriority.getSelectedItem() + ", "
-						+ txtLocation.getText() + ");";
-				
-				Boolean created = database.createTask(insertSQL);
-				
-				if (created)
+				if (txtTaskName.getText().equals("") || txtLocation.getText().equals("") ||
+					cmbCategory.getSelectedItem().equals("Select a category"))
 				{
-					JOptionPane.showMessageDialog(new JFrame(), "Task successfully created");
+					JOptionPane.showMessageDialog(new JFrame(),
+						    "Please fill in all fields marked with an *",
+						    "Enter all info",
+						    JOptionPane.WARNING_MESSAGE);
 				}
 				else
 				{
-					JOptionPane.showMessageDialog(new JFrame(),
-						    "Could not create task. Contact database administrator",
-						    "Database error",
-						    JOptionPane.ERROR_MESSAGE);
+					int hours = (Integer) cmbHours.getSelectedItem();
+					int minutes = (Integer) cmbMinutes.getSelectedItem();
+					
+					int timeEstimateInMinutes = (hours * 60) + minutes;
+					String insertSQL = "INSERT INTO Task (TaskName, TaskDesc,"
+							+ " TaskCat, Priority, Repeating, TimeEstimate, Location)"
+							+ "VALUES ('" + txtTaskName.getText() + "', '" 
+							+ txtaDescription.getText() + "', '"
+							+ cmbCategory.getSelectedItem() + "', '"
+							+ cmbPriority.getSelectedItem() + "', '"
+							+ cmbRepeatingDays.getSelectedItem() + "', '"
+							+ timeEstimateInMinutes + "', '"
+							+ txtLocation.getText() + "');";
+					
+					Boolean created = database.createTask(insertSQL);
+					
+					if (created)
+					{
+						JOptionPane.showMessageDialog(new JFrame(), "Task successfully created");
+					}
+					else
+					{
+						JOptionPane.showMessageDialog(new JFrame(),
+							    "Could not create task. Contact database administrator",
+							    "Database error",
+							    JOptionPane.ERROR_MESSAGE);
+					}
 				}
 			}
 		});
 		pnlSubmission.add(btnCreate);
 	}
+
 }
