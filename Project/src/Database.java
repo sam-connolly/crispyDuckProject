@@ -32,31 +32,63 @@ public class Database {
 	public boolean validateLogin(String user,  String password) {
 		boolean validLogin = false;
 		try {
-			PreparedStatement stmt = conn.prepareStatement("SELECT PasswordHash FROM User WHERE Username==?");
-			stmt.setString(1,user);
+			System.out.println("Attempting login: " + user + ", " + password);
+			PreparedStatement stmt = conn.prepareStatement("SELECT Username, PasswordHash FROM User");
+			System.out.println("1");
 			ResultSet rs = stmt.executeQuery();
+			System.out.println("2");
 			boolean moreRecords = rs.next();
+			System.out.println("More records: " + moreRecords);
 			//If there are no records to show validLogin is set to false
 		    if (!moreRecords) {
 			      System.out.println ("ResultSet contained no records");
-			      validLogin = false;
+			      return false;
 		    }
-		    boolean login;
 			ResultSetMetaData rsmd = rs.getMetaData();
 			//If the entered password matches the one stored in the database
 			//validLogin is set to true
-			if (password.equals(rsmd.getColumnName(1))) {
-				validLogin = true;
-			}
-			else {
-				login = false;
+			while (rs.next()) {
+				System.out.println(password);
+				System.out.println(rs.getString("Username") + rs.getString("PasswordHash"));
+				if ((password.equals(rs.getString("PasswordHash")))&&(user.equals(rs.getString("Username")))) {
+					validLogin=true;
+					System.out.println("Sucess");
+					break;
+				}
 			}
 		}
 		catch(Exception e) {	
 			// TODO: handle exception
 		}
 		//Return validLogin to check if login was successful 
+		System.out.println(validLogin);
 		return validLogin;
+	}
+	
+	public boolean checkRole(String user) {
+		boolean isAdmin = false;
+		try {
+			PreparedStatement stmt = conn.prepareStatement("Select Username, Admin FROM User");
+			ResultSet rs = stmt.executeQuery();
+			boolean moreRecords = rs.next();
+			if(!moreRecords) {
+				System.out.println("Result set contained no records");
+				return false;
+			}
+			ResultSetMetaData rsmd = rs.getMetaData();
+			while(rs.next()) {
+				System.out.println(rs.getString("Username") + " is admin? " + rs.getBoolean("Admin"));
+				Boolean result = rs.getBoolean("Admin");
+				if ((user.equals(rs.getString("Username"))&&(result==true))) {
+					isAdmin=true;
+				}
+			}
+		}
+		catch(Exception e) {	
+			// TODO: handle exception
+		}
+		System.out.println("Admin Check: " + isAdmin);
+		return isAdmin;
 	}
 	
 	public boolean addUser(String username, String password, Boolean admin, 
