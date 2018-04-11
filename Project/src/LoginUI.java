@@ -5,6 +5,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -15,7 +16,6 @@ public class LoginUI extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtUsername;
 	private JPasswordField txtPassword;
-	private TaskCreationUI taskCreationUI;
 	Database database = new Database();
 	/**
 	 * Launch the application.
@@ -69,8 +69,22 @@ public class LoginUI extends JFrame {
 				passwordString = new String (password);
 				Boolean valid = database.validateLogin(username, passwordString);
 				if(valid) {
-					taskCreationUI.setVisible(true);
+					JOptionPane.showMessageDialog(null, "Welcome, " + username, 
+							"Success", JOptionPane.INFORMATION_MESSAGE);
+					boolean isAdmin = database.checkRole(username);
+					if (isAdmin) {
+						ManagerMenu managerMenu = new ManagerMenu();
+						managerMenu.setVisible(true);
+					}
+					else {
+						EmployeeMenu employeeMenu = new EmployeeMenu();
+						employeeMenu.setVisible(true);
+					}
 					setVisible(false);
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "Username and password do not match.", 
+							"Login Failed", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		});

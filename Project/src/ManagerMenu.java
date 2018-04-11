@@ -19,7 +19,7 @@ import javax.swing.JMenuItem;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.Color;
 
-public class ManagerMenu {
+public class ManagerMenu extends JFrame {
 
 	private JFrame frame;
 	private JTable table;

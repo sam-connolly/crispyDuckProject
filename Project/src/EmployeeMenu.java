@@ -25,7 +25,7 @@ import javax.swing.JMenu;
 import javax.swing.JComboBox;
 import java.awt.Color;
 
-public class EmployeeMenu {
+public class EmployeeMenu extends JFrame{
 
 	private JFrame frame;
 	private JScrollPane scrollPane;
