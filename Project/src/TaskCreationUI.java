@@ -63,8 +63,9 @@ public class TaskCreationUI extends JFrame
 		{
 			public void actionPerformed(ActionEvent e) 
 			{
+				ManagerMenu menu = new ManagerMenu();
+				menu.setVisible(true);
 				dispose();
-				//ManagerMenu.setVisible(true);
 			}
 		});
 		pnlTopButtons.add(btnBack);
@@ -122,13 +123,12 @@ public class TaskCreationUI extends JFrame
 		}
 		pnlDataEntry.add(cmbCategory);
 		
-		JLabel lblPriority = new JLabel("Priority");
+		JLabel lblPriority = new JLabel("Priority (1 is highest. 5 is lowest)");
 		lblPriority.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblPriority);
 		
-		JComboBox<String> cmbPriority = new JComboBox<String>();
-		cmbPriority.setModel(new DefaultComboBoxModel<String>(new String[] {"1 (Highest)", "2", "3", "4", "5 (Lowest)"
-				+ ""}));
+		JComboBox<Integer> cmbPriority = new JComboBox<Integer>();
+		cmbPriority.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {1, 2, 3, 4, 5}));
 		cmbPriority.setSelectedIndex(2);
 		pnlDataEntry.add(cmbPriority);
 		
