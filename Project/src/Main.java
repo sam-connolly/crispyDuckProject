@@ -4,9 +4,9 @@ public class Main {
 	public static void main(String[] args) {
 	Database database = new Database();
 
-	ActiveTaskList allActiveTasks = new ActiveTaskList();
+	TaskList allActiveTasks = new TaskList();
 	
-	allActiveTasks = database.getActiveTasks();
+	allActiveTasks = database.getTasks();
 	
 	allActiveTasks.printDetails();
 	}

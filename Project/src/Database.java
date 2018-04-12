@@ -220,20 +220,20 @@ public class Database {
 	 *  function to retrieve data from TaskList and add it to a collection
 	 *  of ActiveTask objects
 	 */
-	public ActiveTaskList getActiveTasks()
+	public TaskList getTasks()
 	{
 		try {
 			// query database for data in TaskList
 			Statement stmt = conn.createStatement();
 			String query = "SELECT TaskID, Caretaker, DateIssued, DateDue,"
 					+ " Completed, TimeTaken, IssueDesc, SignedOff,"
-					+ " CompletedOn, TaskName, TaskDesc, Priority, TimeEstimate, Location"
+					+ " CompletedOn, TaskName, TaskDesc, TaskCat, Priority, Repeating, TimeEstimate, Location"
 					+ " FROM TaskList"
 					+ " LEFT OUTER JOIN Task ON JobID = JobID";
 			ResultSet rs = stmt.executeQuery(query);
 			
 			// create a new ActiveTaskList object to store data from results set
-			ActiveTaskList allActiveTasks = new ActiveTaskList();
+			TaskList allActiveTasks = new TaskList();
 			
 			// iterate over data
 			while (rs.next())
@@ -250,15 +250,23 @@ public class Database {
 				boolean signedOff = rs.getBoolean("SignedOff");
 				String taskName = rs.getString("TaskName");
 				String taskDesc = rs.getString("TaskDesc");
+				String taskCat = rs.getString("TaskCat");
 				String priority = rs.getString("Priority");
+				int repeating = rs.getInt("Repeating");
 				int timeEstimate = rs.getInt("TimeEstimate");
 				String location = rs.getString("location");
 				
 				// create new ActiveTask to be added on every loop
-				ActiveTask taskToAdd = new ActiveTask(taskID, caretaker, completed, completedOn, dateIssued, dateDue,
-						timeTaken, 
-						issueDesc, signedOff, taskName, taskDesc, priority,
+				Task taskToAdd;
+				if(caretaker != null) {
+				taskToAdd = new ActiveTask(taskID, caretaker, completed, completedOn, dateIssued, dateDue, timeTaken,
+						issueDesc, signedOff, taskName, taskDesc, taskCat, priority, repeating,
 						timeEstimate, location);
+				}
+				else {
+					taskToAdd = new Task(taskID, taskName, taskDesc, taskCat, priority, repeating,
+							timeEstimate, location);
+				}
 				
 				// add new task to the list
 				allActiveTasks.addTask(taskToAdd);

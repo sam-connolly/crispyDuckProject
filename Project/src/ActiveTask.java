@@ -4,47 +4,32 @@ import java.util.Date;
  *  class stores information pertaining to tasks which are currently active
  *  (Have been assigned, are due to be assigned or are on hold)
  */
-public class ActiveTask {
+public class ActiveTask extends Task{
 	// information on task
-	private int taskID; 
 	private String caretaker;
 	private boolean completed; 
 	private Date completedOn;
+	private int timeTaken;
 	private Date dateIssued;
 	private Date dateDue;
 	private String issueDesc; 
 	private boolean signedOff;
-	private int timeTaken;
-	private String taskName; 
-	private String taskDesc;
-	private String priority;
-	private int timeEstimate;
-	private String location;
 	
 	// constructor takes arguments for all data
 	public ActiveTask(int taskID, String caretaker, boolean completed, Date completedOn, Date dateIssued, Date dateDue, int timeTaken,
-			String issueDesc, boolean signedOff,String taskName, String taskDesc, String priority,
+			String issueDesc, boolean signedOff,String taskName, String taskDesc, String taskCat, String priority, int repeating,
 			int timeEstimate, String location) {
-		this.taskID = taskID;
+		super(taskID, taskName, taskDesc, taskCat, priority,
+			repeating, timeEstimate, location);
 		this.caretaker = caretaker;
 		this.completed = completed;
 		this.completedOn = completedOn;
 		this.dateIssued = dateIssued;
 		this.dateDue = dateDue;
-		this.timeTaken = timeTaken;
 		this.issueDesc = issueDesc;
 		this.signedOff = signedOff;
-		this.taskName = taskName;
-		this.taskDesc = taskDesc;
-		this.priority = priority;
-		this.timeEstimate = timeEstimate;
-		this.location = location;
 	}
 	
-	
-	public int getTaskID() {
-		return taskID;
-	}
 	
 	public String getCaretaker() {
 		return caretaker;
