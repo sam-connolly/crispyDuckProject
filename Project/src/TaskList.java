@@ -26,6 +26,7 @@ public class TaskList {
 		for (Task currentTask : taskList) {
 			System.out.println(currentTask.getTaskID());
 			System.out.println(currentTask.getTaskName());
+			System.out.println(currentTask.getCaretaker());
 		}
 	}
 	

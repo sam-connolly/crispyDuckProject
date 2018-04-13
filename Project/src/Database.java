@@ -229,7 +229,7 @@ public class Database {
 					+ " Completed, TimeTaken, IssueDesc, SignedOff, CompletedOn,"
 					+ " TaskName, TaskDesc, TaskCat, Priority, Repeating, TimeEstimate, Location"
 					+ " FROM Task"
-					+ " JOIN TaskList ON taskID = taskID";
+					+ " LEFT JOIN TaskList ON Task.taskID = TaskList.taskID";
 			ResultSet rs = stmt.executeQuery(query);
 			
 			// create a new ActiveTaskList object to store data from results set

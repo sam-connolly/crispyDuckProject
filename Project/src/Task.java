@@ -71,7 +71,11 @@ public class Task {
 	}
 	
 	public String getCaretaker() {
-		return caretaker;
+		if (caretaker != null) {
+			return caretaker;
+		}
+		
+		return "caretaker unassigned";
 	}
 	
 	public static class TaskBuilder {
@@ -179,34 +183,31 @@ public class Task {
 		}
 		
 		public Task build() { 
-			/*if (taskID == 0) {
+			if (taskID == 0) {
 				throw new IllegalStateException("");
 			}
 			
 			if (taskCat == null) {
 				throw new IllegalStateException("");
 			}
-			
+						
 			if (priority == null) {
 				throw new IllegalStateException("");
 			}
-			
-			if (repeating == 0) {
-				throw new IllegalStateException("");
-			}
-			
+						
+						/*
 			if (taskName == null) {
 				throw new IllegalStateException("");
 			}
-			
+						/*
 			if (taskDesc == null) {
 				throw new IllegalStateException("");
 			}
-			
+						/*
 			if (timeEstimate == 0) {
 				throw new IllegalStateException("");
 			}
-			
+						/*
 			if (location == null) {
 				throw new IllegalStateException("");
 			}*/
