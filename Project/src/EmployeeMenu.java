@@ -73,7 +73,7 @@ public class EmployeeMenu extends JFrame{
 	private void initialize() {
 		Database database = new Database();
 
-		ActiveTaskList allActiveTasks = new ActiveTaskList();
+		TaskList allActiveTasks = new TaskList();
 		
 		allActiveTasks = database.getActiveTasks();
 		

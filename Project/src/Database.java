@@ -220,20 +220,20 @@ public class Database {
 	 *  function to retrieve data from TaskList and add it to a collection
 	 *  of ActiveTask objects
 	 */
-	public ActiveTaskList getActiveTasks()
+	public TaskList getTasks()
 	{
 		try {
 			// query database for data in TaskList
 			Statement stmt = conn.createStatement();
 			String query = "SELECT TaskID, Caretaker, DateIssued, DateDue,"
-					+ " Completed, TimeTaken, IssueDesc, SignedOff,"
-					+ " CompletedOn, TaskName, TaskDesc, Priority, TimeEstimate, Location"
-					+ " FROM TaskList"
-					+ " LEFT OUTER JOIN Task ON JobID = JobID";
+					+ " Completed, TimeTaken, IssueDesc, SignedOff, CompletedOn,"
+					+ " TaskName, TaskDesc, TaskCat, Priority, Repeating, TimeEstimate, Location"
+					+ " FROM Task"
+					+ " LEFT JOIN TaskList ON Task.taskID = TaskList.taskID";
 			ResultSet rs = stmt.executeQuery(query);
 			
 			// create a new ActiveTaskList object to store data from results set
-			ActiveTaskList allActiveTasks = new ActiveTaskList();
+			TaskList allActiveTasks = new TaskList();
 			
 			// iterate over data
 			while (rs.next())
@@ -250,21 +250,24 @@ public class Database {
 				boolean signedOff = rs.getBoolean("SignedOff");
 				String taskName = rs.getString("TaskName");
 				String taskDesc = rs.getString("TaskDesc");
+				String taskCat = rs.getString("TaskCat");
 				String priority = rs.getString("Priority");
+				int repeating = rs.getInt("Repeating");
 				int timeEstimate = rs.getInt("TimeEstimate");
 				String location = rs.getString("location");
 				
 				// create new ActiveTask to be added on every loop
-				ActiveTask taskToAdd = new ActiveTask(taskID, caretaker, completed, completedOn, dateIssued, dateDue,
-						timeTaken, 
-						issueDesc, signedOff, taskName, taskDesc, priority,
-						timeEstimate, location);
+				Task taskToAdd;		
+					taskToAdd = new Task.TaskBuilder().taskID(taskID).taskName(taskName).taskDesc(taskDesc).taskCat(taskCat)
+							.priority(priority).repeating(repeating).timeEstimate(timeEstimate).location(location)
+							.caretaker(caretaker).completed(completed).completedOn(completedOn).dateIssued(dateIssued).dateDue(dateDue)
+							.timeEstimate(timeEstimate).timeTaken(timeTaken).issueDesc(issueDesc).signedOff(signedOff).build();
 				
 				// add new task to the list
-				allActiveTasks.addTask(taskToAdd);
-				
+				//System.out.println(taskName);
+				//System.out.println(taskToAdd.getTaskName());
+				allActiveTasks.addTask(taskToAdd);				
 			}
-			
 			return allActiveTasks;
 		}
 		catch (Exception e) 
