@@ -1,15 +1,28 @@
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.basic.BasicComboBoxRenderer;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.awt.event.ActionListener;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
+import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
-public class TaskCreationUI extends JFrame 
-{
+public class EditTaskUI extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtTaskName;
@@ -17,31 +30,26 @@ public class TaskCreationUI extends JFrame
 	
 	Database database = new Database();
 
-	 // Launch the application.
-	public static void main(String[] args) 
-	{
-		EventQueue.invokeLater(new Runnable() 
-		{
-			public void run() 
-			{
-				try 
-				{
-					TaskCreationUI frame = new TaskCreationUI();
-					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					EditTaskUI frame = new EditTaskUI();
 					frame.setVisible(true);
-				} 
-				catch (Exception e) 
-				{
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
-
 	}
 
-	 // Create the frame.
-	public TaskCreationUI() 
-	{
+	/**
+	 * Create the frame.
+	 */
+	public EditTaskUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 605, 619);
 		contentPane = new JPanel();
@@ -76,7 +84,7 @@ public class TaskCreationUI extends JFrame
 		contentPane.add(pnlMain);
 		pnlMain.setLayout(new BoxLayout(pnlMain, BoxLayout.Y_AXIS));
 		
-		JLabel lblTaskCreation = new JLabel("Task Creation");
+		JLabel lblTaskCreation = new JLabel("Edit Task");
 		pnlMain.add(lblTaskCreation);
 		lblTaskCreation.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblTaskCreation.setHorizontalAlignment(SwingConstants.CENTER);
@@ -108,6 +116,13 @@ public class TaskCreationUI extends JFrame
 		txtLocation = new JTextField();
 		pnlDataEntry.add(txtLocation);
 		txtLocation.setColumns(10);
+		
+		JLabel lblDateDue = new JLabel("DateDue");
+		lblDateDue.setHorizontalAlignment(SwingConstants.CENTER);
+		pnlDataEntry.add(lblDateDue);
+		
+		JLabel lblDatePicker = new JLabel("DATE PICKER WILL GO HERE");
+		pnlDataEntry.add(lblDatePicker);
 		
 		JLabel lblCategory = new JLabel("Category *");
 		lblCategory.setHorizontalAlignment(SwingConstants.CENTER);
@@ -157,7 +172,7 @@ public class TaskCreationUI extends JFrame
 		
 		//http://tech.chitgoks.com/2009/10/05/java-use-keyvalue-pair-for-jcombobox-like-htmls-select-tag/
 		
-		JLabel lblRepeating = new JLabel("");
+		JLabel lblRepeating = new JLabel("Repeating?");
 		lblRepeating.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblRepeating);
 		
@@ -176,6 +191,13 @@ public class TaskCreationUI extends JFrame
 		
 		JLabel lblDays = new JLabel(" days (0 if not repeating)");
 		repeatingPanel.add(lblDays);
+		
+		JLabel lblCaretaker = new JLabel("Caretaker");
+		lblCaretaker.setHorizontalAlignment(SwingConstants.CENTER);
+		pnlDataEntry.add(lblCaretaker);
+		
+		JComboBox cmbCaretaker = new JComboBox();
+		pnlDataEntry.add(cmbCaretaker);
 		
 		JPanel pnlSubmission = new JPanel();
 		contentPane.add(pnlSubmission);
@@ -227,5 +249,4 @@ public class TaskCreationUI extends JFrame
 		});
 		pnlSubmission.add(btnCreate);
 	}
-
 }

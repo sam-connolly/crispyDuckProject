@@ -44,6 +44,7 @@ public class ManagerMenu extends JFrame {
 			public void run() {
 				try {
 					ManagerMenu window = new ManagerMenu();
+					window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -215,9 +216,18 @@ public class ManagerMenu extends JFrame {
 		gbc_panel.gridy = 4;
 		frame.getContentPane().add(panel, gbc_panel);
 		
-		JButton btnNewButton = new JButton("Add Task");
-		btnNewButton.setBounds(0, 0, 101, 23);
-		panel.add(btnNewButton);
+		JButton btnAddTask = new JButton("Add Task");
+		btnAddTask.setBounds(0, 0, 101, 23);
+		btnAddTask.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				TaskCreationUI addTask = new TaskCreationUI();
+				addTask.setVisible(true);
+				dispose();
+			}
+		});
+		panel.add(btnAddTask);
 		
 		JButton btnNewButton_1 = new JButton("Print Tasks");
 		btnNewButton_1.addActionListener(new ActionListener() {
