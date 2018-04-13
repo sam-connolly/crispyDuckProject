@@ -226,10 +226,10 @@ public class Database {
 			// query database for data in TaskList
 			Statement stmt = conn.createStatement();
 			String query = "SELECT TaskID, Caretaker, DateIssued, DateDue,"
-					+ " Completed, TimeTaken, IssueDesc, SignedOff,"
-					+ " CompletedOn, TaskName, TaskDesc, TaskCat, Priority, Repeating, TimeEstimate, Location"
-					+ " FROM TaskList"
-					+ " LEFT OUTER JOIN Task ON JobID = JobID";
+					+ " Completed, TimeTaken, IssueDesc, SignedOff, CompletedOn,"
+					+ " TaskName, TaskDesc, TaskCat, Priority, Repeating, TimeEstimate, Location"
+					+ " FROM Task"
+					+ " JOIN TaskList ON taskID = taskID";
 			ResultSet rs = stmt.executeQuery(query);
 			
 			// create a new ActiveTaskList object to store data from results set
@@ -257,22 +257,17 @@ public class Database {
 				String location = rs.getString("location");
 				
 				// create new ActiveTask to be added on every loop
-				Task taskToAdd;
-				if(caretaker != null) {
-				taskToAdd = new ActiveTask(taskID, caretaker, completed, completedOn, dateIssued, dateDue, timeTaken,
-						issueDesc, signedOff, taskName, taskDesc, taskCat, priority, repeating,
-						timeEstimate, location);
-				}
-				else {
-					taskToAdd = new Task(taskID, taskName, taskDesc, taskCat, priority, repeating,
-							timeEstimate, location);
-				}
+				Task taskToAdd;		
+					taskToAdd = new Task.TaskBuilder().taskID(taskID).taskName(taskName).taskDesc(taskDesc).taskCat(taskCat)
+							.priority(priority).repeating(repeating).timeEstimate(timeEstimate).location(location)
+							.caretaker(caretaker).completed(completed).completedOn(completedOn).dateIssued(dateIssued).dateDue(dateDue)
+							.timeEstimate(timeEstimate).timeTaken(timeTaken).issueDesc(issueDesc).signedOff(signedOff).build();
 				
 				// add new task to the list
-				allActiveTasks.addTask(taskToAdd);
-				
+				//System.out.println(taskName);
+				//System.out.println(taskToAdd.getTaskName());
+				allActiveTasks.addTask(taskToAdd);				
 			}
-			
 			return allActiveTasks;
 		}
 		catch (Exception e) 
