@@ -76,7 +76,7 @@ public class TaskCreationUI extends JFrame
 		contentPane.add(pnlMain);
 		pnlMain.setLayout(new BoxLayout(pnlMain, BoxLayout.Y_AXIS));
 		
-		JLabel lblTaskCreation = new JLabel("Task Creation");
+		JLabel lblTaskCreation = new JLabel("Create Task");
 		pnlMain.add(lblTaskCreation);
 		lblTaskCreation.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblTaskCreation.setHorizontalAlignment(SwingConstants.CENTER);
@@ -132,7 +132,7 @@ public class TaskCreationUI extends JFrame
 		cmbPriority.setSelectedIndex(2);
 		pnlDataEntry.add(cmbPriority);
 		
-		JLabel lblTimeEstimate = new JLabel("Time Estimate");
+		JLabel lblTimeEstimate = new JLabel("Time Estimate *");
 		lblTimeEstimate.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblTimeEstimate);
 		
@@ -144,8 +144,8 @@ public class TaskCreationUI extends JFrame
 				14, 15}));
 		timeEstimatePanel.add(cmbHours);
 		
-		JLabel lalHours = new JLabel("hours");
-		timeEstimatePanel.add(lalHours);
+		JLabel lblHours = new JLabel("hours");
+		timeEstimatePanel.add(lblHours);
 		
 		JComboBox<Integer> cmbMinutes = new JComboBox<Integer>();
 		cmbMinutes.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50,
@@ -185,8 +185,12 @@ public class TaskCreationUI extends JFrame
 		{
 			public void actionPerformed(ActionEvent e) 
 			{
+			
+				int hours = (Integer) cmbHours.getSelectedItem();
+				int minutes = (Integer) cmbMinutes.getSelectedItem();
+				
 				if (txtTaskName.getText().equals("") || txtLocation.getText().equals("") ||
-					cmbCategory.getSelectedItem().equals("Select a category"))
+					cmbCategory.getSelectedItem().equals("Select a category") || (hours == 0 && minutes == 0))
 				{
 					JOptionPane.showMessageDialog(new JFrame(),
 						    "Please fill in all fields marked with an *",
@@ -195,9 +199,6 @@ public class TaskCreationUI extends JFrame
 				}
 				else
 				{
-					int hours = (Integer) cmbHours.getSelectedItem();
-					int minutes = (Integer) cmbMinutes.getSelectedItem();
-					
 					int timeEstimateInMinutes = (hours * 60) + minutes;
 					String insertSQL = "INSERT INTO Task (TaskName, TaskDesc,"
 							+ " TaskCat, Priority, Repeating, TimeEstimate, Location)"
