@@ -6,9 +6,15 @@ public class Main {
 
 	TaskList allActiveTasks = new TaskList();
 	
-	allActiveTasks = database.getTasks();
+	UserList allUsers = new UserList();
 	
-	allActiveTasks.printDetails();
+	allActiveTasks = database.getTasks();
+	allUsers = database.getUsers();
+	
+	// allActiveTasks.printDetails();
+	allUsers.printDetails();
+	
+	
 	}
 
 }

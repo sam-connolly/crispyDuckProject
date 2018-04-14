@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 
 public class User {
 	private String username;
@@ -5,6 +6,7 @@ public class User {
 	private boolean admin;
 	private String fName;
 	private String sName;
+	ArrayList<TaskCategory> preferences;
 	
 	public User(String username, String passwordHash, boolean admin, String fName, String sName) {
 		this.username = username;
@@ -14,6 +16,18 @@ public class User {
 		this.sName = sName;
 	}
 	
+	public void setPreferences(ArrayList<TaskCategory> preferences) {
+		this.preferences = preferences;
+	}
+	
+	public void printPreferenceInfo() {
+		for (TaskCategory category : preferences) {
+			System.out.println(category.getTaskCategory());
+			System.out.println("Preference: " + category.getPreferenceLevel());
+			System.out.println("Efficiency: " + category.getEfficiency());
+			System.out.println("Number completed: " + category.getNumberCompleted());
+		}
+	}
 	public String getUsername() {
 		return username;
 	}

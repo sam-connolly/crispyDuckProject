@@ -138,38 +138,6 @@ public class Database {
 		}
 	}
 	
-	public void getusers() {
-		try {
-			Statement stmt = conn.createStatement();
-			String query = "SELECT UserID, EmployeeName FROM User";
-		    ResultSet rs = stmt.executeQuery (query);
-		    
-		    // position to first record
-		    boolean moreRecords = rs.next ();
-		    // If there are no records, display a message
-		    if (!moreRecords) {
-		      System.out.println ("ResultSet contained no records");
-		      return;
-		    }
-		    // display column headings
-		    ResultSetMetaData rsmd = rs.getMetaData ();
-		    for (int i = 1;  i <= rsmd.getColumnCount ();  i ++)
-		      System.out.print (rsmd.getColumnName (i) + "\t");
-		    System.out.println ();
-		    // display rows of data ....
-		    do 
-		    {
-		      displayRow (rs, rsmd); //helper method below
-		    }
-		    while (rs.next ());
-		}
-		catch (Exception e) {
-			// TODO: handle exception
-		}
-		    finally {
-				System.out.println("done");
-			}
-		  }
 
 	public ArrayList<String> getCategories()
 	{
@@ -196,7 +164,9 @@ public class Database {
 	{
 		try {
 			Statement stmt = conn.createStatement();
-			String query = "SELECT Username, fName, sName FROM User WHERE admin = 'false'";
+			String query = "SELECT Username, fName, sName, "
+					+ "FROM User "
+					+ "WHERE admin = 'false'";
 			ResultSet rs = stmt.executeQuery(query);
 			
 			ArrayList<String> caretakers = new ArrayList<String>();
@@ -215,6 +185,62 @@ public class Database {
 			return null;
 		}
 	}
+	public UserList getUsers() {
+		try {
+			Statement stmt = conn.createStatement();
+			String query = "SELECT Username,  PasswordHash, Admin, fName, sName "
+						 + "FROM User";
+		    ResultSet rs = stmt.executeQuery (query);
+		    
+		    UserList allUsers = new UserList();
+		    
+		    while (rs.next ()) {
+		    	String username = rs.getString("Username");
+		    	String passwordHash = rs.getString("PasswordHash");
+		    	boolean admin = rs.getBoolean("Admin");
+		    	String fName = rs.getString("fName");
+		    	String sName = rs.getString("sName");
+		    	
+			    ArrayList<TaskCategory> preferences = getPreferences(username);
+			    User userToAdd = new User(username, passwordHash, admin, fName, sName);
+			    userToAdd.setPreferences(preferences);
+			    allUsers.addUser(userToAdd);	
+		    }
+		    return allUsers;
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			return null;
+		}
+	}
+	
+	public ArrayList<TaskCategory> getPreferences(String user) {
+		try {
+		    ArrayList<TaskCategory> preferences = new ArrayList<TaskCategory>();
+	    	
+			Statement stmt = conn.createStatement();
+			String query = "SELECT CareCat, CatName, Efficiency, PreferenceLevel, NumberCompleted "
+						 + "FROM CaretakerCategory"
+						 + " WHERE Caretaker = '"+ user +"'";
+		    ResultSet rs = stmt.executeQuery (query);
+		    while (rs.next()) {
+		    	int careCat = rs.getInt("CareCat");
+		    	String catName = rs.getString("CatName");
+		    	int efficiency = rs.getInt("Efficiency");
+		    	int preferenceLevel = rs.getInt("PreferenceLevel");
+		    	int numberCompleted = rs.getInt("NumberCompleted");
+		    	
+		    	TaskCategory catToAdd = new TaskCategory(catName, efficiency, preferenceLevel, numberCompleted);
+		    	preferences.add(catToAdd);
+		    }
+    		return preferences;	
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			return null;
+		}
+	}
+
 	
 	/*
 	 *  function to retrieve data from TaskList and add it to a collection
@@ -243,7 +269,7 @@ public class Database {
 				String caretaker= rs.getString("Caretaker");	
 				boolean completed = rs.getBoolean("Completed");
 				Date completedOn = rs.getDate("CompletedOn");
-				Date dateIssued= rs.getDate("DateIssued");
+				String dateIssued= rs.getString("DateIssued");
 				Date dateDue = rs.getDate("DateDue");
 				int timeTaken = rs.getInt("TimeTaken");
 				String issueDesc = rs.getString("IssueDesc");

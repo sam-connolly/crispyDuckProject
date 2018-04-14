@@ -24,8 +24,10 @@ public class TaskList {
 	 */
 	public void printDetails() {
 		for (Task currentTask : taskList) {
+			currentTask.activateTask();
 			System.out.println(currentTask.getTaskName());
 			System.out.println(currentTask.getCaretaker());
+			System.out.println(currentTask.getDateIssued());
 		}
 	}
 	
