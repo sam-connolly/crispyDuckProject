@@ -25,9 +25,21 @@ public class User {
 			System.out.println(category.getTaskCategory());
 			System.out.println("Preference: " + category.getPreferenceLevel());
 			System.out.println("Efficiency: " + category.getEfficiency());
-			System.out.println("Number completed: " + category.getNumberCompleted());
+			System.out.println("Number completed: " + 	category.getNumberCompleted());
 		}
 	}
+	
+	public int getPreferenceLevel(String taskCat) {
+		int preferenceLevel = 0;
+		for (TaskCategory checkTask : preferences) {
+			if (checkTask.getTaskCategory() == taskCat) {
+				preferenceLevel = checkTask.getPreferenceLevel();
+			}
+		}
+		
+		return preferenceLevel;
+	}
+	
 	public String getUsername() {
 		return username;
 	}

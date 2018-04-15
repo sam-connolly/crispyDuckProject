@@ -185,61 +185,91 @@ public class Database {
 			return null;
 		}
 	}
+	/*
+	 *Function which returns a list of User objects (all users in the database)
+	 * 
+	 * @return list of all users
+	 */
 	public UserList getUsers() {
 		try {
 			Statement stmt = conn.createStatement();
+			// query for all users
 			String query = "SELECT Username,  PasswordHash, Admin, fName, sName "
 						 + "FROM User";
 		    ResultSet rs = stmt.executeQuery (query);
 		    
+		    // create UserList object to store User objects
 		    UserList allUsers = new UserList();
 		    
+		    // loop for all records retrieved
 		    while (rs.next ()) {
+		    	// assign user information to variables
 		    	String username = rs.getString("Username");
 		    	String passwordHash = rs.getString("PasswordHash");
 		    	boolean admin = rs.getBoolean("Admin");
 		    	String fName = rs.getString("fName");
 		    	String sName = rs.getString("sName");
 		    	
+		    	// create ArrayList of TaskCategory objects (contains preference/efficiency info)
 			    ArrayList<TaskCategory> preferences = getPreferences(username);
+			    
+			    // create User object with information on the current user being retrieved
 			    User userToAdd = new User(username, passwordHash, admin, fName, sName);
+			    // add add the list preferences to the new User object
 			    userToAdd.setPreferences(preferences);
+			    
+			    //add User object to list of all users
 			    allUsers.addUser(userToAdd);	
-		    }
+		    } // while
+		    //return list of all users
 		    return allUsers;
-		}
+		} // try
 		catch (Exception e) {
 			// TODO: handle exception
 			return null;
-		}
-	}
+		} // catch
+	} // function
 	
+	/*
+	 * Queries the database for all of the preference/efficiency information in the
+	 * CaretakerCategory table for a specific User, creates a TaskCategory object for each 
+	 * category with that information and adds them to a list to be associated with that user (inside their User object)
+	 * 
+	 * @param user username to retrieve preference information for
+	 * @return list of preferences for all categories for that user
+	 */
 	public ArrayList<TaskCategory> getPreferences(String user) {
 		try {
 		    ArrayList<TaskCategory> preferences = new ArrayList<TaskCategory>();
 	    	
+		    // query database for all preference information for "user"
 			Statement stmt = conn.createStatement();
 			String query = "SELECT CareCat, CatName, Efficiency, PreferenceLevel, NumberCompleted "
 						 + "FROM CaretakerCategory"
 						 + " WHERE Caretaker = '"+ user +"'";
 		    ResultSet rs = stmt.executeQuery (query);
+		    // loop for all categories
 		    while (rs.next()) {
+		    	// assign data to variables
 		    	int careCat = rs.getInt("CareCat");
 		    	String catName = rs.getString("CatName");
 		    	int efficiency = rs.getInt("Efficiency");
 		    	int preferenceLevel = rs.getInt("PreferenceLevel");
 		    	int numberCompleted = rs.getInt("NumberCompleted");
 		    	
+		    	// create a TaskCategory object with the current preferences and efficiency for the current category
 		    	TaskCategory catToAdd = new TaskCategory(catName, efficiency, preferenceLevel, numberCompleted);
+		    	// add the object to a list
 		    	preferences.add(catToAdd);
-		    }
+		    } // while
+		    // return the list of TaskCategory objects
     		return preferences;	
-		}
+		} // try
 		catch (Exception e) {
 			// TODO: handle exception
 			return null;
-		}
-	}
+		} // catch
+	} // function
 
 	
 	/*
@@ -290,18 +320,16 @@ public class Database {
 							.timeEstimate(timeEstimate).timeTaken(timeTaken).issueDesc(issueDesc).signedOff(signedOff).build();
 				
 				// add new task to the list
-				//System.out.println(taskName);
-				//System.out.println(taskToAdd.getTaskName());
 				allActiveTasks.addTask(taskToAdd);				
-			}
+			} // while
 			return allActiveTasks;
-		}
+		} // try
 		catch (Exception e) 
 		{
 			// TODO: handle exception
 			return null;
-		}
-	}
+		} // catch
+	} // function
 	
 	private void displayRow (ResultSet rs, ResultSetMetaData rsmd) 	throws SQLException 
 	{
