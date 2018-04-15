@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -85,10 +86,23 @@ public class Task {
 	  return dateIssued;
   }
   
-  public void activateTask() {
+  public void allocateTask() {
 	  DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:SS");
 	  Date currentDate = new Date();
 	  dateIssued = dateFormat.format(currentDate);
+	  
+	  
+	  Database database = new Database();
+	  
+	  TaskList allTasks = new TaskList();
+	  UserList allUsers = new UserList();
+	  ArrayList<User> elligibleUsers = new ArrayList<User>();
+	  allTasks = database.getTasks();
+	  allUsers = database.getUsers();
+	  
+	  elligibleUsers = allUsers.findToAssign(taskCat, allTasks);
+	  
+	  
   }
   
   public static class TaskBuilder {

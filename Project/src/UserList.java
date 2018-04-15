@@ -28,6 +28,37 @@ public class UserList {
 		}
 	}
 	
+	public ArrayList<User> findToAssign(String taskCat, TaskList allTasks) {
+		int highestRating = 0;
+		ArrayList<User> elligibleUsers = new ArrayList<User>();
+		
+		for (User userChecking : allUsers) {
+			int assignmentRating = calcAssignmentRating(userChecking, taskCat, allTasks);
+			
+			if(assignmentRating > highestRating) {
+				highestRating = assignmentRating;
+			}
+		}
+		
+		for (User userChecking : allUsers) {
+			int assignmentRating = calcAssignmentRating(userChecking, taskCat, allTasks);
+			
+			if(assignmentRating == highestRating) {
+				elligibleUsers.add(userChecking);
+			}
+		}
+		return elligibleUsers;
+	}
+
+	public int calcAssignmentRating(User user, String taskCat, TaskList allTasks) {
+		int assignmentRating = 0;
+		int numAlreadyAssigned = allTasks.numTasksInCat(user.getUsername(), taskCat);
+		int userPreferenceLevel = user.getPreferenceLevel(taskCat);
+		
+		assignmentRating = userPreferenceLevel - numAlreadyAssigned;
+		
+		return assignmentRating;
+	}
 	
 	public User getUser(int index) {
 		return allUsers.get(index);
