@@ -1,8 +1,12 @@
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
 	public static void main(String[] args) {
-	Database database = new Database();
+		  int randomNum = ThreadLocalRandom.current().nextInt(0, 2);
+		  
+		  System.out.println(randomNum);
+	/*Database database = new Database();
 
 	TaskList allActiveTasks = new TaskList();
 	
@@ -12,7 +16,7 @@ public class Main {
 	allUsers = database.getUsers();
 	
 	// allActiveTasks.printDetails();
-	allUsers.printDetails();
+	allUsers.printDetails();*/
 	
 	
 	}

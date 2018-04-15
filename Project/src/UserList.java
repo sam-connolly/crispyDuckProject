@@ -29,11 +29,11 @@ public class UserList {
 	}
 	
 	public ArrayList<User> findToAssign(String taskCat, TaskList allTasks) {
-		int highestRating = 0;
-		ArrayList<User> elligibleUsers = new ArrayList<User>();
+		float highestRating = 0;
+		ArrayList<User> eligibleUsers = new ArrayList<User>();
 		
 		for (User userChecking : allUsers) {
-			int assignmentRating = calcAssignmentRating(userChecking, taskCat, allTasks);
+			float assignmentRating = calcAssignmentRating(userChecking, taskCat, allTasks);
 			
 			if(assignmentRating > highestRating) {
 				highestRating = assignmentRating;
@@ -41,21 +41,24 @@ public class UserList {
 		}
 		
 		for (User userChecking : allUsers) {
-			int assignmentRating = calcAssignmentRating(userChecking, taskCat, allTasks);
+			float assignmentRating = calcAssignmentRating(userChecking, taskCat, allTasks);
 			
 			if(assignmentRating == highestRating) {
-				elligibleUsers.add(userChecking);
+				eligibleUsers.add(userChecking);
 			}
 		}
-		return elligibleUsers;
+		return eligibleUsers;
 	}
 
-	public int calcAssignmentRating(User user, String taskCat, TaskList allTasks) {
-		int assignmentRating = 0;
+	/*
+	 * helper for findToAssign()
+	 */
+	public float calcAssignmentRating(User user, String taskCat, TaskList allTasks) {
+		float assignmentRating = 0;
 		int numAlreadyAssigned = allTasks.numTasksInCat(user.getUsername(), taskCat);
 		int userPreferenceLevel = user.getPreferenceLevel(taskCat);
 		
-		assignmentRating = userPreferenceLevel - numAlreadyAssigned;
+		assignmentRating = (float) userPreferenceLevel / (float) numAlreadyAssigned;
 		
 		return assignmentRating;
 	}

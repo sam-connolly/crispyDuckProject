@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
  
@@ -86,6 +88,11 @@ public class Task {
 	  return dateIssued;
   }
   
+  /*
+   * allocates the task to a caretaker. Sets the dateAllocated to today, 
+   * calls the finToAssign function to get a list of eligible caretakers and 
+   * randomly selects one of them to assign the task to.
+   */
   public void allocateTask() {
 	  DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:SS");
 	  Date currentDate = new Date();
@@ -96,13 +103,16 @@ public class Task {
 	  
 	  TaskList allTasks = new TaskList();
 	  UserList allUsers = new UserList();
-	  ArrayList<User> elligibleUsers = new ArrayList<User>();
+	  ArrayList<User> eligibleUsers = new ArrayList<User>();
 	  allTasks = database.getTasks();
 	  allUsers = database.getUsers();
 	  
-	  elligibleUsers = allUsers.findToAssign(taskCat, allTasks);
+	  eligibleUsers = allUsers.findToAssign(taskCat, allTasks);
 	  
+	  int numElligible = eligibleUsers.size();
+	  int index = ThreadLocalRandom.current().nextInt(0, numElligible);
 	  
+	  caretaker = eligibleUsers.get(index).getUsername();
   }
   
   public static class TaskBuilder {
