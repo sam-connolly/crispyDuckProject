@@ -138,6 +138,30 @@ public class Database {
 		}
 	}
 	
+	public boolean updateUser(String username) throws SQLException{
+		PreparedStatement sqlUpdate = null;
+		try {
+			sqlUpdate = conn.prepareStatement("UPDATE User SET (PasswordHash, Admin, fName, sName) VALUES (?,?,?,?) WHERE Username = ?");
+		}
+		catch(SQLException sqlex) {
+			System.err.println("SQL Exception");
+			sqlex.printStackTrace();
+		}
+		sqlUpdate.setString(1, password);
+		sqlUpdate.setBoolean(2, admin);
+		sqlUpdate.setString(3, forename);
+		sqlUpdate.setString(4, surname);
+		sqlUpdate.setString(5, username);
+		int result = sqlUpdate.executeUpdate();
+		System.err.println("Result code from Update: " + result);
+		if (result == 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	
 
 	public ArrayList<String> getCategories()
 	{
