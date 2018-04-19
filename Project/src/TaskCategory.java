@@ -1,4 +1,8 @@
-
+/**
+ * class stores information from CaretakerCategory table
+ * @author Jesse
+ *
+ */
 public class TaskCategory {
 	private String taskCategory;
 	private int efficiency;
@@ -26,6 +30,10 @@ public class TaskCategory {
 	
 	public int getNumberCompleted() {
 		return numberCompleted;
+	}
+	
+	public void setNumberCompleted(int newVal) {
+		numberCompleted = newVal;
 	}
 	
 }

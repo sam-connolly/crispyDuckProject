@@ -1,10 +1,16 @@
 import java.util.ArrayList;
+import java.util.concurrent.*;
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
  
+/**
+ * stores information on a task
+ * @author Jesse
+ *
+ */
 public class Task {
   private int taskID; 
   private String taskName; 
@@ -23,7 +29,9 @@ public class Task {
   private Date dateDue;
   private String issueDesc; 
   private boolean signedOff;
+  // private String lastCompleted;
   
+  // constructor takes a builder as parameter
   private Task(TaskBuilder builder) {
     taskID = builder.taskID;
     taskName = builder.taskName;
@@ -41,8 +49,10 @@ public class Task {
     dateDue = builder.dateDue;
     issueDesc = builder.issueDesc;
     signedOff = builder.signedOff;
+    // lastCompleted = builder.lastCompleted;
   }
 
+  //getters
   public int getTaskID() {
     return taskID;
   }
@@ -74,14 +84,29 @@ public class Task {
   public int getTimeEstimate() {
     return timeEstimate;
   }
+  /*
+   	public String lastCompleted() { 
+   	  return lastCompleted
+   	 }
+   */
   
+  /*
+   *  getter for caretaker returns either the username of the caretaker if
+   *  it's been allocated or "Not Assigned" if it hasn't. getCaretaker() cannot return null
+   *  because it is used in a function that does a comparison using equals()
+   */
   public String getCaretaker() {
-    if (caretaker != null) {
-      return caretaker;
-    }
-    
-    
-    return "caretaker unassigned";
+	  // if there is a caretaker allocated to this task
+	  if(caretaker != null) {
+		  // return the username
+		  return caretaker;
+	  }
+	  
+	  // if not
+	  else {
+		  // return "not assigned"
+		  return "Not Assigned";
+	  }
   }
   
   public String getDateIssued() {
@@ -93,26 +118,43 @@ public class Task {
    * calls the finToAssign function to get a list of eligible caretakers and 
    * randomly selects one of them to assign the task to.
    */
-  public void allocateTask() {
-	  DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:SS");
+  public void allocateTask(UserList allUsers, TaskList allTasks) {
+	  // new date format
+	  DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
 	  Date currentDate = new Date();
+	  // set date to today
 	  dateIssued = dateFormat.format(currentDate);
-	  
-	  
-	  Database database = new Database();
-	  
-	  TaskList allTasks = new TaskList();
-	  UserList allUsers = new UserList();
+
+	  // create list for eligible users
 	  ArrayList<User> eligibleUsers = new ArrayList<User>();
-	  allTasks = database.getTasks();
-	  allUsers = database.getUsers();
 	  
+	  // run findToAssign, returns a lit of eligible users
 	  eligibleUsers = allUsers.findToAssign(taskCat, allTasks);
 	  
-	  int numElligible = eligibleUsers.size();
-	  int index = ThreadLocalRandom.current().nextInt(0, numElligible);
+	  // get a random index
+	  int numEligible = eligibleUsers.size();
+	  int index = ThreadLocalRandom.current().nextInt(0, numEligible);
 	  
+	  // assign to random caretaker
 	  caretaker = eligibleUsers.get(index).getUsername();
+	  
+	  
+	  System.out.println("Task No. " + taskID + ". " + taskName + ". Category: " + taskCat + ". Allocated to: " + caretaker);
+  } // function
+  
+  /*
+   * function to allocate to a specific caretaker
+   * 
+   * @param username caretaker to allocate to
+   */
+  public void assignToCaretaker(String username) {
+	  DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+	  Date currentDate = new Date();
+	  // set date to today
+	  dateIssued = dateFormat.format(currentDate);
+	  
+	  // set the caretaker 
+	  caretaker = username;
   }
   
   public static class TaskBuilder {
@@ -135,6 +177,7 @@ public class Task {
     private Date dateDue;
     private String issueDesc; 
     private boolean signedOff;
+    // private String lastCompleted
     
     /*public TaskBuilder(int taskID) {
       this.taskID = taskID;
@@ -221,6 +264,12 @@ public class Task {
       return this;
     }
     
+    /*
+    public TaskBuilder lastCompleted(String va) {
+    	lastCompleted = val;
+    	return this;
+    }
+    */
     public Task build() { 
       if (taskID == 0) {
         throw new IllegalStateException("");

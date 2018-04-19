@@ -1,5 +1,10 @@
 import java.util.ArrayList;
 
+/**
+ * store information on Users
+ * @author Jesse
+ *
+ */
 public class User {
 	private String username;
 	private String passwordHash;
@@ -16,29 +21,62 @@ public class User {
 		this.sName = sName;
 	}
 	
+	/*
+	 * accept a list of TaskCategory objects containing preferences associated with the user
+	 * 
+	 * @param preferences the list of the users preferences
+	 */
 	public void setPreferences(ArrayList<TaskCategory> preferences) {
+		// assign the user their preferences
 		this.preferences = preferences;
 	}
 	
+	/*
+	 * increment the number of task in a category this user has completed
+	 * 
+	 * @param the category of the count to increment
+	 */
+	public void incrementNumCompleted(String taskCat) {
+		// loop through all categories
+		for (TaskCategory checkTask : preferences) {
+			// if the current category is the one we want to increment
+			if (checkTask.getTaskCategory().equals(taskCat)) {
+				// get the number completed and increment it
+				int newVal = checkTask.getNumberCompleted() + 1;
+				// set the number completed in that object to the new value
+				checkTask.setNumberCompleted(newVal);
+			} // if
+		} // for
+	} // function
 	public void printPreferenceInfo() {
 		for (TaskCategory category : preferences) {
 			System.out.println(category.getTaskCategory());
 			System.out.println("Preference: " + category.getPreferenceLevel());
 			System.out.println("Efficiency: " + category.getEfficiency());
 			System.out.println("Number completed: " + 	category.getNumberCompleted());
-		}
-	}
+		} // for
+	} // fucntion
 	
+	/*
+	 * get the users preference level for a category of task
+	 * 
+	 * @param taskCat the category we want to check 
+	 * 
+	 * @return the users preference level for specified category of task
+	 */
 	public int getPreferenceLevel(String taskCat) {
 		int preferenceLevel = 0;
+		// loop through all categories
 		for (TaskCategory checkTask : preferences) {
-			if (checkTask.getTaskCategory() == taskCat) {
+			// if the category is the one we want to check
+			if (checkTask.getTaskCategory().equals(taskCat)) {
+				// get the users preference level
 				preferenceLevel = checkTask.getPreferenceLevel();
-			}
-		}
+			} // if
+		} // for 
 		
 		return preferenceLevel;
-	}
+	} // function
 	
 	public String getUsername() {
 		return username;
