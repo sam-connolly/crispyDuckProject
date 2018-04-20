@@ -29,6 +29,7 @@ public class TaskCreationUI extends JFrame
 				try 
 				{
 					TaskCreationUI frame = new TaskCreationUI();
+					// When the window is closed, it should actually close, not hide
 					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					frame.setVisible(true);
 				} 
@@ -39,6 +40,29 @@ public class TaskCreationUI extends JFrame
 			}
 		});
 
+	}
+	
+	/**
+	 * Method for formatting the day part of the dates, to ensure all days have 2 digits
+	 * @param day The day of the month
+	 * @return the formatted, 2 digit day of the month
+	 */
+	public String formatDateDay (int day)
+	{
+		String formattedDay;
+		
+		//If the day would normally have only 1 digit, add a zero to the beginning
+		if (day < 10)
+		{
+			formattedDay = "0" + day;
+		}
+		else
+		{
+			formattedDay = "" + day;
+		}
+		
+		//Return the formatted day
+		return formattedDay;
 	}
 
 	 // Create the frame.
@@ -63,6 +87,7 @@ public class TaskCreationUI extends JFrame
 		JButton btnBack = new JButton("Back");
 		btnBack.addActionListener(new ActionListener() 
 		{
+			//When this window is closed, dispose of it and open the ManagerMenu UI
 			public void actionPerformed(ActionEvent e) 
 			{
 				ManagerMenu menu = new ManagerMenu();
@@ -111,29 +136,49 @@ public class TaskCreationUI extends JFrame
 		pnlDataEntry.add(txtLocation);
 		txtLocation.setColumns(10);
 		
-		JLabel lblDateDue = new JLabel("DateDue");
+		JLabel lblDateDue = new JLabel("(First) Date Due");
 		lblDateDue.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblDateDue);
 		
 		JPanel pnlDateInput = new JPanel();
 		pnlDataEntry.add(pnlDateInput);
 		
-		JComboBox<Integer> cmbDateDay = new JComboBox<Integer>();
-		cmbDateDay.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"}));
+		JComboBox<String> cmbDateDay = new JComboBox<String>();
+		//Loop for adding all days of the month to the ComboBox. It's 31 because the default month is January
+		for (int i = 1; i <= 31; i++)
+		{
+			//Before adding the number to the ComboBox, format it first
+			cmbDateDay.addItem(formatDateDay(i));
+		}
 		pnlDateInput.add(cmbDateDay);
 		
 		JLabel lblDateSeperator1 = new JLabel("/");
 		pnlDateInput.add(lblDateSeperator1);
 		
-		JComboBox<String> cmbDateMonth = new JComboBox<String>();
-		cmbDateMonth.setModel(new DefaultComboBoxModel<String>(new String[] {"January", "February", "March", "April", "May",
-				"June", "July", "August", "September", "October", "November", "December"}));
+		/*KeyValue is a class that stores two pieces of data, a key and value. This is used in ComboBoxes to store
+		 * information that does not need to be shown in the ComboBox. In this case, the user sees only the name of the
+		 * month, when there is also it's numerical value saved as well
+		 */
+		JComboBox<KeyValue> cmbDateMonth = new JComboBox<KeyValue>();
+		cmbDateMonth.addItem(new KeyValue("January", "01"));
+		cmbDateMonth.addItem(new KeyValue("February", "02"));
+		cmbDateMonth.addItem(new KeyValue("March", "03"));
+		cmbDateMonth.addItem(new KeyValue("April", "04"));
+		cmbDateMonth.addItem(new KeyValue("May", "05"));
+		cmbDateMonth.addItem(new KeyValue("June", "06"));
+		cmbDateMonth.addItem(new KeyValue("July", "07"));
+		cmbDateMonth.addItem(new KeyValue("August", "08"));
+		cmbDateMonth.addItem(new KeyValue("September", "09"));
+		cmbDateMonth.addItem(new KeyValue("October", "10"));
+		cmbDateMonth.addItem(new KeyValue("November", "11"));
+		cmbDateMonth.addItem(new KeyValue("December", "12"));
 		pnlDateInput.add(cmbDateMonth);
 				
 		JLabel lblDateSeperator2 = new JLabel("/");
 		pnlDateInput.add(lblDateSeperator2);
 		
 		JComboBox<Integer> cmbDateYear = new JComboBox<Integer>();
+		//Populate the ComboBox with years up to 3000
 		for (int i = 2018; i <= 3000; i++)
 		{
 			cmbDateYear.addItem(i);
@@ -142,44 +187,60 @@ public class TaskCreationUI extends JFrame
 		
 		cmbDateMonth.addItemListener(new ItemListener()
 		{
+			//When the month is changed, repopulate the day ComboBox to have the correct number of days for that month
 			public void itemStateChanged(ItemEvent evt)
 			{
-				String month = (String) cmbDateMonth.getSelectedItem();
-				int year = (Integer) cmbDateYear.getSelectedItem();
+				KeyValue month =  (KeyValue) cmbDateMonth.getSelectedItem();	//The object from the ComboBox
+				String monthKey = month.getKey();								//The key (name) of the month
+				int year = (Integer) cmbDateYear.getSelectedItem();				//The selected year
 				
+				//If a new month has been selected, repopulate the days ComboBox
 				if (evt.getStateChange() == ItemEvent.SELECTED)
 				{
+					//Empty the day ComboBox
 					cmbDateDay.removeAllItems();
 					
-					if (month == "September" || month == "April" || month =="June" || month =="November")
+					//If the selected month only has 30 days, add 30 days to the days ComboBox
+					if (monthKey == "September" || monthKey == "April" || monthKey =="June" ||	monthKey =="November")
 					{
 						for (int i = 1; i <= 30; i++)
 						{
-							cmbDateDay.addItem(i);
+							//Add the formatted version of the date
+							cmbDateDay.addItem(formatDateDay(i));
 						}
 					}
-					else if (cmbDateMonth.getSelectedItem() == "February")
+					//Perform further checks if the selected month is February
+					else if (monthKey == "February")
 					{
+						//This algorithm return true if the entered year is a leap year
 						if ((year % 400 == 0) || ((year % 4 == 0) && (year % 100 != 0)))
 						{
+							//If the year is a leap year, add 29 days to the ComboBox
 							for (int i = 1; i <= 29; i++)
 							{
-								cmbDateDay.addItem(i);
+								//Add the formatted version of the date
+								cmbDateDay.addItem(formatDateDay(i));
 							}
 						}
+						//If it isn't a leap year, add only 28 days
 						else
 						{
+							//Add 28 days to the ComboBox
 							for (int i = 1; i <= 28; i++)
 							{
-								cmbDateDay.addItem(i);
+								//Add the formatted version of the date
+								cmbDateDay.addItem(formatDateDay(i));
 							}
 						}
 					}
+					//If none of the above conditions are true, add 31 days to the ComboBox
 					else
 					{
-						for (int i = 0; i <=31; i++)
+						//Add 31 days to the ComboBox
+						for (int i = 1; i <=31; i++)
 						{
-							cmbDateDay.addItem(i);
+							//Add the formatted version of the date
+							cmbDateDay.addItem(formatDateDay(i));
 						}
 					}
 				}
@@ -188,19 +249,26 @@ public class TaskCreationUI extends JFrame
 		
 		cmbDateYear.addItemListener(new ItemListener()
 		{
+			//If the year ComboBox is changed, check to see if the selected month is February, and if it's a leap year
 			public void itemStateChanged(ItemEvent evt)
 			{
-				String month = (String) cmbDateMonth.getSelectedItem();
-				int year = (Integer) cmbDateYear.getSelectedItem();
+				KeyValue month =  (KeyValue) cmbDateMonth.getSelectedItem();	//The object from the ComboBox
+				String monthKey = month.getKey();								//The key (name) of the month
+				int year = (Integer) cmbDateYear.getSelectedItem();				//The selected year
 				
+				//If a new month has been selected, repopulate the days ComboBox
 				if (evt.getStateChange() == ItemEvent.SELECTED)
-				{				
-					if (month == "February" && ((year % 400 == 0) || ((year % 4 == 0) && (year % 100 != 0))))
+				{			
+					//If the new year is a leap year, and the selected month is February, put 29 days in the ComboBox
+					if (monthKey == "February" && ((year % 400 == 0) || ((year % 4 == 0) && (year % 100 != 0))))
 					{
+						//Clear the ComboBox
 						cmbDateDay.removeAllItems();
+						//Add 29 days to the ComboBox
 						for (int i = 1; i <= 29; i++)
 						{
-							cmbDateDay.addItem(i);
+							//Add teh formatted version of the date
+							cmbDateDay.addItem(formatDateDay(i));
 						}
 					}
 				}
@@ -211,12 +279,16 @@ public class TaskCreationUI extends JFrame
 		lblCategory.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblCategory);
 		
+		//ArrayList to store all the categories returned from the database
 		ArrayList<String> categories = new ArrayList<String>();
+		//Call the getCategories method from the database and populate the ArrayList with it
 		categories = database.getCategories();
 		JComboBox<String> cmbCategory = new JComboBox<String>();
 		cmbCategory.addItem("Select a category");
+		//Loop through all returned categories
 		for (int i = 0; i < categories.size(); i++)
 		{
+			//Add the category to the database
 			cmbCategory.addItem(categories.get(i));
 		}
 		pnlDataEntry.add(cmbCategory);
@@ -239,7 +311,7 @@ public class TaskCreationUI extends JFrame
 		
 		JComboBox<Integer> cmbHours = new JComboBox<Integer>();
 		cmbHours.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
-				14, 15}));
+		14, 15}));
 		timeEstimatePanel.add(cmbHours);
 		
 		JLabel lblHours = new JLabel("hours");
@@ -247,14 +319,12 @@ public class TaskCreationUI extends JFrame
 		
 		JComboBox<Integer> cmbMinutes = new JComboBox<Integer>();
 		cmbMinutes.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50,
-				55}));
+		55}));
 		timeEstimatePanel.add(cmbMinutes);
 		
 		JLabel lblMinutes = new JLabel("minutes");
 		timeEstimatePanel.add(lblMinutes);
-		
-		//http://tech.chitgoks.com/2009/10/05/java-use-keyvalue-pair-for-jcombobox-like-htmls-select-tag/
-		
+				
 		JLabel lblRepeating = new JLabel("");
 		lblRepeating.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblRepeating);
@@ -267,6 +337,7 @@ public class TaskCreationUI extends JFrame
 		
 		JComboBox<Integer> cmbRepeatingDays = new JComboBox<Integer>();
 		repeatingPanel.add(cmbRepeatingDays);
+		//Add 365 days to the ComboBox
 		for (int i = 0; i <= 365; i++)
 		{
 			cmbRepeatingDays.addItem(i);
@@ -281,44 +352,40 @@ public class TaskCreationUI extends JFrame
 		JButton btnCreate = new JButton("Create");
 		btnCreate.addActionListener(new ActionListener() 
 		{
+			//When the create button is pressed, add the entered data to the database if all required fields are filled
 			public void actionPerformed(ActionEvent e) 
 			{
-				int hours = (Integer) cmbHours.getSelectedItem();
-				int minutes = (Integer) cmbMinutes.getSelectedItem();
+				int hours = (Integer) cmbHours.getSelectedItem();		//The inputted hours
+				int minutes = (Integer) cmbMinutes.getSelectedItem();	//The inputted minutes
 				
+				//If any of the required fields are not filled, alert the user and do not continue
 				if (txtTaskName.getText().equals("") || txtLocation.getText().equals("") ||
 					cmbCategory.getSelectedItem().equals("Select a category") || (hours == 0 && minutes == 0))
 				{
+					//Dialog to tell the user to enter all required fields
 					JOptionPane.showMessageDialog(new JFrame(),
 						    "Please fill in all fields marked with an *",
 						    "Enter all info",
 						    JOptionPane.WARNING_MESSAGE);
 				}
+				//If all required fields are entered, then continue
 				else
 				{
-					String month = (String) cmbDateMonth.getSelectedItem();
-					String monthN;
-					if (month == "October")
-					{
-						monthN = "10";
-					}
-					else if (month == "November")
-					{
-						monthN = "11";
-					}
-					else if (month == "December")
-					{
-						monthN = "12";
-					}
-					else
-					{
-						monthN = "0" + (cmbDateMonth.getSelectedIndex() + 1);
-					}
-					String dateDue = cmbDateDay.getSelectedItem() + "/" + monthN + "/" + cmbDateYear.getSelectedItem();
+					//The KeyValue object from the month ComboBox
+					KeyValue month = (KeyValue) cmbDateMonth.getSelectedItem();
+					//The value (number) of this month
+					String monthValue = month.getValue();
+					//Formatted date for database entry
+					String dateDue = "#'" + cmbDateDay.getSelectedItem() + "/" + monthValue + "/" +
+					cmbDateYear.getSelectedItem() + "'#";
+					//JOptionPane.showMessageDialog(new JFrame(), dateDue);
+					//Calculate the total minutes of the time entered
 					int timeEstimateInMinutes = (hours * 60) + minutes;
+					//SQL for creating a new database entry
 					String insertSQL = "INSERT INTO Task (TaskName, TaskDesc,"
-							+ " TaskCat, Priority, Repeating, TimeEstimate, Location, DateDue)"
-							+ "VALUES ('" + txtTaskName.getText() + "', '" 
+							+ " TaskCat, Priority, Repeating, TimeEstimate, Location, FirstAllocation)"
+							+ "VALUES ('" 
+							+ txtTaskName.getText() + "', '" 
 							+ txtaDescription.getText() + "', '"
 							+ cmbCategory.getSelectedItem() + "', '"
 							+ cmbPriority.getSelectedItem() + "', '"
@@ -327,12 +394,16 @@ public class TaskCreationUI extends JFrame
 							+ txtLocation.getText() + "', '"
 							+ dateDue + "');";
 					
+					/*Create the database field by calling createTask in the database class. Store whether it was a 
+					success*/
 					Boolean created = database.createTask(insertSQL);
 					
+					//If the data entry was a success, let the user know
 					if (created)
 					{
 						JOptionPane.showMessageDialog(new JFrame(), "Task successfully created");
 					}
+					//If data entry failed, tell the user and recommend they contact their database admin
 					else
 					{
 						JOptionPane.showMessageDialog(new JFrame(),
