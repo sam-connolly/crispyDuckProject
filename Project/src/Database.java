@@ -141,7 +141,7 @@ public class Database {
 	public boolean updateUser(String username, String password, String fName, String sName) throws SQLException{
 		PreparedStatement sqlUpdate = null;
 		try {
-			sqlUpdate = conn.prepareStatement("UPDATE User SET (PasswordHash, Admin, fName, sName) VALUES (?,?,?,?) WHERE Username = ?");
+			sqlUpdate = conn.prepareStatement("UPDATE User SET (PasswordHash, fName, sName) VALUES (?,?,?,?) WHERE Username = ?");
 		}
 		catch(SQLException sqlex) {
 			System.err.println("SQL Exception");
