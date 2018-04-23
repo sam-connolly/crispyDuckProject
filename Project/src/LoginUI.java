@@ -16,6 +16,7 @@ public class LoginUI extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtUsername;
 	private JPasswordField txtPassword;
+	//Create Database object for connection to database
 	Database database = new Database();
 	/**
 	 * Launch the application.
@@ -64,25 +65,36 @@ public class LoginUI extends JFrame {
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//Get values from user input
 				username = txtUsername.getText();
 				password = txtPassword.getPassword();
+				//Convert password input to String
 				passwordString = new String (password);
+				//Check if username password combo matches
 				Boolean valid = database.validateLogin(username, passwordString);
+				//If login successful
 				if(valid) {
+					//Welcome message
 					JOptionPane.showMessageDialog(null, "Welcome, " + username, 
 							"Success", JOptionPane.INFORMATION_MESSAGE);
+					//Checks user role
 					boolean isAdmin = database.checkRole(username);
+					//If user is Admin will open ManagerMenu UI 
 					if (isAdmin) {
 						ManagerMenu managerMenu = new ManagerMenu();
 						managerMenu.setVisible(true);
 					}
+					//If user is NOT Admin will open EmployeeMenu UI
 					else {
 						EmployeeMenu employeeMenu = new EmployeeMenu();
 						employeeMenu.setVisible(true);
 					}
+					//Close login window
 					setVisible(false);
 				}
+				//If login failed
 				else {
+					//Error message informing user of incorrect login
 					JOptionPane.showMessageDialog(null, "Username and password do not match.", 
 							"Login Failed", JOptionPane.INFORMATION_MESSAGE);
 				}

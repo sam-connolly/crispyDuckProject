@@ -1,22 +1,28 @@
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.JPasswordField;
 import javax.swing.SwingConstants;
 import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.awt.event.ActionEvent;
 
-public class ChangePassword extends JDialog {
-
+public class ChangePassword extends JDialog implements ActionListener {
+	private String username, oldPasswordString, newPasswordString;
+	private char[] oldPassword, newPassword;
 	private final JPanel contentPanel = new JPanel();
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-
+	private JTextField txtUsername;
+	private JPasswordField txtOldPassword;
+	private JPasswordField txtNewPassword;
+	//Create Database object for connection to database
+	Database database = new Database();
 	/**
 	 * Launch the application.
 	 */
@@ -44,47 +50,90 @@ public class ChangePassword extends JDialog {
 		lblNewLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNewLabel.setBounds(110, 58, 46, 14);
 		contentPanel.add(lblNewLabel);
+				
+		txtUsername = new JTextField();
+		txtUsername.setBounds(166, 55, 150, 20);
+		contentPanel.add(txtUsername);
+		txtUsername.setColumns(10);
 		
 		JLabel lblNewLabel_1 = new JLabel("Old Password");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNewLabel_1.setBounds(82, 110, 74, 14);
 		contentPanel.add(lblNewLabel_1);
-		
-		textField = new JTextField();
-		textField.setBounds(166, 55, 150, 20);
-		contentPanel.add(textField);
-		textField.setColumns(10);
-		
-		textField_1 = new JTextField();
-		textField_1.setBounds(166, 107, 150, 20);
-		contentPanel.add(textField_1);
-		textField_1.setColumns(10);
+
+		txtOldPassword = new JPasswordField();
+		txtOldPassword.setBounds(166, 107, 150, 20);
+		contentPanel.add(txtOldPassword);
+		txtOldPassword.setColumns(10);
 		
 		JLabel lblNewLabel_2 = new JLabel("New Password");
 		lblNewLabel_2.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNewLabel_2.setBounds(82, 141, 74, 14);
 		contentPanel.add(lblNewLabel_2);
 		
-		textField_2 = new JTextField();
-		textField_2.setBounds(166, 138, 150, 20);
-		contentPanel.add(textField_2);
-		textField_2.setColumns(10);
-		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				JButton okButton = new JButton("OK");
-				okButton.setBackground(new Color(240, 240, 240));
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
+		txtNewPassword = new JPasswordField();
+		txtNewPassword.setBounds(166, 138, 150, 20);
+		contentPanel.add(txtNewPassword);
+		txtNewPassword.setColumns(10);
+		JPanel buttonPane = new JPanel();
+		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		getContentPane().add(buttonPane, BorderLayout.SOUTH);
+		
+		JButton okButton = new JButton("OK");
+		okButton.setBackground(new Color(240, 240, 240));
+		okButton.addActionListener(this);
+		okButton.setActionCommand("OK");
+		buttonPane.add(okButton);
+		getRootPane().setDefaultButton(okButton);
+
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(this);
+		cancelButton.setActionCommand("Cancel");
+		buttonPane.add(cancelButton);
+	}
+	
+	public void actionPerformed(ActionEvent e) {
+		String action = e.getActionCommand();
+		//OK button pressed
+		if (action.equals("OK")) {
+			//Get values from user input
+			username= txtUsername.getText();
+			oldPassword = txtOldPassword.getPassword();
+			newPassword = txtNewPassword.getPassword();
+			//Convert password inputs to Strings
+			oldPasswordString = new String (oldPassword);
+			newPasswordString = new String (newPassword);
+			//Check old password is correct before allowing to change
+			boolean valid = database.validateLogin(username, oldPasswordString);
+			//If valid username password combo
+			if(valid) {
+				try {
+					//Attempt update using new password
+					boolean updated = database.updatePassword(username, newPasswordString);
+					//If update successful
+					if (updated) {
+						JOptionPane.showMessageDialog(null, "Password Updated", 
+								"Update Successful", JOptionPane.INFORMATION_MESSAGE);
+					}
+					//If update failed
+					else {
+						JOptionPane.showMessageDialog(null, "Update Failed", 
+								"Update Failed", JOptionPane.INFORMATION_MESSAGE);
+					}
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
-			{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
+			//If invalid username password combo
+			else {
+				JOptionPane.showMessageDialog(null, "Old password is incorrect", 
+						"Update Failed", JOptionPane.INFORMATION_MESSAGE);
 			}
+		}
+		//Cancel button pressed
+		if (action.equals("Cancel")) {			
+			this.setVisible(false);	
 		}
 	}
 }
