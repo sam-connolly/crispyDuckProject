@@ -304,7 +304,7 @@ public class Database {
 			ArrayList<String> users = new ArrayList<String>();
 			while (rs.next())
 			{
-				users.add(rs.getString("CatName"));
+				users.add(rs.getString("Username"));
 			}
 			
 			return users;

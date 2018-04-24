@@ -10,10 +10,13 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
+
 import java.util.ArrayList;
 
 public class UpdateUserAdminUI extends JFrame {
@@ -149,13 +152,18 @@ public class UpdateUserAdminUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				//Get username value
 				username = cmbUsername.getSelectedItem().toString();
-				try {
-					boolean deleteUser = database.deleteUser(username);
-					System.out.println(deleteUser);
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+			    int response = JOptionPane.showConfirmDialog(null, "Are you sure you wish to delete "
+			    		+ username + "?", "Confirm",
+			        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+			    if (response == JOptionPane.YES_OPTION) {
+			    	try {
+						boolean deleteUser = database.deleteUser(username);
+						System.out.println(deleteUser);
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+			    } 
 			}
 		});
 		btnDeleteUser.setBounds(71, 194, 116, 23);
