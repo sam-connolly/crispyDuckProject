@@ -58,11 +58,13 @@ public class UpdateUserUI extends JFrame {
 		txtUsername.setColumns(10);
 		txtUsername.setBounds(90, 21, 153, 20);
 		contentPane.add(txtUsername);
+		//TODO: Update dynamically
 		
 		txtForename = new JTextField();
 		txtForename.setColumns(10);
 		txtForename.setBounds(90, 58, 153, 20);
 		contentPane.add(txtForename);
+		//TODO: Update dynamically
 		
 		JLabel lblForename = new JLabel("Forename");
 		lblForename.setBounds(23, 61, 59, 14);
@@ -72,6 +74,7 @@ public class UpdateUserUI extends JFrame {
 		txtSurname.setColumns(10);
 		txtSurname.setBounds(90, 89, 153, 20);
 		contentPane.add(txtSurname);
+		//TODO: Update dynamically
 		
 		JLabel lblSurname = new JLabel("Surname");
 		lblSurname.setBounds(23, 92, 59, 14);

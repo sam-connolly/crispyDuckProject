@@ -29,16 +29,86 @@ public class Database {
 		
 	}	
 	
+	public String getPassword(String username) {
+		String password=null;
+		try {
+			PreparedStatement stmt = conn.prepareStatement("SELECT PasswordHash FROM User WHERE username = ?");
+			stmt.setString(1, username);
+			ResultSet rs = stmt.executeQuery();
+			boolean moreRecords = rs.next();
+			//If there are no records to show return null
+		    if (!moreRecords) {
+			      System.out.println ("ResultSet contained no records");
+			      return null;
+		    }
+			ResultSetMetaData rsmd = rs.getMetaData();
+			while (rs.next()) {;
+				password=rs.getString("PasswordHash");
+				break;
+			}
+		}
+		catch(Exception e) {	
+			// TODO: handle exception
+		}
+		//Return validLogin to check if login was successful 
+		return password;
+	}
+	public String getForename(String username) {
+		String fName=null;
+		try {
+			PreparedStatement stmt = conn.prepareStatement("SELECT fName FROM User WHERE username = ?");
+			stmt.setString(1, username);
+			ResultSet rs = stmt.executeQuery();
+			boolean moreRecords = rs.next();
+			//If there are no records to show return null
+		    if (!moreRecords) {
+			      System.out.println ("ResultSet contained no records");
+			      return null;
+		    }
+			ResultSetMetaData rsmd = rs.getMetaData();
+			while (rs.next()) {;
+				fName=rs.getString("PasswordHash");
+				break;
+			}
+		}
+		catch(Exception e) {	
+			// TODO: handle exception
+		}
+		//Return validLogin to check if login was successful 
+		return fName;
+	}
+	
+	public String getSurname(String username) {
+		String sName=null;
+		try {
+			PreparedStatement stmt = conn.prepareStatement("SELECT sName FROM User WHERE username = ?");
+			stmt.setString(1, username);
+			ResultSet rs = stmt.executeQuery();
+			boolean moreRecords = rs.next();
+			//If there are no records to show return null
+		    if (!moreRecords) {
+			      System.out.println ("ResultSet contained no records");
+			      return null;
+		    }
+			ResultSetMetaData rsmd = rs.getMetaData();
+			while (rs.next()) {;
+				sName=rs.getString("sName");
+				break;
+			}
+		}
+		catch(Exception e) {	
+			// TODO: handle exception
+		}
+		//Return validLogin to check if login was successful 
+		return sName;
+	}
+	
 	public boolean validateLogin(String user,  String password) {
 		boolean validLogin = false;
 		try {
-			System.out.println("Attempting login: " + user + ", " + password);
 			PreparedStatement stmt = conn.prepareStatement("SELECT Username, PasswordHash FROM User");
-			System.out.println("1");
 			ResultSet rs = stmt.executeQuery();
-			System.out.println("2");
 			boolean moreRecords = rs.next();
-			System.out.println("More records: " + moreRecords);
 			//If there are no records to show validLogin is set to false
 		    if (!moreRecords) {
 			      System.out.println ("ResultSet contained no records");
@@ -47,9 +117,7 @@ public class Database {
 			ResultSetMetaData rsmd = rs.getMetaData();
 			//If the entered password matches the one stored in the database
 			//validLogin is set to true
-			while (rs.next()) {
-				System.out.println(password);
-				System.out.println(rs.getString("Username") + rs.getString("PasswordHash"));
+			while (rs.next()) {;
 				if ((password.equals(rs.getString("PasswordHash")))&&(user.equals(rs.getString("Username")))) {
 					validLogin=true;
 					System.out.println("Sucess");

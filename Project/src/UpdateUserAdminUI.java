@@ -2,6 +2,8 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -46,7 +48,7 @@ public class UpdateUserAdminUI extends JFrame {
 	 */
 	public UpdateUserAdminUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 282, 274);
+		setBounds(100, 100, 277, 312);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -111,7 +113,7 @@ public class UpdateUserAdminUI extends JFrame {
 		contentPane.add(lblRole);
 		
 		JButton btnSubmit = new JButton("Submit");
-		btnSubmit.setBounds(90, 190, 89, 23);
+		btnSubmit.setBounds(71, 228, 116, 23);
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//Get values from textboxes
@@ -122,8 +124,6 @@ public class UpdateUserAdminUI extends JFrame {
 				surname = txtSurname.getText();
 				//Convert password to String
 				passwordString = new String (password);
-				//Get value from ComboBox as String
-				roleString = cmbRole.getSelectedItem().toString();
 				//Check if user is admin
 				if (roleString.equals("Admin")) { //User is Admin
 					admin=true;
@@ -140,12 +140,42 @@ public class UpdateUserAdminUI extends JFrame {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				
 			}
 		});
 		contentPane.add(btnSubmit);
-		
-		
-	}
 
+		JButton btnDeleteUser = new JButton("Delete User");
+		btnDeleteUser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//Get username value
+				username = cmbUsername.getSelectedItem().toString();
+				try {
+					boolean deleteUser = database.deleteUser(username);
+					System.out.println(deleteUser);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnDeleteUser.setBounds(71, 194, 116, 23);
+		contentPane.add(btnDeleteUser);
+		
+		cmbUsername.addItemListener(new ItemListener()
+		{
+			public void itemStateChanged(ItemEvent evt)
+			{
+				username = cmbUsername.getSelectedItem().toString();
+				txtPassword.setText(database.getPassword(username));
+				txtForename.setText(database.getForename(username));
+				txtSurname.setText(database.getSurname(username));
+				if (database.checkRole(username)==true) {
+					cmbRole.setSelectedItem("Admin");
+				}
+				else {
+					cmbRole.setSelectedItem("User");
+				}
+			}
+		});
+	}
 }
