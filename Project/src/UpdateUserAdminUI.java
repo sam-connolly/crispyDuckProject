@@ -11,7 +11,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -22,10 +22,10 @@ import java.util.ArrayList;
 public class UpdateUserAdminUI extends JFrame {
 
 	private JPanel contentPane;
-	private JPasswordField txtPassword;
+	private JTextField txtPassword;
 	private JTextField txtForename;
 	private JTextField txtSurname;
-	private char[] password;
+	private String password;
 	private String username, passwordString, roleString, forename, surname;
 	private boolean admin;
 	Database database = new Database();
@@ -82,7 +82,7 @@ public class UpdateUserAdminUI extends JFrame {
 			cmbUsername.addItem(users.get(i));
 		}
 		
-		txtPassword = new JPasswordField();
+		txtPassword = new JTextField();
 		txtPassword.setBounds(90, 53, 153, 20);
 		contentPane.add(txtPassword);
 		
@@ -122,7 +122,7 @@ public class UpdateUserAdminUI extends JFrame {
 				//Get values from textboxes
 				username = cmbUsername.getSelectedItem().toString();
 				roleString = cmbRole.getSelectedItem().toString();
-				password = txtPassword.getPassword();
+				password = txtPassword.getText();
 				forename = txtForename.getText();
 				surname = txtSurname.getText();
 				//Convert password to String

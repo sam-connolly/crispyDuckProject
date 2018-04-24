@@ -32,8 +32,7 @@ public class Database {
 	public String getPassword(String username) {
 		String password=null;
 		try {
-			PreparedStatement stmt = conn.prepareStatement("SELECT PasswordHash FROM User WHERE username = ?");
-			stmt.setString(1, username);
+			PreparedStatement stmt = conn.prepareStatement("SELECT PasswordHash FROM User WHERE Username = '"+ username +"'");
 			ResultSet rs = stmt.executeQuery();
 			boolean moreRecords = rs.next();
 			//If there are no records to show return null
@@ -41,23 +40,18 @@ public class Database {
 			      System.out.println ("ResultSet contained no records");
 			      return null;
 		    }
-			ResultSetMetaData rsmd = rs.getMetaData();
-			while (rs.next()) {;
-				password=rs.getString("PasswordHash");
-				break;
-			}
+			password = rs.getString("PasswordHash");
 		}
 		catch(Exception e) {	
 			// TODO: handle exception
 		}
-		//Return validLogin to check if login was successful 
 		return password;
 	}
+	
 	public String getForename(String username) {
 		String fName=null;
 		try {
-			PreparedStatement stmt = conn.prepareStatement("SELECT fName FROM User WHERE username = ?");
-			stmt.setString(1, username);
+			PreparedStatement stmt = conn.prepareStatement("SELECT fName FROM User WHERE Username = '"+ username +"'");
 			ResultSet rs = stmt.executeQuery();
 			boolean moreRecords = rs.next();
 			//If there are no records to show return null
@@ -65,24 +59,19 @@ public class Database {
 			      System.out.println ("ResultSet contained no records");
 			      return null;
 		    }
-			ResultSetMetaData rsmd = rs.getMetaData();
-			while (rs.next()) {;
-				fName=rs.getString("PasswordHash");
-				break;
-			}
+		    fName = rs.getString("fName");
 		}
 		catch(Exception e) {	
 			// TODO: handle exception
 		}
-		//Return validLogin to check if login was successful 
+		System.out.println(fName);
 		return fName;
 	}
 	
 	public String getSurname(String username) {
 		String sName=null;
 		try {
-			PreparedStatement stmt = conn.prepareStatement("SELECT sName FROM User WHERE username = ?");
-			stmt.setString(1, username);
+			PreparedStatement stmt = conn.prepareStatement("SELECT sName FROM User WHERE Username = '"+ username +"'");
 			ResultSet rs = stmt.executeQuery();
 			boolean moreRecords = rs.next();
 			//If there are no records to show return null
@@ -90,16 +79,11 @@ public class Database {
 			      System.out.println ("ResultSet contained no records");
 			      return null;
 		    }
-			ResultSetMetaData rsmd = rs.getMetaData();
-			while (rs.next()) {;
-				sName=rs.getString("sName");
-				break;
-			}
+		    sName = rs.getString("sName");
 		}
 		catch(Exception e) {	
 			// TODO: handle exception
 		}
-		//Return validLogin to check if login was successful 
 		return sName;
 	}
 	
