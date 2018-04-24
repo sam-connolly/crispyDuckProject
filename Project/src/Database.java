@@ -90,7 +90,7 @@ public class Database {
 	public boolean validateLogin(String user,  String password) {
 		boolean validLogin = false;
 		try {
-			PreparedStatement stmt = conn.prepareStatement("SELECT Username, PasswordHash FROM User");
+			PreparedStatement stmt = conn.prepareStatement("SELECT PasswordHash FROM User WHERE Username = '"+ user +"'");
 			ResultSet rs = stmt.executeQuery();
 			boolean moreRecords = rs.next();
 			//If there are no records to show validLogin is set to false
@@ -98,15 +98,11 @@ public class Database {
 			      System.out.println ("ResultSet contained no records");
 			      return false;
 		    }
-			ResultSetMetaData rsmd = rs.getMetaData();
 			//If the entered password matches the one stored in the database
 			//validLogin is set to true
-			while (rs.next()) {;
-				if ((password.equals(rs.getString("PasswordHash")))&&(user.equals(rs.getString("Username")))) {
-					validLogin=true;
-					System.out.println("Sucess");
-					break;
-				}
+			if ((password.equals(rs.getString("PasswordHash")))) {
+				validLogin=true;
+				System.out.println("Sucess");
 			}
 		}
 		catch(Exception e) {	
@@ -120,21 +116,15 @@ public class Database {
 	public boolean checkRole(String user) {
 		boolean isAdmin = false;
 		try {
-			PreparedStatement stmt = conn.prepareStatement("Select Username, Admin FROM User");
+			PreparedStatement stmt = conn.prepareStatement("Select Username, Admin FROM User WHERE Username = '"+ user +"'");
 			ResultSet rs = stmt.executeQuery();
 			boolean moreRecords = rs.next();
 			if(!moreRecords) {
 				System.out.println("Result set contained no records");
 				return false;
 			}
-			ResultSetMetaData rsmd = rs.getMetaData();
-			while(rs.next()) {
-				System.out.println(rs.getString("Username") + " is admin? " + rs.getBoolean("Admin"));
-				Boolean result = rs.getBoolean("Admin");
-				if ((user.equals(rs.getString("Username"))&&(result==true))) {
-					isAdmin=true;
-				}
-			}
+			System.out.println(rs.getString("Username") + " is admin? " + rs.getBoolean("Admin"));
+			isAdmin = rs.getBoolean("Admin");
 		}
 		catch(Exception e) {	
 			// TODO: handle exception
