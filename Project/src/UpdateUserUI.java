@@ -17,10 +17,8 @@ import javax.swing.JComboBox;
 public class UpdateUserUI extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtUsername;
-	private JPasswordField txtPassword;
 	private JTextField txtForename;
 	private JTextField txtSurname;
-	private char[] password;
 	private String username, passwordString, roleString, forename, surname;
 	private boolean admin;
 	Database database = new Database();
@@ -46,15 +44,11 @@ public class UpdateUserUI extends JFrame {
 	 */
 	public UpdateUserUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 282, 274);
+		setBounds(100, 100, 283, 240);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		JLabel lblUsername = new JLabel("Password");
-		lblUsername.setBounds(23, 56, 59, 14);
-		contentPane.add(lblUsername);
 		
 		JLabel label = new JLabel("Username");
 		label.setBounds(23, 24, 59, 14);
@@ -65,36 +59,30 @@ public class UpdateUserUI extends JFrame {
 		txtUsername.setBounds(90, 21, 153, 20);
 		contentPane.add(txtUsername);
 		
-		txtPassword = new JPasswordField();
-		txtPassword.setBounds(90, 53, 153, 20);
-		contentPane.add(txtPassword);
-		
 		txtForename = new JTextField();
 		txtForename.setColumns(10);
-		txtForename.setBounds(90, 117, 153, 20);
+		txtForename.setBounds(90, 58, 153, 20);
 		contentPane.add(txtForename);
 		
 		JLabel lblForename = new JLabel("Forename");
-		lblForename.setBounds(23, 120, 59, 14);
+		lblForename.setBounds(23, 61, 59, 14);
 		contentPane.add(lblForename);
 		
 		txtSurname = new JTextField();
 		txtSurname.setColumns(10);
-		txtSurname.setBounds(90, 149, 153, 20);
+		txtSurname.setBounds(90, 89, 153, 20);
 		contentPane.add(txtSurname);
 		
 		JLabel lblSurname = new JLabel("Surname");
-		lblSurname.setBounds(23, 152, 59, 14);
+		lblSurname.setBounds(23, 92, 59, 14);
 		
 		contentPane.add(lblSurname);
 		
 		JButton btnSubmit = new JButton("Submit");
-		btnSubmit.setBounds(90, 190, 89, 23);
+		btnSubmit.setBounds(61, 167, 142, 23);
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				username = txtUsername.getText();
-				password = txtPassword.getPassword();
-				passwordString = new String (password);
 				if (roleString.equals("Admin")) {
 					admin=true;
 				}
@@ -104,7 +92,7 @@ public class UpdateUserUI extends JFrame {
 				forename = txtForename.getText();
 				surname = txtSurname.getText();
 			    try {
-					boolean updateUser = database.updateUser(username, passwordString,
+					boolean updateUser = database.updateUser(username,
 							forename, surname);
 					System.out.println(updateUser);
 				} catch (SQLException e1) {
@@ -116,6 +104,15 @@ public class UpdateUserUI extends JFrame {
 		});
 		contentPane.add(btnSubmit);
 		
+		JButton btnChangePassword = new JButton("Change Password");
+		btnChangePassword.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ChangePassword changePassword = new ChangePassword();
+				changePassword.setVisible(true);
+			}
+		});
 		
+		btnChangePassword.setBounds(61, 133, 142, 23);
+		contentPane.add(btnChangePassword);
 	}
 }

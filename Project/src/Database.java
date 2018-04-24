@@ -138,10 +138,32 @@ public class Database {
 		}
 	}
 	
-	public boolean updateUser(String username, String password, String fName, String sName) throws SQLException{
+	public boolean updateUser(String username, String fName, String sName) throws SQLException{
 		PreparedStatement sqlUpdate = null;
 		try {
-			sqlUpdate = conn.prepareStatement("UPDATE User SET (PasswordHash, fName, sName) VALUES (?,?,?,?) WHERE Username = ?");
+			sqlUpdate = conn.prepareStatement("UPDATE User SET (fName, sName) VALUES (?,?) WHERE Username = ?");
+		}
+		catch(SQLException sqlex) {
+			System.err.println("SQL Exception");
+			sqlex.printStackTrace();
+		}
+		sqlUpdate.setString(1, forename);
+		sqlUpdate.setString(2, surname);
+		sqlUpdate.setString(3, username);
+		int result = sqlUpdate.executeUpdate();
+		System.err.println("Result code from Update: " + result);
+		if (result == 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	
+	public boolean updateUserAdmin(String username, String password, boolean admin, String fName, String sName) throws SQLException{
+		PreparedStatement sqlUpdate = null;
+		try {
+			sqlUpdate = conn.prepareStatement("UPDATE User SET (PasswordHash, Admin, fName, sName) VALUES (?,?,?,?) WHERE Username = ?");
 		}
 		catch(SQLException sqlex) {
 			System.err.println("SQL Exception");
@@ -197,6 +219,27 @@ public class Database {
 			}
 			
 			return categories;
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			return null;
+		}
+	}
+	
+	public ArrayList<String> getUsernames()
+	{
+		try {
+			Statement stmt = conn.createStatement();
+			String query = "SELECT Username FROM User";
+			ResultSet rs = stmt.executeQuery(query);
+			
+			ArrayList<String> users = new ArrayList<String>();
+			while (rs.next())
+			{
+				users.add(rs.getString("CatName"));
+			}
+			
+			return users;
 		}
 		catch (Exception e) {
 			// TODO: handle exception
