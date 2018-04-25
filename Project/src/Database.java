@@ -1,7 +1,8 @@
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
-
 import javax.swing.JOptionPane;
 
 public class Database {
@@ -412,9 +413,10 @@ public class Database {
 		try {
 			// query database for data in TaskList
 			Statement stmt = conn.createStatement();
-			String query = "SELECT TaskID, Caretaker, DateIssued, DateDue,"
-					+ " Completed, TimeTaken, IssueDesc, SignedOff, CompletedOn,"
-					+ " TaskName, TaskDesc, TaskCat, Priority, Repeating, TimeEstimate, Location"
+			String query = "SELECT JobID, TaskID, Caretaker, DateIssued, DateDue,"
+					+ " Completed, TimeTaken, Issue, IssueDesc, SignedOff, signedOffOn,"
+					+ " TaskName, TaskDesc, TaskCat, Priority, Repeating, TimeEstimate, Location, "
+					+ " FirstAllocation, LastAllocated, TimeGiven"
 					+ " FROM Task"
 					+ " LEFT JOIN TaskList ON Task.taskID = TaskList.taskID";
 			ResultSet rs = stmt.executeQuery(query);
@@ -426,15 +428,17 @@ public class Database {
 			while (rs.next())
 			{
 				// assign data to variables
+				int jobID = rs.getInt("jobID");
 				int taskID = rs.getInt("TaskID");
 				String caretaker= rs.getString("Caretaker");	
 				boolean completed = rs.getBoolean("Completed");
-				Date completedOn = rs.getDate("CompletedOn");
-				String dateIssued= rs.getString("DateIssued");
-				Date dateDue = rs.getDate("DateDue");
+				Date dateIssued= rs.getDate("DateIssued");
+				String dateDue = rs.getString("DateDue");
 				int timeTaken = rs.getInt("TimeTaken");
+				boolean issue = rs.getBoolean("Issue");
 				String issueDesc = rs.getString("IssueDesc");
 				boolean signedOff = rs.getBoolean("SignedOff");
+				Date signedOffOn = rs.getDate("SignedOffOn");
 				String taskName = rs.getString("TaskName");
 				String taskDesc = rs.getString("TaskDesc");
 				String taskCat = rs.getString("TaskCat");
@@ -442,13 +446,16 @@ public class Database {
 				int repeating = rs.getInt("Repeating");
 				int timeEstimate = rs.getInt("TimeEstimate");
 				String location = rs.getString("location");
-				
+				Date firstAllocation = rs.getDate("FirstAllocation");
+				Date lastAllocated = rs.getDate("LastAllocated");
+
 				// create new ActiveTask to be added on every loop
 				Task taskToAdd;		
-					taskToAdd = new Task.TaskBuilder().taskID(taskID).taskName(taskName).taskDesc(taskDesc).taskCat(taskCat)
+					taskToAdd = new Task.TaskBuilder().jobID(jobID).taskID(taskID).taskName(taskName).taskDesc(taskDesc).taskCat(taskCat)
 							.priority(priority).repeating(repeating).timeEstimate(timeEstimate).location(location)
-							.caretaker(caretaker).completed(completed).completedOn(completedOn).dateIssued(dateIssued).dateDue(dateDue)
-							.timeEstimate(timeEstimate).timeTaken(timeTaken).issueDesc(issueDesc).signedOff(signedOff).build();
+							.caretaker(caretaker).completed(completed).dateIssued(dateIssued).dateDue(dateDue)
+							.timeEstimate(timeEstimate).timeTaken(timeTaken).issue(issue).issueDesc(issueDesc).signedOff(signedOff)
+							.lastAllocated(lastAllocated).signedOffOn(signedOffOn).build();
 				
 				// add new task to the list
 				allActiveTasks.addTask(taskToAdd);				
@@ -461,6 +468,83 @@ public class Database {
 			return null;
 		} // catch
 	} // function
+	
+	public void insertTaskList(int taskID, String caretaker, String dateIssued, boolean completed,
+			 int timeTaken, boolean issue, String issueDesc, boolean signedOff, String signedOffOn, String dateDue) throws SQLException, ParseException{
+		try {
+			PreparedStatement sqlInsert = conn.prepareStatement("INSERT INTO TaskList (TaskID, Caretaker, DateIssued,"
+					+ "Completed, TimeTaken, Issue, IssueDesc, SignedOff, SignedOffOn, DateDue) VALUES (?,?,?,?,?,?,?,?,?,?)");
+			
+			sqlInsert.setInt(1, taskID);
+			sqlInsert.setString(2, caretaker);
+			sqlInsert.setDate(3, convertStringToSQLDate(dateIssued));
+			sqlInsert.setBoolean(4, completed);
+			sqlInsert.setInt(5, timeTaken);
+			sqlInsert.setBoolean(6, issue);
+			sqlInsert.setString(7, issueDesc);
+			sqlInsert.setBoolean(8, signedOff);
+			sqlInsert.setDate(9, convertStringToSQLDate(signedOffOn));
+			sqlInsert.setDate(10, convertStringToSQLDate(dateDue));
+			
+			sqlInsert.executeUpdate();
+		}
+		catch (SQLException sqlex) {
+			System.err.println("SQL Exception");
+			sqlex.printStackTrace();
+		}
+	}
+	
+	public void updateLastAllocated(int taskID, String lastAllocated) throws ParseException {
+		try {
+			PreparedStatement sqlInsert = conn.prepareStatement("UPDATE Task SET LastAllocated = ? WHERE taskID = ?");
+			
+			sqlInsert.setDate(1, convertStringToSQLDate(lastAllocated));
+			sqlInsert.setInt(2, taskID);
+			
+			sqlInsert.executeUpdate();
+		}
+		catch (SQLException sqlex) {
+			System.err.println("SQL Exception");
+			sqlex.printStackTrace();
+		}
+	}
+	
+	public void removeFromTaskList(int jobID) throws SQLException {
+		try {
+			PreparedStatement sqlInsert = conn.prepareStatement("DELETE FROM TaskList WHERE jobID = ?");
+			
+			sqlInsert.setInt(1, jobID);
+			
+			sqlInsert.executeUpdate();
+		}
+		catch (SQLException sqlex) {
+			System.err.println("SQL Exception");
+			sqlex.printStackTrace();
+		}
+	}
+	
+	/**
+	 * this function already exists in another class, make interface??
+	 * @param dateString
+	 * @return
+	 * @throws ParseException
+	 */
+	public java.sql.Date convertStringToSQLDate(String dateString) throws ParseException {
+		Date convertedDate;
+		  java.sql.Date sConvertedDate;
+		  // if the string is not null
+		  if(dateString != null) {
+			  // convert string
+			  convertedDate = new SimpleDateFormat("dd/MM/yyyy").parse(dateString);  
+			  sConvertedDate = new java.sql.Date(convertedDate.getTime());
+		  }
+		  else {
+			  // else converted date is null
+			  sConvertedDate = null;
+		  }
+		  // return converted date
+		  return sConvertedDate;
+	}
 	
 	private void displayRow (ResultSet rs, ResultSetMetaData rsmd) 	throws SQLException 
 	{

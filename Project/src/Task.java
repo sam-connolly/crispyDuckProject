@@ -3,7 +3,9 @@ import java.util.concurrent.*;
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
  
 /**
@@ -12,6 +14,7 @@ import java.text.SimpleDateFormat;
  *
  */
 public class Task {
+  private int jobID;
   private int taskID; 
   private String taskName; 
   private String taskDesc;
@@ -20,19 +23,24 @@ public class Task {
   private int repeating;
   private int timeEstimate;
   private String location;
+  private String firstAllocation;
+  private String lastAllocated;
+  private int timeGiven;
   
   private String caretaker;
   private boolean completed; 
-  private Date completedOn;
   private int timeTaken;
   private String dateIssued;
-  private Date dateDue;
+  private String dateDue;
+  private boolean issue;
   private String issueDesc; 
   private boolean signedOff;
+  private String signedOffOn;
   // private String lastCompleted;
   
   // constructor takes a builder as parameter
   private Task(TaskBuilder builder) {
+	jobID = builder.jobID;
     taskID = builder.taskID;
     taskName = builder.taskName;
     taskDesc = builder.taskDesc;
@@ -43,16 +51,22 @@ public class Task {
     location = builder.location;
     caretaker = builder.caretaker;
     completed = builder.completed;
-    completedOn = builder.completedOn;
     timeTaken = builder.timeTaken;
     dateIssued = builder.dateIssued;
     dateDue = builder.dateDue;
+    issue = builder.issue;
     issueDesc = builder.issueDesc;
     signedOff = builder.signedOff;
-    // lastCompleted = builder.lastCompleted;
+    signedOffOn = builder.signedOffOn;
+    firstAllocation = builder.firstAllocation;
+    lastAllocated = builder.lastAllocated;
   }
 
   //getters
+  public int getJobID() {
+	  return jobID;
+  }
+  
   public int getTaskID() {
     return taskID;
   }
@@ -81,9 +95,9 @@ public class Task {
     return repeating;
   }
   
-  public int getTimeEstimate() {
-    return timeEstimate;
-  }
+  public String getTimeEstimateString() { 
+	   return timeEstimate/24/60 + " days, " + timeEstimate/60%24 + " hours, " + timeEstimate%60 + " minutes.";
+	 }
   /*
    	public String lastCompleted() { 
    	  return lastCompleted
@@ -109,8 +123,28 @@ public class Task {
 	  }
   }
   
+  public boolean getSignedOff() {
+	  return signedOff;
+  }
+  
+  public String getSignedOffOn() { 
+	  return signedOffOn;
+  }
+  
   public String getDateIssued() {
 	  return dateIssued;
+  }
+  
+  public String getLastAllocated() {
+	  return lastAllocated;
+  }
+  
+  public String getFirstAllocation() {
+	  return firstAllocation;
+  }
+  
+  public void setLastAllocated(String lastAllocated) {
+	  this.lastAllocated = lastAllocated;
   }
   
   /*
@@ -118,13 +152,17 @@ public class Task {
    * calls the finToAssign function to get a list of eligible caretakers and 
    * randomly selects one of them to assign the task to.
    */
-  public void allocateTask(UserList allUsers, TaskList allTasks) {
+  public void allocateTask(UserList allUsers, TaskList allTasks) throws SQLException, ParseException {
+	  Database db = new Database();
 	  // new date format
-	  DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
+	  DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 	  Date currentDate = new Date();
-	  // set date to today
+	  // set dateIssued and last allocated to today
 	  dateIssued = dateFormat.format(currentDate);
-
+	  lastAllocated = dateFormat.format(currentDate);
+	  db.updateLastAllocated(taskID, lastAllocated);
+	  allTasks.updateLastAllocation(taskID, lastAllocated);
+	  
 	  // create list for eligible users
 	  ArrayList<User> eligibleUsers = new ArrayList<User>();
 	  
@@ -137,6 +175,8 @@ public class Task {
 	  
 	  // assign to random caretaker
 	  caretaker = eligibleUsers.get(index).getUsername();
+	  
+	  db.insertTaskList(taskID, caretaker, dateIssued, completed, timeTaken, issue, issueDesc, signedOff, signedOffOn, dateDue);
 	  
 	  
 	  System.out.println("Task No. " + taskID + ". " + taskName + ". Category: " + taskCat + ". Allocated to: " + caretaker);
@@ -157,8 +197,30 @@ public class Task {
 	  caretaker = username;
   }
   
+  public void deallocateTask() {
+	  caretaker = "Not Assigned";
+	  dateIssued = null;
+  }
+  
+  public void completeTask(/* int timeTaken */) {
+	  completed = true;
+	  // this.timeTaken = timeTaken;
+  }
+  
+  public void uncompleteTask() {
+	  completed = false;
+	  timeTaken = 0;
+  }
+  
+  public void signOffTask() {
+	  signedOff = true;
+	  SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+	  Date currentDate = new Date();
+	  signedOffOn = dateFormat.format(currentDate);
+  }
   public static class TaskBuilder {
     // required
+	private int jobID;
     private int taskID; 
     private String taskName; 
     private String taskDesc;
@@ -167,21 +229,29 @@ public class Task {
     private int repeating;
     private int timeEstimate;
     private String location;
+    private String firstAllocation;
+    private String lastAllocated;
     
     // optional
     private String caretaker;
     private boolean completed; 
-    private Date completedOn;
     private int timeTaken;
     private String dateIssued;
-    private Date dateDue;
+    private String dateDue;
+    private boolean issue;
     private String issueDesc; 
     private boolean signedOff;
+    private String signedOffOn;
     // private String lastCompleted
     
     /*public TaskBuilder(int taskID) {
       this.taskID = taskID;
     }*/
+    
+    public TaskBuilder jobID (int val) {
+    	jobID = val; 
+    	return this;
+    }
     
     public TaskBuilder taskID (int val) {
       taskID = val;
@@ -227,26 +297,31 @@ public class Task {
       completed = val;
       return this;
     }
-    
-    public TaskBuilder completedOn(Date val) {
-      completedOn = val;
-      return this;
-    }
-    
-    
+     
     public TaskBuilder timeTaken (int val) {
       timeTaken = val;
       return this;
     }
     
-    public TaskBuilder dateIssued(String val) {
-      dateIssued = val;
+    public TaskBuilder dateIssued(Date val) {
+  	  DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+  	  if (val != null) {
+  		  dateIssued = dateFormat.format(val);
+  	  }
+  	  else {
+  		  dateIssued = null;
+  	  }
       return this;
     }
     
-    public TaskBuilder dateDue(Date val) {
+    public TaskBuilder dateDue(String val) {
       dateDue = val;
       return this;
+    }
+    
+    public TaskBuilder issue(boolean val) {
+    	issue = val;
+    	return this;
     }
     
     public TaskBuilder issueDesc(String val) {
@@ -264,12 +339,38 @@ public class Task {
       return this;
     }
     
-    /*
-    public TaskBuilder lastCompleted(String va) {
-    	lastCompleted = val;
-    	return this;
+    public TaskBuilder firstAllocation(Date val) {
+	  DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+  	  if(val != null) {
+  		  firstAllocation = dateFormat.format(val);
+  	  }
+  	  else {
+  		  firstAllocation = null;
+  	  }
+	  return this;
     }
-    */
+    
+    public TaskBuilder lastAllocated(Date val) {
+  	  DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+  	  if(val != null) {
+  		  lastAllocated = dateFormat.format(val);
+  	  }
+  	  else {
+  		  lastAllocated = null;
+  	  }
+	  return this;
+    }
+    
+    public TaskBuilder signedOffOn(Date val) {
+	  DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+	  if (val != null) {
+		  signedOffOn = dateFormat.format(val);
+	  }
+	  else {
+		  signedOffOn = null;
+	  }
+      return this;
+    }
     public Task build() { 
       if (taskID == 0) {
         throw new IllegalStateException("");

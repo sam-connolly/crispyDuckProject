@@ -1,8 +1,10 @@
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException, SQLException {
 		
 	Database database = new Database();
 
@@ -12,11 +14,11 @@ public class Main {
 	
 	allTasks = database.getTasks();
 	allUsers = database.getUsers();
+
+	allTasks.testAllocate(allUsers, allTasks);
+	allTasks.checkSignedOffDate();
+	allTasks.printDetails();
 	
-	//allTasks.printDetails();
-	allTasks.allocateTasks(allUsers, allTasks);
-	
-	// allTasks.numTasksInCat("sdean", "Interior Repair");
 	}
 
 }
