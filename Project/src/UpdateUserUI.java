@@ -64,7 +64,7 @@ public class UpdateUserUI extends JFrame {
 		txtForename.setColumns(10);
 		txtForename.setBounds(90, 58, 153, 20);
 		contentPane.add(txtForename);
-		//TODO: Update dynamically
+		txtForename.setText(database.getForename(username));
 		
 		JLabel lblForename = new JLabel("Forename");
 		lblForename.setBounds(23, 61, 59, 14);
@@ -74,7 +74,7 @@ public class UpdateUserUI extends JFrame {
 		txtSurname.setColumns(10);
 		txtSurname.setBounds(90, 89, 153, 20);
 		contentPane.add(txtSurname);
-		//TODO: Update dynamically
+		txtSurname.setText(database.getSurname(username));
 		
 		JLabel lblSurname = new JLabel("Surname");
 		lblSurname.setBounds(23, 92, 59, 14);
@@ -101,8 +101,7 @@ public class UpdateUserUI extends JFrame {
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}
-				
+				}		
 			}
 		});
 		contentPane.add(btnSubmit);
