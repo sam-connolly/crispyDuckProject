@@ -184,14 +184,14 @@ public class Database {
 	public boolean updateUser(String username, String fName, String sName) throws SQLException{
 		PreparedStatement sqlUpdate = null;
 		try {
-			sqlUpdate = conn.prepareStatement("UPDATE User SET (fName, sName) VALUES (?,?) WHERE Username = ?");
+			sqlUpdate = conn.prepareStatement("UPDATE User SET fName = ?, sName = ? WHERE Username = ?");
 		}
 		catch(SQLException sqlex) {
 			System.err.println("SQL Exception");
 			sqlex.printStackTrace();
 		}
-		sqlUpdate.setString(1, forename);
-		sqlUpdate.setString(2, surname);
+		sqlUpdate.setString(1, fName);
+		sqlUpdate.setString(2, sName);
 		sqlUpdate.setString(3, username);
 		int result = sqlUpdate.executeUpdate();
 		System.err.println("Result code from Update: " + result);
@@ -206,7 +206,7 @@ public class Database {
 	public boolean updateUserAdmin(String username, String password, boolean admin, String fName, String sName) throws SQLException{
 		PreparedStatement sqlUpdate = null;
 		try {
-			sqlUpdate = conn.prepareStatement("UPDATE User SET (PasswordHash, Admin, fName, sName) VALUES (?,?,?,?) WHERE Username = ?");
+			sqlUpdate = conn.prepareStatement("UPDATE User SET PasswordHash = ?, Admin = ?, fName = ?, sName = ? WHERE Username = ?");
 		}
 		catch(SQLException sqlex) {
 			System.err.println("SQL Exception");
@@ -214,8 +214,8 @@ public class Database {
 		}
 		sqlUpdate.setString(1, password);
 		sqlUpdate.setBoolean(2, admin);
-		sqlUpdate.setString(3, forename);
-		sqlUpdate.setString(4, surname);
+		sqlUpdate.setString(3, fName);
+		sqlUpdate.setString(4, sName);
 		sqlUpdate.setString(5, username);
 		int result = sqlUpdate.executeUpdate();
 		System.err.println("Result code from Update: " + result);
@@ -230,7 +230,7 @@ public class Database {
 	public boolean updatePassword(String username, String password) throws SQLException{
 		PreparedStatement sqlUpdate = null;
 		try {
-			sqlUpdate = conn.prepareStatement("UPDATE User SET (PasswordHash) VALUES (?) WHERE Username = ?");
+			sqlUpdate = conn.prepareStatement("UPDATE User SET PasswordHash = ? WHERE Username = ?");
 		}
 		catch(SQLException sqlex) {
 			System.err.println("SQL Exception");
