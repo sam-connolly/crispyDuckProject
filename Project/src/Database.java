@@ -161,6 +161,35 @@ public class Database {
 		}
 	}
 	
+	public boolean addUserPreferences(String username) throws SQLException{
+		boolean success = true;
+		String catName = null;
+		PreparedStatement sqlInsert = null;
+		for (int i = 1;  i <= 7;  i ++) {
+			try {
+				sqlInsert = conn.prepareStatement("INSERT INTO CaretakerCategory (CatName, Caretaker) VALUES (?,?) ");
+			}
+			catch (SQLException sqlex) {
+				System.err.println("SQL Exception");
+				sqlex.printStackTrace();
+			}
+			if (i==1) {catName="Interior Cleaning";}
+			else if (i==2) {catName="Exterior Repair";}
+			else if (i==3) {catName="Exterior Cleaning";}
+			else if (i==4) {catName="Interior Repair";}
+			else if (i==5) {catName="Light Labour";}
+			else if (i==6) {catName="Restocking";}
+			sqlInsert.setString(1, catName);
+			sqlInsert.setString(2, username);
+			int result = sqlInsert.executeUpdate();
+			System.err.println("Result code from insert: " + result);
+			if (result == 0) {
+				return false;
+			}
+		}
+		return success;
+	}
+	
 	public boolean deleteUser(String username) throws SQLException{
 		PreparedStatement sqlDelete = null;
 		try {
@@ -193,6 +222,28 @@ public class Database {
 		sqlUpdate.setString(1, fName);
 		sqlUpdate.setString(2, sName);
 		sqlUpdate.setString(3, username);
+		int result = sqlUpdate.executeUpdate();
+		System.err.println("Result code from Update: " + result);
+		if (result == 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	
+	public boolean updateUserPreference(String username, String cat, int preference) throws SQLException{ 
+		PreparedStatement sqlUpdate = null;
+		try {
+			sqlUpdate = conn.prepareStatement("UPDATE CaretakerCategory SET PreferenceLevel = ? WHERE Caretaker = ? AND CatName = ?");
+		}
+		catch(SQLException sqlex) {
+			System.err.println("SQL Exception");
+			sqlex.printStackTrace();
+		}
+		sqlUpdate.setInt(1, preference);
+		sqlUpdate.setString(2, username);
+		sqlUpdate.setString(3, cat);
 		int result = sqlUpdate.executeUpdate();
 		System.err.println("Result code from Update: " + result);
 		if (result == 0) {
@@ -246,6 +297,25 @@ public class Database {
 		else {
 			return true;
 		}
+	}
+	
+	public int getPreferenceLevel(String username, String cat) throws SQLException{
+		int preferenceLevel=0;
+		try {
+			PreparedStatement stmt = conn.prepareStatement("SELECT PreferenceLevel FROM CaretakerCategory WHERE Caretaker = '"+ username +"' AND CatName = '"+ cat +"'");
+			ResultSet rs = stmt.executeQuery();
+			boolean moreRecords = rs.next();
+			if (!moreRecords) {
+				System.out.println("ResultSet contained no records");
+				return 0;
+			}
+			preferenceLevel=Integer.parseInt(rs.getString("PreferenceLevel"));
+		}
+		catch(Exception e) {
+			
+		}
+		System.out.println(preferenceLevel);
+		return preferenceLevel;
 	}
 
 	public ArrayList<String> getCategories()

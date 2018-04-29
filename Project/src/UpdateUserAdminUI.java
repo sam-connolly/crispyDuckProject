@@ -72,6 +72,7 @@ public class UpdateUserAdminUI extends JFrame {
 		JLabel label = new JLabel("Username");
 		label.setBounds(23, 24, 59, 14);
 		contentPane.add(label);
+		
 		//ArrayList to store users returned from the database
 		ArrayList<String> users = new ArrayList<String>();
 		//Populate ArrayList with contents of database
