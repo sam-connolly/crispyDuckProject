@@ -301,6 +301,8 @@ public class Database {
 	
 	public int getPreferenceLevel(String username, String cat) throws SQLException{
 		int preferenceLevel=0;
+		System.out.println(username);
+		System.out.println(cat);
 		try {
 			PreparedStatement stmt = conn.prepareStatement("SELECT PreferenceLevel FROM CaretakerCategory WHERE Caretaker = '"+ username +"' AND CatName = '"+ cat +"'");
 			ResultSet rs = stmt.executeQuery();

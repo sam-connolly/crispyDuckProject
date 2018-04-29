@@ -51,7 +51,7 @@ public class UpdateUserAdminUI extends JFrame {
 	 */
 	public UpdateUserAdminUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 277, 312);
+		setBounds(100, 100, 334, 403);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -60,7 +60,7 @@ public class UpdateUserAdminUI extends JFrame {
 		//Combo box to allow Admin to select chosen user
 		JComboBox<String> cmbUsername = new JComboBox<String>();
 		cmbUsername.setSize(151, 22);
-		cmbUsername.setLocation(90, 20);
+		cmbUsername.setLocation(139, 20);
 		//Default item
 		cmbUsername.addItem("Select a User");
 		contentPane.add(cmbUsername);
@@ -84,12 +84,12 @@ public class UpdateUserAdminUI extends JFrame {
 		}
 		
 		txtPassword = new JTextField();
-		txtPassword.setBounds(90, 53, 153, 20);
+		txtPassword.setBounds(139, 53, 153, 20);
 		contentPane.add(txtPassword);
 		
 		txtForename = new JTextField();
 		txtForename.setColumns(10);
-		txtForename.setBounds(90, 117, 153, 20);
+		txtForename.setBounds(139, 117, 153, 20);
 		contentPane.add(txtForename);
 		
 		JLabel lblForename = new JLabel("Forename");
@@ -98,7 +98,7 @@ public class UpdateUserAdminUI extends JFrame {
 		
 		txtSurname = new JTextField();
 		txtSurname.setColumns(10);
-		txtSurname.setBounds(90, 149, 153, 20);
+		txtSurname.setBounds(139, 149, 153, 20);
 		contentPane.add(txtSurname);
 		
 		JLabel lblSurname = new JLabel("Surname");
@@ -108,45 +108,13 @@ public class UpdateUserAdminUI extends JFrame {
 		//ComboBox to chose user role
 		JComboBox cmbRole = new JComboBox();
 		cmbRole.setMaximumRowCount(2);
-		cmbRole.setBounds(90, 85, 153, 20);
+		cmbRole.setBounds(139, 85, 153, 20);
 		cmbRole.setModel(new DefaultComboBoxModel(new String[] {"Admin", "User"}));
 		contentPane.add(cmbRole);
 		
 		JLabel lblRole = new JLabel("Role");
 		lblRole.setBounds(23, 88, 59, 14);
 		contentPane.add(lblRole);
-		
-		JButton btnSubmit = new JButton("Submit");
-		btnSubmit.setBounds(71, 228, 116, 23);
-		btnSubmit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//Get values from textboxes
-				username = cmbUsername.getSelectedItem().toString();
-				roleString = cmbRole.getSelectedItem().toString();
-				password = txtPassword.getText();
-				forename = txtForename.getText();
-				surname = txtSurname.getText();
-				//Convert password to String
-				passwordString = new String (password);
-				//Check if user is admin
-				if (roleString.equals("Admin")) { //User is Admin
-					admin=true;
-				}
-				else { //User is not Admin
-					admin=false;
-				}	
-				//Attempt to update User 
-			    try {
-					boolean updateUser = database.updateUserAdmin(username, passwordString,
-							admin, forename, surname);
-					System.out.println(updateUser);
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-		contentPane.add(btnSubmit);
 
 		JButton btnDeleteUser = new JButton("Delete User");
 		btnDeleteUser.addActionListener(new ActionListener() {
@@ -167,8 +135,34 @@ public class UpdateUserAdminUI extends JFrame {
 			    } 
 			}
 		});
-		btnDeleteUser.setBounds(71, 194, 116, 23);
+		btnDeleteUser.setBounds(103, 282, 116, 23);
 		contentPane.add(btnDeleteUser);
+		
+		JComboBox<String> cmbCat = new JComboBox<String>();
+		cmbCat.setBounds(139, 180, 151, 22);
+		contentPane.add(cmbCat);
+		ArrayList<String> categories = new ArrayList<String>();
+		categories = database.getCategories();
+		for (int i=0; i<categories.size(); i++)
+		{
+			cmbCat.addItem(categories.get(i));
+		}
+		
+		JComboBox<String> cmbPrefLvl = new JComboBox<String>();
+		cmbPrefLvl.setBounds(139, 213, 151, 20);
+		contentPane.add(cmbPrefLvl);
+		for (int i=0; i<11; i++)
+		{
+			cmbPrefLvl.addItem(Integer.toString(i));
+		}
+		
+		JLabel lblCategory = new JLabel("Category");
+		lblCategory.setBounds(23, 184, 59, 14);
+		contentPane.add(lblCategory);
+		
+		JLabel lblPreferenceLevel = new JLabel("Preference Level");
+		lblPreferenceLevel.setBounds(23, 216, 59, 14);
+		contentPane.add(lblPreferenceLevel);
 		
 		cmbUsername.addItemListener(new ItemListener()
 		{
@@ -184,7 +178,76 @@ public class UpdateUserAdminUI extends JFrame {
 				else {
 					cmbRole.setSelectedItem("User");
 				}
+				String cat=cmbCat.getSelectedItem().toString();
+				int preferenceLevel = 0;
+				try {
+					preferenceLevel = database.getPreferenceLevel(username, cat);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				cmbPrefLvl.setSelectedItem(Integer.toString(preferenceLevel));
 			}
 		});
+		
+		cmbCat.addItemListener(new ItemListener()
+		{
+			public void itemStateChanged(ItemEvent evt)
+			{
+				String username = cmbUsername.getSelectedItem().toString();
+				String cat=cmbCat.getSelectedItem().toString();
+				System.out.println(username + cat);
+				int preferenceLevel = 0;
+				try {
+					preferenceLevel = database.getPreferenceLevel(username, cat);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				cmbPrefLvl.setSelectedItem(Integer.toString(preferenceLevel));
+			}
+		});
+		
+		JButton btnSubmit = new JButton("Submit");
+		btnSubmit.setBounds(103, 316, 116, 23);
+		btnSubmit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//Get values from textboxes
+				username = cmbUsername.getSelectedItem().toString();
+				roleString = cmbRole.getSelectedItem().toString();
+				password = txtPassword.getText();
+				forename = txtForename.getText();
+				surname = txtSurname.getText();
+				String cat = cmbCat.getSelectedItem().toString();
+				int preference = Integer.parseInt(cmbPrefLvl.getSelectedItem().toString());
+				//Convert password to String
+				passwordString = new String (password);
+				//Check if user is admin
+				if (roleString.equals("Admin")) { //User is Admin
+					admin=true;
+				}
+				else { //User is not Admin
+					admin=false;
+				}	
+				//Attempt to update User 
+			    try {
+					boolean updateUser = database.updateUserAdmin(username, passwordString,
+							admin, forename, surname);
+					System.out.println(updateUser);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			    try {
+					boolean updatePreference = database.updateUserPreference(username, cat,
+							preference);
+					System.out.println(updatePreference);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		contentPane.add(btnSubmit);
 	}
 }
