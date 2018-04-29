@@ -4,10 +4,14 @@ import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.ActionEvent;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 
 public class TaskCreationUI extends JFrame 
@@ -375,9 +379,29 @@ public class TaskCreationUI extends JFrame
 					KeyValue month = (KeyValue) cmbDateMonth.getSelectedItem();
 					//The value (number) of this month
 					String monthValue = month.getValue();
+					
 					//Formatted date for database entry
-					String dateDue = "#'" + cmbDateDay.getSelectedItem() + "/" + monthValue + "/" +
-					cmbDateYear.getSelectedItem() + "'#";
+					String strDateDue = cmbDateDay.getSelectedItem() + "/" + monthValue + "/" +
+					cmbDateYear.getSelectedItem();
+					/*SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+					Date dateDue = null;
+					try 
+					{
+						dateDue = sdf.parse(strDateDue);
+						strDateDue = sdf.format(dateDue);
+					} 
+					catch (ParseException e1) 
+					{
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					System.out.println(dateDue);
+					*/
+					strDateDue = "'#" + strDateDue + "#'";
+					System.out.println(strDateDue);
+					
+
+					
 					//JOptionPane.showMessageDialog(new JFrame(), dateDue);
 					//Calculate the total minutes of the time entered
 					int timeEstimateInMinutes = (hours * 60) + minutes;
@@ -391,8 +415,8 @@ public class TaskCreationUI extends JFrame
 							+ cmbPriority.getSelectedItem() + "', '"
 							+ cmbRepeatingDays.getSelectedItem() + "', '"
 							+ timeEstimateInMinutes + "', '"
-							+ txtLocation.getText() + "', '"
-							+ dateDue + "');";
+							+ txtLocation.getText() + "', "
+							+ strDateDue + ");";
 					
 					/*Create the database field by calling createTask in the database class. Store whether it was a 
 					success*/
