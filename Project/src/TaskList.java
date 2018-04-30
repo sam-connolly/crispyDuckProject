@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.table.DefaultTableModel;
+
 public class TaskList {
 	private ArrayList<Task> taskList;
 	
@@ -62,17 +64,6 @@ public class TaskList {
 	} // function
 	
 	/*
-	 * loops through list of tasks. If the task is not assigned calls the allocateTask() function
-	 */
-	public void allocateTasks(UserList allUsers, TaskList allTasks) throws ParseException, SQLException {
-		// loop through all tasks
-		for (Task taskToCheck : taskList) {
-			// if task is not assigned
-			checkIfDueAllocation(taskToCheck, allUsers, allTasks);
-		} // for 
-	} // function
-	
-	/*
 	 * deallocates all task assigned for a certain user
 	 */
 	public void deallocateForUser(String username) {
@@ -94,7 +85,7 @@ public class TaskList {
 	 * 
 	 */
 	@SuppressWarnings("unused")
-	public void checkIfDueAllocation(Task taskToCheck, UserList allUsers, TaskList allTasks) throws ParseException, SQLException {
+	public String checkIfDueAllocation(Task taskToCheck) throws ParseException, SQLException {
 		  // new date format
 		  // convert task date information from string to Dates
 		  DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
@@ -105,8 +96,6 @@ public class TaskList {
 		  // get how often the task repeats
 		  int repeating = taskToCheck.getRepeating();
 		  
-		  Date dateMinus = dateFormat.parse("20/04/2018");
-		  
 		  // if the task has been allocated before
 		  if (taskLastAllocated != null) {
 			  // check if the task repeats and 
@@ -115,21 +104,19 @@ public class TaskList {
 			  System.out.println(numDaysSinceLastAllocation);
 			  if(((repeating != 0) && (numDaysSinceLastAllocation >= repeating))) {
 				  // if true allocate task
-				  taskToCheck.allocateTask(allUsers, allTasks);
+				  return "DUE ALLOCATION";
 			  } // if
 		  } // if
 		  else {
-			  // REMOVE THIS CONDITION ONCE SAM ADDS FEATURE THAT MAKES SURE "dateFirstAllocation" IS NEVER NULL
-			  if(dateFirstAllocation != null) {
-				  // if the current date is on or after the date specified to begin allocating this task and 
-				  // it hasnt been allocated
-				  if((currentDate.equals(dateFirstAllocation) || currentDate.after(dateFirstAllocation))
-						  && (taskToCheck.getCaretaker() == "Not Assigned")) {
-					  // allocate the task
-					  taskToCheck.allocateTask(allUsers, allTasks);
-				  } // if
-			  } // if 
+			  // if the current date is on or after the date specified to begin allocating this task and 
+			  // it hasnt been allocated
+			  if((currentDate.equals(dateFirstAllocation) || currentDate.after(dateFirstAllocation))
+					  && (taskToCheck.getCaretaker() == "Not Assigned")) {
+				  // allocate the task
+				  return "DUE ALLOCATION";
+			  } // if
 		  } // else 
+		  return "NOT DUE";
 	} // function
 	
 	/**
@@ -199,6 +186,123 @@ public class TaskList {
 		}
 	}
 	
+	public DefaultTableModel getAllUnallocated(String filter) throws ParseException, SQLException {
+		DefaultTableModel allUnallocatedModel = new DefaultTableModel() {
+		    @Override
+		    public boolean isCellEditable(int row, int column) {
+		       return false;
+		    }
+		};
+		Object[] row = new Object[4];
+		allUnallocatedModel.addColumn("Task ID");
+		allUnallocatedModel.addColumn("Task Name");
+		allUnallocatedModel.addColumn("Due Allocation");
+		allUnallocatedModel.addColumn("Priority");
+		if( filter == "All Unallocated") {
+			for (Task taskToCheck : taskList) {
+				if ( taskToCheck.getCaretaker() == "Not Assigned" ) {
+					row[0] = taskToCheck.getTaskID();
+					row[1] = taskToCheck.getTaskName();
+					row[2] = checkIfDueAllocation(taskToCheck);
+					row[3] = taskToCheck.getPriority();
+					
+					allUnallocatedModel.addRow(row);
+				}
+			}
+		}
+		
+		if( filter == "Due Allocation") {
+			for (Task taskToCheck : taskList) {
+				if ( checkIfDueAllocation(taskToCheck) == "DUE ALLOCATION" ) {
+					row[0] = taskToCheck.getTaskID();
+					row[1] = taskToCheck.getTaskName();
+					row[2] = "DUE ALLOCATION";
+					row[3] = taskToCheck.getPriority();
+					
+					allUnallocatedModel.addRow(row);
+				}
+			}
+		}
+		
+		if( filter == "Not Due Allocation") {
+			for (Task taskToCheck : taskList) {
+				if ( checkIfDueAllocation(taskToCheck) == "NOT DUE" ) {
+					row[0] = taskToCheck.getTaskID();
+					row[1] = taskToCheck.getTaskName();
+					row[2] = "NOT DUE";
+					row[3] = taskToCheck.getPriority();
+					
+					allUnallocatedModel.addRow(row);
+				}
+			}
+		}
+		return allUnallocatedModel;
+	}
+
+	
+	public DefaultTableModel getAllAllocated() throws ParseException, SQLException {
+		DefaultTableModel allAllocatedModel = new DefaultTableModel() {
+		    @Override
+		    public boolean isCellEditable(int row, int column) {
+		       return false;
+		    }
+		};
+		Object[] row = new Object[6];
+		allAllocatedModel.addColumn("Task ID");
+		allAllocatedModel.addColumn("Task Name");
+		allAllocatedModel.addColumn("Allocated To");
+		allAllocatedModel.addColumn("Issued On");
+		allAllocatedModel.addColumn("Due On");
+		allAllocatedModel.addColumn("Priority");
+		
+		for (Task taskToCheck : taskList) {
+			if ( taskToCheck.getCaretaker() != "Not Assigned" ) {
+				row[0] = taskToCheck.getTaskID();
+				row[1] = taskToCheck.getTaskName();
+				row[2] = taskToCheck.getCaretaker();
+				row[3] = taskToCheck.getDateIssued();
+				row[4] = taskToCheck.getDateDue();
+				row[5] = taskToCheck.getPriority();
+				
+				allAllocatedModel.addRow(row);
+			}
+		}
+		return allAllocatedModel;
+	}
+	
+	public DefaultTableModel getAllCompleted() throws ParseException, SQLException {
+		DefaultTableModel allCompletedModel = new DefaultTableModel() {
+		    @Override
+		    public boolean isCellEditable(int row, int column) {
+		       return false;
+		    }
+		};
+		Object[] row = new Object[5];
+		allCompletedModel.addColumn("Task ID");
+		allCompletedModel.addColumn("Task Name");
+		allCompletedModel.addColumn("Allocated To");
+		allCompletedModel.addColumn("Signed Off");
+		allCompletedModel.addColumn("Signed Off On");
+		
+		for (Task taskToCheck : taskList) {
+			if (taskToCheck.getCompleted()) {
+				row[0] = taskToCheck.getTaskID();
+				row[1] = taskToCheck.getTaskName();
+				row[2] = taskToCheck.getCaretaker();
+				if (taskToCheck.getSignedOff()){
+					row[3] = "Yes";
+				}
+				else {
+					row[3] = "No";
+				}
+				row[4] = taskToCheck.getSignedOffOn();
+				
+				allCompletedModel.addRow(row);
+			}
+		}
+		return allCompletedModel;
+	}
+	
 	/*
 	 * function I have made for testing purposes
 	 */
@@ -243,12 +347,7 @@ public class TaskList {
 		
 		return tasksMatchingID;
 	}
-	
-	public void testAllocate(UserList allUsers, TaskList allTasks) throws SQLException, ParseException {
-		for (Task task : taskList) {
-			task.allocateTask(allUsers, allTasks);
-		}
-	}
+
 }
 
 

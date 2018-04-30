@@ -7,7 +7,7 @@ import javax.swing.JOptionPane;
 
 public class Database {
 	private String driver = "jdbc:ucanaccess://";
-	private String Db = "database//crispyDuckDatabase.accdb";
+	private String Db = "project//database//crispyDuckDatabase.accdb";
 	private Connection conn = null;
 	private String url = driver + Db;
 	private String user, password, forename, surname;
@@ -525,7 +525,7 @@ public class Database {
 							.priority(priority).repeating(repeating).timeEstimate(timeEstimate).location(location)
 							.caretaker(caretaker).completed(completed).dateIssued(dateIssued).dateDue(dateDue)
 							.timeEstimate(timeEstimate).timeTaken(timeTaken).issue(issue).issueDesc(issueDesc).signedOff(signedOff)
-							.lastAllocated(lastAllocated).signedOffOn(signedOffOn).build();
+							.lastAllocated(lastAllocated).firstAllocation(firstAllocation).signedOffOn(signedOffOn).build();
 				
 				// add new task to the list
 				allActiveTasks.addTask(taskToAdd);				
