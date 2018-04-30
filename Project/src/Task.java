@@ -135,6 +135,11 @@ public class Task {
 	  return dateIssued;
   }
   
+  public String getDateDue()
+  {
+	  return dateDue;
+  }
+  
   public String getLastAllocated() {
 	  return lastAllocated;
   }
@@ -143,6 +148,20 @@ public class Task {
 	  return firstAllocation;
   }
   
+  public Boolean getCompleted()
+  {
+	  return completed;
+  }
+  
+  public Boolean getIssue()
+  {
+	  return issue;
+  }
+  
+  public String getIssueDesc()
+  {
+	  return issueDesc;
+  }
   public void setLastAllocated(String lastAllocated) {
 	  this.lastAllocated = lastAllocated;
   }
