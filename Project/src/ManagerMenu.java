@@ -13,6 +13,9 @@ import javax.swing.JButton;
 import javax.swing.JSplitPane;
 import javax.swing.JPanel;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -22,19 +25,21 @@ import java.awt.Color;
 public class ManagerMenu extends JFrame {
 
 	private JFrame frame;
-	private JTable table;
+	private JTable tblActiveTasks;
 	private JScrollPane scrollPane_1;
-	private JTable table_1;
+	private JTable tblToSignOff;
 	private JScrollPane scrollPane_2;
-	private JTable table_2;
+	private JTable tblSignedOff;
 	private JTextField txtSearch;
 	private JTextField txtSearch_2;
 	private JTextField txtSearch_1;
-	private JComboBox comboBox;
-	private JComboBox comboBox_1;
-	private JComboBox comboBox_2;
+	private JComboBox<String> cmbFirstTable;
+	private JComboBox<String> cmbLastTable;
 	private JPanel panel;
 	private JMenuBar menuBar;
+	
+	Database database = new Database();
+	private ArrayList<Task> taskList;
 
 	/**
 	 * Launch the application.
@@ -61,7 +66,7 @@ public class ManagerMenu extends JFrame {
 	}
 
 	/**
-	 * Initialize the contents of the frame.
+	 * Initialise the contents of the frame.
 	 */
 	private void initialize() {
 		frame = new JFrame();
@@ -74,32 +79,70 @@ public class ManagerMenu extends JFrame {
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 100.0, 1.0, 0.0, Double.MIN_VALUE};
 		frame.getContentPane().setLayout(gridBagLayout);
 		
-		comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"All Tasks", "Assigned", "Awaiting Sign Off", "All Completed", "Completed Today", "Completed This Week", "Completed This Month", "Completed This Year", "Pending Issues"}));
-		GridBagConstraints gbc_comboBox = new GridBagConstraints();
-		gbc_comboBox.insets = new Insets(0, 0, 5, 5);
-		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
-		gbc_comboBox.gridx = 1;
-		gbc_comboBox.gridy = 1;
-		frame.getContentPane().add(comboBox, gbc_comboBox);
+		DefaultTableModel model = new DefaultTableModel();
+		cmbFirstTable = new JComboBox<String>();
+		cmbFirstTable.setModel(new DefaultComboBoxModel<String>(new String[] {"All Uncompleted Tasks", "Assigned",
+				"Pending Issues"}));
+		GridBagConstraints gbc_cmbFirstTable = new GridBagConstraints();
+		gbc_cmbFirstTable.insets = new Insets(0, 0, 5, 5);
+		gbc_cmbFirstTable.fill = GridBagConstraints.HORIZONTAL;
+		gbc_cmbFirstTable.gridx = 1;
+		gbc_cmbFirstTable.gridy = 1;
+		frame.getContentPane().add(cmbFirstTable, gbc_cmbFirstTable);
+		cmbFirstTable.addItemListener(new ItemListener()
+		{
+			//When the comboBox is changed, repopulate the table
+			public void itemStateChanged(ItemEvent evt)
+			{
+				if (cmbFirstTable.getSelectedItem() == "All Uncompleted Tasks")
+				{
+					model.setRowCount(0);
+					for (Task t : taskList)
+					{
+						if (t.getCompleted() == false)
+						{
+							model.addRow( new Object[] {t.getTaskName(), t.getLocation(), t.getCaretaker(),
+							t.getTimeEstimateString(), t.getDateDue(), t.getPriority()});
+						}
+					}
+					
+				}
+				else if (cmbFirstTable.getSelectedItem() == "Assigned")
+				{
+					model.setRowCount(0);
+					for (Task t : taskList)
+					{
+						if (t.getCompleted() == false && t.getCaretaker() != "Not Assigned")
+						{
+							model.addRow( new Object[] {t.getTaskName(), t.getLocation(), t.getCaretaker(),
+							t.getTimeEstimateString(), t.getDateDue(), t.getPriority()});
+						}
+					}
+				}
+				else
+				{
+					model.setRowCount(0);
+					for (Task t : taskList)
+					{
+						if (t.getCompleted() == false && t.getIssue() == true)
+						{
+							model.addRow( new Object[] {t.getTaskName(), t.getLocation(), t.getCaretaker(),
+							t.getTimeEstimateString(), t.getDateDue(), t.getPriority()});
+						}
+					}
+				}
+				}
+			});
 		
-		comboBox_1 = new JComboBox();
-		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"All Tasks", "Assigned", "Awaiting Sign Off", "All Completed", "Completed Today", "Completed This Week", "Completed This Month", "Completed This Year", "Pending Issues"}));
-		GridBagConstraints gbc_comboBox_1 = new GridBagConstraints();
-		gbc_comboBox_1.insets = new Insets(0, 0, 5, 5);
-		gbc_comboBox_1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_comboBox_1.gridx = 2;
-		gbc_comboBox_1.gridy = 1;
-		frame.getContentPane().add(comboBox_1, gbc_comboBox_1);
-		
-		comboBox_2 = new JComboBox();
-		comboBox_2.setModel(new DefaultComboBoxModel(new String[] {"All Tasks", "Assigned", "Awaiting Sign Off", "All Completed", "Completed Today", "Completed This Week", "Completed This Month", "Completed This Year", "Pending Issues"}));
-		GridBagConstraints gbc_comboBox_2 = new GridBagConstraints();
-		gbc_comboBox_2.insets = new Insets(0, 0, 5, 5);
-		gbc_comboBox_2.fill = GridBagConstraints.HORIZONTAL;
-		gbc_comboBox_2.gridx = 3;
-		gbc_comboBox_2.gridy = 1;
-		frame.getContentPane().add(comboBox_2, gbc_comboBox_2);
+		cmbLastTable = new JComboBox<String>();
+		cmbLastTable.setModel(new DefaultComboBoxModel<String>(new String[] {"All Completed", "Completed Today",
+				"Completed This Week", "Completed This Month", "Completed This Year"}));
+		GridBagConstraints gbc_cmbLastTable = new GridBagConstraints();
+		gbc_cmbLastTable.insets = new Insets(0, 0, 5, 5);
+		gbc_cmbLastTable.fill = GridBagConstraints.HORIZONTAL;
+		gbc_cmbLastTable.gridx = 3;
+		gbc_cmbLastTable.gridy = 1;
+		frame.getContentPane().add(cmbLastTable, gbc_cmbLastTable);
 		
 		txtSearch = new JTextField();
 		txtSearch.setForeground(Color.LIGHT_GRAY);
@@ -134,30 +177,35 @@ public class ManagerMenu extends JFrame {
 		frame.getContentPane().add(txtSearch_1, gbc_txtSearch_1);
 		txtSearch_1.setColumns(10);
 		
-		JScrollPane scrollPane = new JScrollPane();
-		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
-		gbc_scrollPane.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane.gridx = 1;
-		gbc_scrollPane.gridy = 3;
-		frame.getContentPane().add(scrollPane, gbc_scrollPane);
+		JScrollPane pnlActiveTasks = new JScrollPane();
+		GridBagConstraints gbc_pnlActiveTasks = new GridBagConstraints();
+		gbc_pnlActiveTasks.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlActiveTasks.fill = GridBagConstraints.BOTH;
+		gbc_pnlActiveTasks.gridx = 1;
+		gbc_pnlActiveTasks.gridy = 3;
+		frame.getContentPane().add(pnlActiveTasks, gbc_pnlActiveTasks);
 		
-		table = new JTable();
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-			},
-			new String[] {
-				"Issued", "Job", "Employee", "Urgency", "More"
+		tblActiveTasks = new JTable(model);
+
+		model.addColumn("Name");
+		model.addColumn("Location");
+		model.addColumn("Caretaker");
+		model.addColumn("Time Allowed");
+		model.addColumn("Date Due");
+		model.addColumn("Priority");
+		
+		TaskList activeTasks = database.getTasks();
+		taskList = new ArrayList<Task>(activeTasks.getTaskList());
+		
+		for (Task t : taskList)
+		{
+			if (t.getCompleted() == false)
+			{
+				model.addRow( new Object[] {t.getTaskName(), t.getLocation(), t.getCaretaker(),
+				t.getTimeEstimateString(), t.getDateDue(), t.getPriority()});
 			}
-		));
-		table.getColumnModel().getColumn(0).setPreferredWidth(83);
-		scrollPane.setViewportView(table);
+		}
+		pnlActiveTasks.setViewportView(tblActiveTasks);
 		
 		scrollPane_1 = new JScrollPane();
 		GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
@@ -167,20 +215,24 @@ public class ManagerMenu extends JFrame {
 		gbc_scrollPane_1.gridy = 3;
 		frame.getContentPane().add(scrollPane_1, gbc_scrollPane_1);
 		
-		table_1 = new JTable();
-		table_1.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-			},
-			new String[] {
-				"New column", "New column", "New column"
+		DefaultTableModel model2 = new DefaultTableModel();
+		tblToSignOff = new JTable(model2);
+		
+		model2.addColumn("Name");
+		model2.addColumn("Location");
+		model2.addColumn("Caretaker");
+		model2.addColumn("Time Allowed");
+		model2.addColumn("Date Due");
+		
+		for (Task t : taskList)
+		{
+			if (t.getCompleted() == true && t.getSignedOff() == false)
+			{
+				model2.addRow( new Object[] {t.getTaskName(), t.getLocation(), t.getCaretaker(),
+				t.getTimeEstimateString(), t.getDateDue()});
 			}
-		));
-		scrollPane_1.setViewportView(table_1);
+		}
+		scrollPane_1.setViewportView(tblToSignOff);
 		
 		scrollPane_2 = new JScrollPane();
 		GridBagConstraints gbc_scrollPane_2 = new GridBagConstraints();
@@ -190,22 +242,22 @@ public class ManagerMenu extends JFrame {
 		gbc_scrollPane_2.gridy = 3;
 		frame.getContentPane().add(scrollPane_2, gbc_scrollPane_2);
 		
-		table_2 = new JTable();
-		table_2.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-			},
-			new String[] {
-				"New column", "New column", "New column"
+		DefaultTableModel model3 = new DefaultTableModel();
+		tblSignedOff = new JTable(model3);
+		model3.addColumn("Name");
+		model3.addColumn("Location");
+		model3.addColumn("Caretaker");
+		model3.addColumn("Date Signed Off");
+		
+		for (Task t : taskList)
+		{
+			if (t.getSignedOff() == true)
+			{
+				model3.addRow( new Object[] {t.getTaskName(), t.getLocation(), t.getCaretaker(),
+				t.getSignedOffOn()});
 			}
-		));
-		scrollPane_2.setViewportView(table_2);
+		}
+		scrollPane_2.setViewportView(tblSignedOff);
 		
 		panel = new JPanel();
 		panel.setLayout(null);
