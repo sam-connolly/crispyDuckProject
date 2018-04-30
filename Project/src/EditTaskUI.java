@@ -35,11 +35,11 @@ public class EditTaskUI extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args, Task task) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					EditTaskUI frame = new EditTaskUI();
+					EditTaskUI frame = new EditTaskUI(task);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -51,7 +51,7 @@ public class EditTaskUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public EditTaskUI() {
+	public EditTaskUI(Task task) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 605, 720);
 		contentPane = new JPanel();
@@ -127,7 +127,9 @@ public class EditTaskUI extends JFrame {
 		pnlDataEntry.add(pnlDateInput);
 		
 		JComboBox<Integer> cmbDateDay = new JComboBox<Integer>();
-		cmbDateDay.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"}));
+		cmbDateDay.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+				"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28",
+				"29", "30", "31"}));
 		pnlDateInput.add(cmbDateDay);
 		
 		JLabel lblDateSeperator1 = new JLabel("/");
