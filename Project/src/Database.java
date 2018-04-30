@@ -315,7 +315,6 @@ public class Database {
 			return null;
 		}
 	}
-	
 
 	/*
 	 *Function which returns a list of User objects (all users in the database)
@@ -402,7 +401,6 @@ public class Database {
 			return null;
 		} // catch
 	} // function
-
 	
 	/*
 	 *  function to retrieve data from TaskList and add it to a collection
@@ -596,6 +594,12 @@ public class Database {
 		this.conn = conn;
 	}
 	
+	/**
+	 * Takes an insert SQL statement and executes it
+	 * 
+	 * @param A formatted SQL statement
+	 * @return If the statement executed correctly
+	 */
 	public Boolean createTask(String insertSQL)
 	{
 		try 
@@ -607,7 +611,7 @@ public class Database {
 		}
 		catch (Exception e) 
 		{
-			// TODO: handle exception
+			e.printStackTrace();
 			return false;
 		}
 		
