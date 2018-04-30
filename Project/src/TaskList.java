@@ -15,7 +15,8 @@ import java.util.concurrent.TimeUnit;
 public class TaskList {
 	private ArrayList<Task> taskList;
 	
-	public TaskList() {
+	public TaskList() 
+	{
 		taskList = new ArrayList<Task>();
 	}
 	
@@ -23,10 +24,15 @@ public class TaskList {
 	 * add a task to the list
 	 * @param the task to add
 	 */
-	public void addTask(Task taskToAdd) {
+	public void addTask(Task taskToAdd) 
+	{
 		taskList.add(taskToAdd);
 	}
 	
+	public ArrayList<Task> getTaskList()
+	{
+		return taskList;
+	}
 	
 	/*
 	 * get the number of tasks of a specified category the specified user 
