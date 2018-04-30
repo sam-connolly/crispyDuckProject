@@ -380,29 +380,21 @@ public class TaskCreationUI extends JFrame
 					//The value (number) of this month
 					String monthValue = month.getValue();
 					
-					//Formatted date for database entry
+					//String value of the date
 					String strDateDue = cmbDateDay.getSelectedItem() + "/" + monthValue + "/" +
 					cmbDateYear.getSelectedItem();
-					/*SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-					Date dateDue = null;
+					//SQL version of the date
+					java.sql.Date sqlDate = null;
 					try 
 					{
-						dateDue = sdf.parse(strDateDue);
-						strDateDue = sdf.format(dateDue);
-					} 
-					catch (ParseException e1) 
+						//Format the date using convertStringToSQLDate in the database class
+						sqlDate = database.convertStringToSQLDate(strDateDue);
+					} catch (ParseException e1) 
 					{
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
-					}
-					System.out.println(dateDue);
-					*/
-					strDateDue = "'#" + strDateDue + "#'";
-					System.out.println(strDateDue);
-					
+					}			
 
-					
-					//JOptionPane.showMessageDialog(new JFrame(), dateDue);
 					//Calculate the total minutes of the time entered
 					int timeEstimateInMinutes = (hours * 60) + minutes;
 					//SQL for creating a new database entry
@@ -415,8 +407,8 @@ public class TaskCreationUI extends JFrame
 							+ cmbPriority.getSelectedItem() + "', '"
 							+ cmbRepeatingDays.getSelectedItem() + "', '"
 							+ timeEstimateInMinutes + "', '"
-							+ txtLocation.getText() + "', "
-							+ strDateDue + ");";
+							+ txtLocation.getText() + "', #"
+							+ sqlDate + "#);";
 					
 					/*Create the database field by calling createTask in the database class. Store whether it was a 
 					success*/
