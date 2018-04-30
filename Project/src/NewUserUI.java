@@ -116,7 +116,8 @@ public class NewUserUI extends JFrame {
 			    try {
 					boolean addUser = database.addUser(username, passwordString,
 							admin, forename, surname);
-					System.out.println(addUser);
+					boolean addPreferences = database.addUserPreferences(username);
+					System.out.println(addUser + " " + addPreferences);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
