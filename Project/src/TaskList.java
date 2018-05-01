@@ -28,6 +28,10 @@ public class TaskList {
 	 */
 	public void addTask(Task taskToAdd) 
 	{
+		/*if(taskToAdd.getDateDue() < )
+		{
+			taskToAdd.setHighestPriority();
+		}*/
 		taskList.add(taskToAdd);
 	}
 	
