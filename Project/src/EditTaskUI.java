@@ -31,7 +31,7 @@ public class EditTaskUI extends JFrame {
 	private JTextField txtLocation;
 	
 	Database database = new Database();
-
+	
 	/**
 	 * Launch the application.
 	 */
@@ -101,6 +101,7 @@ public class EditTaskUI extends JFrame {
 		pnlDataEntry.add(lblTaskName);
 		
 		txtTaskName = new JTextField();
+		txtTaskName.setText(task.getTaskName());
 		pnlDataEntry.add(txtTaskName);
 		txtTaskName.setColumns(10);
 		
@@ -109,6 +110,7 @@ public class EditTaskUI extends JFrame {
 		pnlDataEntry.add(lblDescription);
 		
 		JTextArea txtaDescription = new JTextArea();
+		txtaDescription.setText(task.getTaskDesc());
 		pnlDataEntry.add(txtaDescription);
 		
 		JLabel lblLocation = new JLabel("Location *");
@@ -116,6 +118,7 @@ public class EditTaskUI extends JFrame {
 		pnlDataEntry.add(lblLocation);
 		
 		txtLocation = new JTextField();
+		txtLocation.setText(task.getLocation());
 		pnlDataEntry.add(txtLocation);
 		txtLocation.setColumns(10);
 		
@@ -136,8 +139,8 @@ public class EditTaskUI extends JFrame {
 		pnlDateInput.add(lblDateSeperator1);
 		
 		JComboBox<String> cmbDateMonth = new JComboBox<String>();
-		cmbDateMonth.setModel(new DefaultComboBoxModel<String>(new String[] {"January", "February", "March", "April", "May",
-				"June", "July", "August", "September", "October", "November", "December"}));
+		cmbDateMonth.setModel(new DefaultComboBoxModel<String>(new String[] {"January", "February", "March", "April",
+				"May", "June", "July", "August", "September", "October", "November", "December"}));
 		pnlDateInput.add(cmbDateMonth);
 				
 		JLabel lblDateSeperator2 = new JLabel("/");
@@ -227,7 +230,14 @@ public class EditTaskUI extends JFrame {
 		cmbCategory.addItem("Select a category");
 		for (int i = 0; i < categories.size(); i++)
 		{
-			cmbCategory.addItem(categories.get(i));
+			if (categories.get(i) == task.getTaskCat())
+			{
+				cmbCategory.setSelectedItem(categories.get(i));
+			}
+			else
+			{
+				cmbCategory.addItem(categories.get(i));
+			}
 		}
 		pnlDataEntry.add(cmbCategory);
 		
@@ -237,34 +247,36 @@ public class EditTaskUI extends JFrame {
 		
 		JComboBox<Integer> cmbPriority = new JComboBox<Integer>();
 		cmbPriority.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {1, 2, 3, 4, 5}));
-		cmbPriority.setSelectedIndex(2);
+		cmbPriority.setSelectedItem(task.getPriority());
 		pnlDataEntry.add(cmbPriority);
 		
 		JLabel lblTimeEstimate = new JLabel("Time Estimate *");
 		lblTimeEstimate.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblTimeEstimate);
 		
-		JPanel pnlRepeating = new JPanel();
-		pnlDataEntry.add(pnlRepeating);
+		JPanel pnlTimeEstimate = new JPanel();
+		pnlDataEntry.add(pnlTimeEstimate);
+		
+		Integer timeEstimateFull = task.getTimeEstimateInt();
 		
 		JComboBox<Integer> cmbHours = new JComboBox<Integer>();
 		cmbHours.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
 				14, 15}));
-		pnlRepeating.add(cmbHours);
+		cmbHours.setSelectedIndex((timeEstimateFull - (timeEstimateFull%60))/60);
+		pnlTimeEstimate.add(cmbHours);
 		
 		JLabel lalHours = new JLabel("hours");
-		pnlRepeating.add(lalHours);
+		pnlTimeEstimate.add(lalHours);
 		
 		JComboBox<Integer> cmbMinutes = new JComboBox<Integer>();
 		cmbMinutes.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50,
 				55}));
-		pnlRepeating.add(cmbMinutes);
+		cmbMinutes.setSelectedIndex(timeEstimateFull%60);
+		pnlTimeEstimate.add(cmbMinutes);
 		
 		JLabel lblMinutes = new JLabel("minutes");
-		pnlRepeating.add(lblMinutes);
-		
-		//http://tech.chitgoks.com/2009/10/05/java-use-keyvalue-pair-for-jcombobox-like-htmls-select-tag/
-		
+		pnlTimeEstimate.add(lblMinutes);
+				
 		JLabel lblRepeating = new JLabel("Repeating?");
 		lblRepeating.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblRepeating);
@@ -279,7 +291,14 @@ public class EditTaskUI extends JFrame {
 		repeatingPanel.add(cmbRepeatingDays);
 		for (int i = 0; i <= 365; i++)
 		{
-			cmbRepeatingDays.addItem(i);
+			if (i == task.getRepeating())
+			{
+				cmbRepeatingDays.setSelectedItem(i);
+			}
+			else
+			{
+				cmbRepeatingDays.addItem(i);
+			}
 		}
 		
 		JLabel lblDays = new JLabel(" days (0 if not repeating)");
@@ -302,7 +321,7 @@ public class EditTaskUI extends JFrame {
 		JPanel pnlSubmission = new JPanel();
 		contentPane.add(pnlSubmission);
 		
-		JButton btnCreate = new JButton("Create");
+		JButton btnCreate = new JButton("Update");
 		btnCreate.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent e) 
@@ -321,17 +340,37 @@ public class EditTaskUI extends JFrame {
 				else
 				{
 					int timeEstimateInMinutes = (hours * 60) + minutes;
-					String insertSQL = "INSERT INTO Task (TaskName, TaskDesc,"
-							+ " TaskCat, Priority, Repeating, TimeEstimate, Location)"
-							+ "VALUES ('" + txtTaskName.getText() + "', '" 
-							+ txtaDescription.getText() + "', '"
-							+ cmbCategory.getSelectedItem() + "', '"
-							+ cmbPriority.getSelectedItem() + "', '"
-							+ cmbRepeatingDays.getSelectedItem() + "', '"
-							+ timeEstimateInMinutes + "', '"
-							+ txtLocation.getText() + "');";
+					String updateSQL = "UPDATE Task SET "
+							+ "TaskName = " + txtTaskName.getText() + 
+							", TaskDesc = " + txtaDescription.getText() + 
+							", TaskCat = " + cmbCategory.getSelectedItem() + 
+							", Priority = " + cmbPriority.getSelectedItem() +
+							", Repeating = " + cmbRepeatingDays.getSelectedItem() + 
+							", TimeEstimate = " + timeEstimateInMinutes +
+							", Location = " + txtLocation.getText() +
+							" WHERE taskID = " + task.getTaskID();
+
 					
-					Boolean created = database.createTask(insertSQL);
+					Boolean created = database.executeSQL(updateSQL);
+					
+					if (created)
+					{
+						JOptionPane.showMessageDialog(new JFrame(), "Task successfully created");
+					}
+					else
+					{
+						JOptionPane.showMessageDialog(new JFrame(),
+							    "Could not create task. Contact database administrator",
+							    "Database error",
+							    JOptionPane.ERROR_MESSAGE);
+					}
+					
+					String caretakerUsrnm = ((KeyValue) cmbCaretakers.getSelectedItem()).getKey();
+					updateSQL = "UPDATE TaskList SET "
+							+ "Caretaker = " + caretakerUsrnm + 
+							" WHERE jobID = " + task.getJobID();
+
+					created = database.executeSQL(updateSQL);
 					
 					if (created)
 					{
