@@ -95,6 +95,11 @@ public class Task {
     return repeating;
   }
   
+  public Integer getTimeEstimateInt()
+  {
+	  return timeEstimate;
+  }
+  
   public String getTimeEstimateString() { 
 	   return timeEstimate/24/60 + " days, " + timeEstimate/60%24 + " hours, " + timeEstimate%60 + " minutes.";
 	 }
