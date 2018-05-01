@@ -8,6 +8,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
+import java.text.ParseException;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 
@@ -73,8 +74,8 @@ public class EditTaskUI extends JFrame {
 		{
 			public void actionPerformed(ActionEvent e) 
 			{
-				ManagerMenu menu = new ManagerMenu();
-				menu.setVisible(true);
+				//ManagerMenu menu = new ManagerMenu();
+				//menu.setVisible(true);
 				dispose();
 			}
 		});
@@ -129,10 +130,16 @@ public class EditTaskUI extends JFrame {
 		JPanel pnlDateInput = new JPanel();
 		pnlDataEntry.add(pnlDateInput);
 		
+		String strFullDate = task.getDateDue();
+		String strDateYear = strFullDate.substring(0,3);
+		String strDateMonthNum = strFullDate.substring(5,6);
+		String strDateDays = strFullDate.substring(8,9);
+		
 		JComboBox<Integer> cmbDateDay = new JComboBox<Integer>();
 		cmbDateDay.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
 				"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28",
 				"29", "30", "31"}));
+		cmbDateDay.setSelectedItem(strDateDays);
 		pnlDateInput.add(cmbDateDay);
 		
 		JLabel lblDateSeperator1 = new JLabel("/");
@@ -141,6 +148,46 @@ public class EditTaskUI extends JFrame {
 		JComboBox<String> cmbDateMonth = new JComboBox<String>();
 		cmbDateMonth.setModel(new DefaultComboBoxModel<String>(new String[] {"January", "February", "March", "April",
 				"May", "June", "July", "August", "September", "October", "November", "December"}));
+		int month = Integer.parseInt(strDateMonthNum);
+		switch (month)
+		{
+		case 1:
+			cmbDateMonth.setSelectedItem("January");
+			break;
+		case 2:
+			cmbDateMonth.setSelectedItem("February");
+			break;
+		case 3:
+			cmbDateMonth.setSelectedItem("March");
+			break;
+		case 4: 
+			cmbDateMonth.setSelectedItem("April");
+			break;
+		case 5:
+			cmbDateMonth.setSelectedItem("May");
+			break;
+		case 6:
+			cmbDateMonth.setSelectedItem("June");
+			break;
+		case 7:
+			cmbDateMonth.setSelectedItem("July");
+			break;
+		case 8:
+			cmbDateMonth.setSelectedItem("August");
+			break;
+		case 9:
+			cmbDateMonth.setSelectedItem("September");
+			break;
+		case 10:
+			cmbDateMonth.setSelectedItem("October");
+			break;
+		case 11:
+			cmbDateMonth.setSelectedItem("November");
+			break;
+		case 12:
+			cmbDateMonth.setSelectedItem("December");
+			break;
+		}
 		pnlDateInput.add(cmbDateMonth);
 				
 		JLabel lblDateSeperator2 = new JLabel("/");
@@ -149,7 +196,15 @@ public class EditTaskUI extends JFrame {
 		JComboBox<Integer> cmbDateYear = new JComboBox<Integer>();
 		for (int i = 2018; i <= 3000; i++)
 		{
-			cmbDateYear.addItem(i);
+			String itterator = Integer.toString(i);
+			if (itterator == strDateYear)
+			{
+				cmbDateYear.setSelectedItem(i);
+			}
+			else
+			{
+				cmbDateYear.addItem(i);
+			}
 		}
 		pnlDateInput.add(cmbDateYear);
 		
@@ -262,7 +317,7 @@ public class EditTaskUI extends JFrame {
 		JComboBox<Integer> cmbHours = new JComboBox<Integer>();
 		cmbHours.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
 				14, 15}));
-		cmbHours.setSelectedIndex((timeEstimateFull - (timeEstimateFull%60))/60);
+		cmbHours.setSelectedItem((timeEstimateFull - (timeEstimateFull%60))/60);
 		pnlTimeEstimate.add(cmbHours);
 		
 		JLabel lalHours = new JLabel("hours");
@@ -271,7 +326,7 @@ public class EditTaskUI extends JFrame {
 		JComboBox<Integer> cmbMinutes = new JComboBox<Integer>();
 		cmbMinutes.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50,
 				55}));
-		cmbMinutes.setSelectedIndex(timeEstimateFull%60);
+		cmbMinutes.setSelectedItem(timeEstimateFull%60);
 		pnlTimeEstimate.add(cmbMinutes);
 		
 		JLabel lblMinutes = new JLabel("minutes");
@@ -339,6 +394,26 @@ public class EditTaskUI extends JFrame {
 				}
 				else
 				{
+					//The KeyValue object from the month ComboBox
+					KeyValue month = (KeyValue) cmbDateMonth.getSelectedItem();
+					//The value (number) of this month
+					String monthValue = month.getValue();
+					
+					//String value of the date
+					String strDateDue = cmbDateDay.getSelectedItem() + "/" + monthValue + "/" +
+					cmbDateYear.getSelectedItem();
+					//SQL version of the date
+					java.sql.Date sqlDate = null;
+					try 
+					{
+						//Format the date using convertStringToSQLDate in the database class
+						sqlDate = database.convertStringToSQLDate(strDateDue);
+					} catch (ParseException e1) 
+					{
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}	
+					
 					int timeEstimateInMinutes = (hours * 60) + minutes;
 					String updateSQL = "UPDATE Task SET "
 							+ "TaskName = " + txtTaskName.getText() + 
@@ -366,8 +441,9 @@ public class EditTaskUI extends JFrame {
 					}
 					
 					String caretakerUsrnm = ((KeyValue) cmbCaretakers.getSelectedItem()).getKey();
-					updateSQL = "UPDATE TaskList SET "
-							+ "Caretaker = " + caretakerUsrnm + 
+					updateSQL = "UPDATE TaskList SET " +
+							"Caretaker = " + caretakerUsrnm + 
+							", DateDue = " + sqlDate +
 							" WHERE jobID = " + task.getJobID();
 
 					created = database.executeSQL(updateSQL);
