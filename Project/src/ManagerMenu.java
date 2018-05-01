@@ -132,12 +132,12 @@ public class ManagerMenu extends JFrame {
 						e.printStackTrace();
 					}
 				}
+		gbc_cmbFirstTable.insets = new Insets(0, 0, 5, 5);
+		cmbFirstTable.setModel(new DefaultComboBoxModel(new String[] {"All Unallocated", "Due Allocation", "Not Due Allocation"}));
+		GridBagConstraints gbc_cmbFirstTable = new GridBagConstraints();
 			}
 		});
 
-		cmbFirstTable.setModel(new DefaultComboBoxModel(new String[] {"All Unallocated", "Due Allocation", "Not Due Allocation"}));
-		GridBagConstraints gbc_cmbFirstTable = new GridBagConstraints();
-		gbc_cmbFirstTable.insets = new Insets(0, 0, 5, 5);
 		gbc_cmbFirstTable.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cmbFirstTable.gridx = 1;
 		gbc_cmbFirstTable.gridy = 1;
