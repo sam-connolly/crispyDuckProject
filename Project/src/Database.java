@@ -672,7 +672,7 @@ public class Database {
 	 * @param A formatted SQL statement
 	 * @return If the statement executed correctly
 	 */
-	public Boolean createTask(String insertSQL)
+	public Boolean executeSQL(String insertSQL)
 	{
 		try 
 		{
