@@ -94,8 +94,8 @@ public class TaskCreationUI extends JFrame
 			//When this window is closed, dispose of it and open the ManagerMenu UI
 			public void actionPerformed(ActionEvent e) 
 			{
-				ManagerMenu menu = new ManagerMenu();
-				menu.setVisible(true);
+				//ManagerMenu menu = new ManagerMenu();
+				//menu.setVisible(true);
 				dispose();
 			}
 		});
