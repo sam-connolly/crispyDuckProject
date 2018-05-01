@@ -7,22 +7,19 @@ import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
-import javax.swing.JPasswordField;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 
 public class UpdateUserUI extends JFrame {
+
 	private JPanel contentPane;
 	private JTextField txtUsername;
 	private JTextField txtForename;
 	private JTextField txtSurname;
-	private String username, passwordString, roleString, forename, surname;
-	private boolean admin;
+	private String username = "sdean";
 	Database database = new Database();
-
+	
 	/**
 	 * Launch the application.
 	 */
@@ -30,7 +27,7 @@ public class UpdateUserUI extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					NewUserUI frame = new NewUserUI();
+					UpdateUserUI frame = new UpdateUserUI();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -44,56 +41,62 @@ public class UpdateUserUI extends JFrame {
 	 */
 	public UpdateUserUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 283, 240);
+		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel label = new JLabel("Username");
-		label.setBounds(23, 24, 59, 14);
-		contentPane.add(label);
+		JButton btnChangePassword = new JButton("Change Password");
+		btnChangePassword.setBounds(116, 190, 195, 23);
+		contentPane.add(btnChangePassword);
+		
+		JButton btnSave = new JButton("Save");
+		btnSave.setBounds(116, 224, 195, 23);
+		contentPane.add(btnSave);
 		
 		txtUsername = new JTextField();
-		txtUsername.setColumns(10);
-		txtUsername.setBounds(90, 21, 153, 20);
+		txtUsername.setText(username);
+		txtUsername.setEditable(false);
+		txtUsername.setBounds(146, 33, 245, 28);
 		contentPane.add(txtUsername);
-		//TODO: Update dynamically
+		txtUsername.setColumns(10);
+		
+		JLabel lblUsername = new JLabel("Username");
+		lblUsername.setBounds(42, 40, 105, 14);
+		contentPane.add(lblUsername);
 		
 		txtForename = new JTextField();
-		txtForename.setColumns(10);
-		txtForename.setBounds(90, 58, 153, 20);
+		txtForename.setBounds(146, 73, 245, 28);
 		contentPane.add(txtForename);
-		txtForename.setText(database.getForename(username));
-		
-		JLabel lblForename = new JLabel("Forename");
-		lblForename.setBounds(23, 61, 59, 14);
-		contentPane.add(lblForename);
+		txtForename.setColumns(10);
 		
 		txtSurname = new JTextField();
 		txtSurname.setColumns(10);
-		txtSurname.setBounds(90, 89, 153, 20);
+		txtSurname.setBounds(146, 112, 245, 28);
 		contentPane.add(txtSurname);
-		txtSurname.setText(database.getSurname(username));
+		
+		JLabel lblForename = new JLabel("Forename");
+		lblForename.setBounds(42, 80, 105, 14);
+		contentPane.add(lblForename);
+		txtForename.setText(database.getForename(username));
 		
 		JLabel lblSurname = new JLabel("Surname");
-		lblSurname.setBounds(23, 92, 59, 14);
-		
+		lblSurname.setBounds(42, 119, 105, 14);
 		contentPane.add(lblSurname);
+		txtSurname.setText(database.getSurname(username));
 		
-		JButton btnSubmit = new JButton("Submit");
-		btnSubmit.setBounds(61, 167, 142, 23);
-		btnSubmit.addActionListener(new ActionListener() {
+		btnChangePassword.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ChangePassword changePassword = new ChangePassword(username);
+				changePassword.setVisible(true);
+			}
+		});
+		
+		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				username = txtUsername.getText();
-				if (roleString.equals("Admin")) {
-					admin=true;
-				}
-				else {
-					admin=false;
-				}
-				forename = txtForename.getText();
-				surname = txtSurname.getText();
+				String forename = txtForename.getText();
+				String surname = txtSurname.getText();
 			    try {
 					boolean updateUser = database.updateUser(username,
 							forename, surname);
@@ -104,17 +107,9 @@ public class UpdateUserUI extends JFrame {
 				}		
 			}
 		});
-		contentPane.add(btnSubmit);
-		
-		JButton btnChangePassword = new JButton("Change Password");
-		btnChangePassword.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				ChangePassword changePassword = new ChangePassword();
-				changePassword.setVisible(true);
-			}
-		});
-		
-		btnChangePassword.setBounds(61, 133, 142, 23);
-		contentPane.add(btnChangePassword);
+	}
+	
+	public String getUsername() {
+		return username;
 	}
 }

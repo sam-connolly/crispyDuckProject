@@ -8,6 +8,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.awt.event.ActionEvent;
 
 public class LoginUI extends JFrame {
@@ -81,8 +83,14 @@ public class LoginUI extends JFrame {
 					boolean isAdmin = database.checkRole(username);
 					//If user is Admin will open ManagerMenu UI 
 					if (isAdmin) {
-						ManagerMenu managerMenu = new ManagerMenu();
-						managerMenu.setVisible(true);
+						ManagerMenu managerMenu;
+						try {
+							managerMenu = new ManagerMenu();
+							managerMenu.setVisible(true);
+						} catch (ParseException | SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 					}
 					//If user is NOT Admin will open EmployeeMenu UI
 					else {
@@ -104,11 +112,11 @@ public class LoginUI extends JFrame {
 		contentPane.add(btnLogin);		
 	}
 	
-	public static String getUsername() {
+	public String getUsername() {
 		return username;
 	}
 	
-	public static String getPassword() {
+	public String getPassword() {
 		return passwordString;
 	}
 }

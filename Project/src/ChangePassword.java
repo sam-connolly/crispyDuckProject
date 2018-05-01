@@ -26,9 +26,9 @@ public class ChangePassword extends JDialog implements ActionListener {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args, String user) {
 		try {
-			ChangePassword dialog = new ChangePassword();
+			ChangePassword dialog = new ChangePassword(user);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -39,40 +39,31 @@ public class ChangePassword extends JDialog implements ActionListener {
 	/**
 	 * Create the dialog.
 	 */
-	public ChangePassword() {
+	public ChangePassword(String user) {
+		username = user;
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
-		
-		JLabel lblNewLabel = new JLabel("ID");
-		lblNewLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblNewLabel.setBounds(110, 58, 46, 14);
-		contentPanel.add(lblNewLabel);
-				
-		txtUsername = new JTextField();
-		txtUsername.setBounds(166, 55, 150, 20);
-		contentPanel.add(txtUsername);
-		txtUsername.setColumns(10);
-		
+
 		JLabel lblNewLabel_1 = new JLabel("Old Password");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblNewLabel_1.setBounds(82, 110, 74, 14);
+		lblNewLabel_1.setBounds(48, 75, 74, 14);
 		contentPanel.add(lblNewLabel_1);
 
 		txtOldPassword = new JPasswordField();
-		txtOldPassword.setBounds(166, 107, 150, 20);
+		txtOldPassword.setBounds(162, 71, 185, 22);
 		contentPanel.add(txtOldPassword);
 		txtOldPassword.setColumns(10);
 		
 		JLabel lblNewLabel_2 = new JLabel("New Password");
 		lblNewLabel_2.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblNewLabel_2.setBounds(82, 141, 74, 14);
+		lblNewLabel_2.setBounds(48, 127, 74, 14);
 		contentPanel.add(lblNewLabel_2);
 		
 		txtNewPassword = new JPasswordField();
-		txtNewPassword.setBounds(166, 138, 150, 20);
+		txtNewPassword.setBounds(164, 123, 183, 22);
 		contentPanel.add(txtNewPassword);
 		txtNewPassword.setColumns(10);
 		JPanel buttonPane = new JPanel();
@@ -97,7 +88,6 @@ public class ChangePassword extends JDialog implements ActionListener {
 		//OK button pressed
 		if (action.equals("OK")) {
 			//Get values from user input
-			username= txtUsername.getText();
 			oldPassword = txtOldPassword.getPassword();
 			newPassword = txtNewPassword.getPassword();
 			//Convert password inputs to Strings
@@ -114,6 +104,7 @@ public class ChangePassword extends JDialog implements ActionListener {
 					if (updated) {
 						JOptionPane.showMessageDialog(null, "Password Updated", 
 								"Update Successful", JOptionPane.INFORMATION_MESSAGE);
+						this.setVisible(false);
 					}
 					//If update failed
 					else {
