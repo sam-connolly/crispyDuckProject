@@ -28,6 +28,27 @@ public class TaskList {
 	 */
 	public void addTask(Task taskToAdd) 
 	{
+		DateFormat dateFormat = new SimpleDateFormat("yy/MM/dd");
+		Date currentDate = new Date();
+		Date dateDue = null;
+		try 
+		{
+			dateDue = dateFormat.parse(taskToAdd.getDateDue());
+		} 
+		catch (ParseException e) 
+		{
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(new JFrame(),
+				    "Could not format date for comparison. Priority may neot have been updated",
+				    "Date Format Error",
+				    JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		}
+		
+		if(dateDue.before(currentDate) && dateDue != null)
+		{
+			taskToAdd.setHighestPriority();
+		}
 		taskList.add(taskToAdd);
 	}
 	

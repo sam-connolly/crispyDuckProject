@@ -94,8 +94,8 @@ public class TaskCreationUI extends JFrame
 			//When this window is closed, dispose of it and open the ManagerMenu UI
 			public void actionPerformed(ActionEvent e) 
 			{
-				ManagerMenu menu = new ManagerMenu();
-				menu.setVisible(true);
+				//ManagerMenu menu = new ManagerMenu();
+				//menu.setVisible(true);
 				dispose();
 			}
 		});
@@ -412,7 +412,7 @@ public class TaskCreationUI extends JFrame
 					
 					/*Create the database field by calling createTask in the database class. Store whether it was a 
 					success*/
-					Boolean created = database.createTask(insertSQL);
+					Boolean created = database.executeSQL(insertSQL);
 					
 					//If the data entry was a success, let the user know
 					if (created)

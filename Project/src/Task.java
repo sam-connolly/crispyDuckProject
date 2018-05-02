@@ -95,18 +95,18 @@ public class Task {
     return repeating;
   }
   
+  public Integer getTimeEstimateInt()
+  {
+	  return timeEstimate;
+  }
+  
   public String getTimeEstimateString() { 
 	   return timeEstimate/24/60 + " days, " + timeEstimate/60%24 + " hours, " + timeEstimate%60 + " minutes.";
 	 }
-  /*
-   	public String lastCompleted() { 
-   	  return lastCompleted
-   	 }
-   */
   
   /*
    *  getter for caretaker returns either the username of the caretaker if
-   *  it's been allocated or "Not Assigned" if it hasn't. getCaretaker() cannot return null
+   *  it's been allocated, or "Not Assigned" if it hasn't. getCaretaker() cannot return null
    *  because it is used in a function that does a comparison using equals()
    */
   public String getCaretaker() {
@@ -162,6 +162,7 @@ public class Task {
   {
 	  return issueDesc;
   }
+  
   public void setLastAllocated(String lastAllocated) {
 	  this.lastAllocated = lastAllocated;
   }
@@ -225,6 +226,11 @@ public class Task {
 	  db.insertTaskList(taskID, caretaker, dateIssued, completed, timeTaken, issue, issueDesc, signedOff, signedOffOn, dateDue);
   }
   
+  public void setHighestPriority()
+  {
+	  priority = "1";
+  }
+  
   public void deallocateTask() {
 	  caretaker = "Not Assigned";
 	  dateIssued = null;
@@ -246,6 +252,7 @@ public class Task {
 	  Date currentDate = new Date();
 	  signedOffOn = dateFormat.format(currentDate);
   }
+  
   public static class TaskBuilder {
     // required
 	private int jobID;
@@ -343,8 +350,14 @@ public class Task {
     }
     
     public TaskBuilder dateDue(String val) {
-      dateDue = val;
-      return this;
+    	DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    	  if (val != null) {
+    		  dateDue = dateFormat.format(val);
+    	  }
+    	  else {
+    		  dateDue = null;
+    	  }
+        return this;
     }
     
     public TaskBuilder issue(boolean val) {
