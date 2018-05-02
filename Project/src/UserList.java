@@ -1,4 +1,10 @@
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
+
+import javax.swing.JComboBox;
+import javax.swing.table.DefaultTableModel;
 
 public class UserList {
 	private ArrayList<User> allUsers;
@@ -36,11 +42,12 @@ public class UserList {
 	 * 
 	 * @return a list of eligible users for allocation
 	 */
-	public ArrayList<User> findToAssign(String taskCat, TaskList allTasks) {
+	public String findToAssign(String taskCat, TaskList allTasks) {
 		// create variable for the highest eligibility rating
 		float highestRating = 0;
 		// list of eligible users to return
 		ArrayList<User> eligibleUsers = new ArrayList<User>();
+		String selectedCaretaker;
 		
 		// loop through all users
 		for (User userChecking : allUsers) {
@@ -67,7 +74,14 @@ public class UserList {
 				eligibleUsers.add(userChecking);
 			}
 		}
-		return eligibleUsers;
+		
+	  // get a random index
+	  int numEligible = eligibleUsers.size();
+	  int index = ThreadLocalRandom.current().nextInt(0, numEligible);
+	  
+	  // assign to random caretaker
+	  selectedCaretaker = eligibleUsers.get(index).getUsername();
+		return selectedCaretaker;
 	}
 
 	/*
@@ -103,5 +117,35 @@ public class UserList {
 		}
 		
 		return null;
+	}
+	
+	public JComboBox getUsersComboBox() {
+		JComboBox userCombo = new JComboBox();
+		for(User userToAdd : allUsers) {
+			userCombo.addItem(userToAdd.getUsername());
+		}
+		return userCombo;
+	}
+	
+	public DefaultTableModel getUserInfoModel(String username, TaskList allTasks) throws ParseException, SQLException {
+		DefaultTableModel userInfoModel = new DefaultTableModel() {
+		    @Override
+		    public boolean isCellEditable(int row, int column) {
+		       return false;
+		    }
+		};
+		userInfoModel.addColumn("Task Category");
+		userInfoModel.addColumn("Preference Level");
+		userInfoModel.addColumn("Efficiency");
+		userInfoModel.addColumn("Number Assigned");
+		userInfoModel.addColumn("Number completed");
+		
+		for (User userToCheck : allUsers) {
+			if ( userToCheck.getUsername().equals(username)) {
+				System.out.print("YOOO");
+				userInfoModel = userToCheck.getPreferenceModel(userInfoModel, allTasks, username);
+			}
+		}
+		return userInfoModel;
 	}
 }

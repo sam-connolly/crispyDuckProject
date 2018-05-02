@@ -166,6 +166,8 @@ public class Task {
 	  this.lastAllocated = lastAllocated;
   }
   
+  
+  
   /*
    * allocates the task to a caretaker. Sets the dateAllocated to today, 
    * calls the finToAssign function to get a list of eligible caretakers and 
@@ -186,7 +188,7 @@ public class Task {
 	  ArrayList<User> eligibleUsers = new ArrayList<User>();
 	  
 	  // run findToAssign, returns a lit of eligible users
-	  eligibleUsers = allUsers.findToAssign(taskCat, allTasks);
+	  // eligibleUsers = allUsers.findToAssign(taskCat, allTasks);
 	  
 	  // get a random index
 	  int numEligible = eligibleUsers.size();
@@ -206,14 +208,21 @@ public class Task {
    * 
    * @param username caretaker to allocate to
    */
-  public void assignToCaretaker(String username) {
+  public void assignToCaretaker(String username, TaskList allTasks) throws SQLException, ParseException {
+	  Database db = new Database();
 	  DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 	  Date currentDate = new Date();
 	  // set date to today
+	  // set dateIssued and last allocated to today
 	  dateIssued = dateFormat.format(currentDate);
+	  lastAllocated = dateFormat.format(currentDate);
+	  db.updateLastAllocated(taskID, lastAllocated);
+	  allTasks.updateLastAllocation(taskID, lastAllocated);
 	  
 	  // set the caretaker 
 	  caretaker = username;
+	  
+	  db.insertTaskList(taskID, caretaker, dateIssued, completed, timeTaken, issue, issueDesc, signedOff, signedOffOn, dateDue);
   }
   
   public void deallocateTask() {
@@ -423,5 +432,4 @@ public class Task {
         return new Task(this);
       }
     }
-   
   }

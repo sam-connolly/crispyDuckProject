@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 
+import javax.swing.table.DefaultTableModel;
+
 /**
  * store information on Users
  * @author Jesse
@@ -78,6 +80,20 @@ public class User {
 		return preferenceLevel;
 	} // function
 	
+	public DefaultTableModel getPreferenceModel(DefaultTableModel prefModel, TaskList allTasks, String username) {
+		Object[] row = new Object[5];
+		for (TaskCategory catForRow : preferences) {
+			row[0] = catForRow.getTaskCategory();
+			row[1] = catForRow.getPreferenceLevel();
+			row[2] = catForRow.getEfficiency();
+			row[3] = allTasks.numTasksInCat(username, catForRow.getTaskCategory());
+			row[4] = catForRow.getNumberCompleted();
+			
+			prefModel.addRow(row);
+		}
+		return prefModel;
+	}
+	
 	public String getUsername() {
 		return username;
 	}
@@ -96,6 +112,10 @@ public class User {
 	
 	public String getSurname() {
 		return sName;
+	}
+	
+	public String getFullName() {
+		return fName + " " + sName;
 	}
 	
 	public void setPasswordHash(String passwordHash) {

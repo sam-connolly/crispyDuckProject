@@ -6,6 +6,8 @@ import javax.swing.JScrollPane;
 import java.awt.GridBagConstraints;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+
 import java.awt.Insets;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
@@ -15,6 +17,8 @@ import javax.swing.JPanel;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JMenuBar;
@@ -26,9 +30,9 @@ public class ManagerMenu extends JFrame {
 
 	private JFrame frame;
 	private JTable tblActiveTasks;
-	private JScrollPane scrollPane_1;
-	private JTable tblToSignOff;
-	private JScrollPane scrollPane_2;
+	private JScrollPane pnlAllocated;
+	private JTable tblAllocated;
+	private JScrollPane pnlCompleted;
 	private JTable tblSignedOff;
 	private JTextField txtSearch;
 	private JTextField txtSearch_2;
@@ -37,9 +41,13 @@ public class ManagerMenu extends JFrame {
 	private JComboBox<String> cmbLastTable;
 	private JPanel panel;
 	private JMenuBar menuBar;
+	private TaskList allTasks = new TaskList();
+	private Database database = new Database();
+	private UserList allUsers = new UserList();
 	
-	Database database = new Database();
 	private ArrayList<Task> taskList;
+	private JTable tblUnallocated;
+	private JTable tblCompleted;
 
 	/**
 	 * Launch the application.
@@ -60,15 +68,23 @@ public class ManagerMenu extends JFrame {
 
 	/**
 	 * Create the application.
+	 * @throws SQLException 
+	 * @throws ParseException 
 	 */
-	public ManagerMenu() {
+	public ManagerMenu() throws ParseException, SQLException {
 		initialize();
 	}
 
 	/**
 	 * Initialise the contents of the frame.
+	 * @throws SQLException 
+	 * @throws ParseException 
 	 */
-	private void initialize() {
+	private void initialize() throws ParseException, SQLException {		
+		allTasks = database.getTasks();
+		allUsers = database.getUsers();
+
+	
 		frame = new JFrame();
 		frame.setBounds(100, 100, 873, 573);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -79,60 +95,58 @@ public class ManagerMenu extends JFrame {
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 100.0, 1.0, 0.0, Double.MIN_VALUE};
 		frame.getContentPane().setLayout(gridBagLayout);
 		
+		JButton btnAllocate = new JButton("Allocate Task");
+		
 		DefaultTableModel model = new DefaultTableModel();
 		cmbFirstTable = new JComboBox<String>();
-		cmbFirstTable.setModel(new DefaultComboBoxModel<String>(new String[] {"All Uncompleted Tasks", "Assigned",
-				"Pending Issues"}));
+		cmbFirstTable.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(cmbFirstTable.getSelectedItem() == "All Unallocated") {
+					try {
+						tblUnallocated.setModel(allTasks.getAllUnallocated("All Unallocated"));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+				else if(cmbFirstTable.getSelectedItem() == "Due Allocation") {
+					try {
+						tblUnallocated.setModel(allTasks.getAllUnallocated("Due Allocation"));
+						btnAllocate.setEnabled(true);
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+				else if(cmbFirstTable.getSelectedItem() == "Not Due Allocation") {
+					try {
+						tblUnallocated.setModel(allTasks.getAllUnallocated("Not Due Allocation"));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+
+		cmbFirstTable.setModel(new DefaultComboBoxModel(new String[] {"All Unallocated", "Due Allocation", "Not Due Allocation"}));
 		GridBagConstraints gbc_cmbFirstTable = new GridBagConstraints();
 		gbc_cmbFirstTable.insets = new Insets(0, 0, 5, 5);
 		gbc_cmbFirstTable.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cmbFirstTable.gridx = 1;
 		gbc_cmbFirstTable.gridy = 1;
 		frame.getContentPane().add(cmbFirstTable, gbc_cmbFirstTable);
-		cmbFirstTable.addItemListener(new ItemListener()
-		{
-			//When the comboBox is changed, repopulate the table
-			public void itemStateChanged(ItemEvent evt)
-			{
-				if (cmbFirstTable.getSelectedItem() == "All Uncompleted Tasks")
-				{
-					model.setRowCount(0);
-					for (Task t : taskList)
-					{
-						if (t.getCompleted() == false)
-						{
-							model.addRow( new Object[] {t.getTaskName(), t.getLocation(), t.getCaretaker(),
-							t.getTimeEstimateString(), t.getDateDue(), t.getPriority()});
-						}
-					}
-					
-				}
-				else if (cmbFirstTable.getSelectedItem() == "Assigned")
-				{
-					model.setRowCount(0);
-					for (Task t : taskList)
-					{
-						if (t.getCompleted() == false && t.getCaretaker() != "Not Assigned")
-						{
-							model.addRow( new Object[] {t.getTaskName(), t.getLocation(), t.getCaretaker(),
-							t.getTimeEstimateString(), t.getDateDue(), t.getPriority()});
-						}
-					}
-				}
-				else
-				{
-					model.setRowCount(0);
-					for (Task t : taskList)
-					{
-						if (t.getCompleted() == false && t.getIssue() == true)
-						{
-							model.addRow( new Object[] {t.getTaskName(), t.getLocation(), t.getCaretaker(),
-							t.getTimeEstimateString(), t.getDateDue(), t.getPriority()});
-						}
-					}
-				}
-				}
-			});
 		
 		cmbLastTable = new JComboBox<String>();
 		cmbLastTable.setModel(new DefaultComboBoxModel<String>(new String[] {"All Completed", "Completed Today",
@@ -177,91 +191,49 @@ public class ManagerMenu extends JFrame {
 		frame.getContentPane().add(txtSearch_1, gbc_txtSearch_1);
 		txtSearch_1.setColumns(10);
 		
-		JScrollPane pnlActiveTasks = new JScrollPane();
-		GridBagConstraints gbc_pnlActiveTasks = new GridBagConstraints();
-		gbc_pnlActiveTasks.insets = new Insets(0, 0, 5, 5);
-		gbc_pnlActiveTasks.fill = GridBagConstraints.BOTH;
-		gbc_pnlActiveTasks.gridx = 1;
-		gbc_pnlActiveTasks.gridy = 3;
-		frame.getContentPane().add(pnlActiveTasks, gbc_pnlActiveTasks);
+		JScrollPane pnlUnallocated = new JScrollPane();
+		GridBagConstraints gbc_pnlUnallocated = new GridBagConstraints();
+		gbc_pnlUnallocated.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlUnallocated.fill = GridBagConstraints.BOTH;
+		gbc_pnlUnallocated.gridx = 1;
+		gbc_pnlUnallocated.gridy = 3;
+		frame.getContentPane().add(pnlUnallocated, gbc_pnlUnallocated);
 		
-		tblActiveTasks = new JTable(model);
-
-		model.addColumn("Name");
-		model.addColumn("Location");
-		model.addColumn("Caretaker");
-		model.addColumn("Time Allowed");
-		model.addColumn("Date Due");
-		model.addColumn("Priority");
+		tblUnallocated = new JTable(allTasks.getAllUnallocated("All Unallocated"));
+		pnlUnallocated.setViewportView(tblUnallocated);
 		
-		TaskList activeTasks = database.getTasks();
-		taskList = new ArrayList<Task>(activeTasks.getTaskList());
+		pnlAllocated = new JScrollPane();
 		
-		for (Task t : taskList)
-		{
-			if (t.getCompleted() == false)
-			{
-				model.addRow( new Object[] {t.getTaskName(), t.getLocation(), t.getCaretaker(),
-				t.getTimeEstimateString(), t.getDateDue(), t.getPriority()});
-			}
-		}
-		pnlActiveTasks.setViewportView(tblActiveTasks);
+		GridBagConstraints gbc_pnlAllocated = new GridBagConstraints();
+		gbc_pnlAllocated.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlAllocated.fill = GridBagConstraints.BOTH;
+		gbc_pnlAllocated.gridx = 2;
+		gbc_pnlAllocated.gridy = 3;
+		frame.getContentPane().add(pnlAllocated, gbc_pnlAllocated);
 		
-		scrollPane_1 = new JScrollPane();
-		GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
-		gbc_scrollPane_1.insets = new Insets(0, 0, 5, 5);
-		gbc_scrollPane_1.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane_1.gridx = 2;
-		gbc_scrollPane_1.gridy = 3;
-		frame.getContentPane().add(scrollPane_1, gbc_scrollPane_1);
+		DefaultTableModel allocatedModel = allTasks.getAllAllocated();
+		tblAllocated = new JTable(allocatedModel);
+		pnlAllocated.setViewportView(tblAllocated);
 		
-		DefaultTableModel model2 = new DefaultTableModel();
-		tblToSignOff = new JTable(model2);
-		
-		model2.addColumn("Name");
-		model2.addColumn("Location");
-		model2.addColumn("Caretaker");
-		model2.addColumn("Time Allowed");
-		model2.addColumn("Date Due");
-		
-		for (Task t : taskList)
-		{
-			if (t.getCompleted() == true && t.getSignedOff() == false)
-			{
-				model2.addRow( new Object[] {t.getTaskName(), t.getLocation(), t.getCaretaker(),
-				t.getTimeEstimateString(), t.getDateDue()});
-			}
-		}
-		scrollPane_1.setViewportView(tblToSignOff);
-		
-		scrollPane_2 = new JScrollPane();
-		GridBagConstraints gbc_scrollPane_2 = new GridBagConstraints();
-		gbc_scrollPane_2.insets = new Insets(0, 0, 5, 5);
-		gbc_scrollPane_2.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane_2.gridx = 3;
-		gbc_scrollPane_2.gridy = 3;
-		frame.getContentPane().add(scrollPane_2, gbc_scrollPane_2);
+		pnlCompleted = new JScrollPane();
+		GridBagConstraints gbc_pnlCompleted = new GridBagConstraints();
+		gbc_pnlCompleted.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlCompleted.fill = GridBagConstraints.BOTH;
+		gbc_pnlCompleted.gridx = 3;
+		gbc_pnlCompleted.gridy = 3;
+		frame.getContentPane().add(pnlCompleted, gbc_pnlCompleted);
 		
 		DefaultTableModel model3 = new DefaultTableModel();
-		tblSignedOff = new JTable(model3);
-		model3.addColumn("Name");
-		model3.addColumn("Location");
-		model3.addColumn("Caretaker");
-		model3.addColumn("Date Signed Off");
+		pnlCompleted.setViewportView(tblSignedOff);
 		
-		for (Task t : taskList)
-		{
-			if (t.getSignedOff() == true)
-			{
-				model3.addRow( new Object[] {t.getTaskName(), t.getLocation(), t.getCaretaker(),
-				t.getSignedOffOn()});
-			}
-		}
-		scrollPane_2.setViewportView(tblSignedOff);
+		DefaultTableModel completedModel = allTasks.getAllCompleted();
+		tblCompleted = new JTable(completedModel);
+		pnlCompleted.setViewportView(tblCompleted);
 		
 		panel = new JPanel();
 		panel.setLayout(null);
 		GridBagConstraints gbc_panel = new GridBagConstraints();
+		gbc_panel.gridwidth = 3;
 		gbc_panel.insets = new Insets(0, 0, 5, 5);
 		gbc_panel.fill = GridBagConstraints.BOTH;
 		gbc_panel.gridx = 1;
@@ -281,26 +253,53 @@ public class ManagerMenu extends JFrame {
 		});
 		panel.add(btnAddTask);
 		
-		JButton btnNewButton_1 = new JButton("Print Tasks");
-		btnNewButton_1.addActionListener(new ActionListener() {
+		btnAllocate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				DefaultTableModel toAllocateModel = new DefaultTableModel() {
+				    @Override
+				    public boolean isCellEditable(int row, int column) {
+				       return false;
+				    }
+				};
+				
+				TableModel selectedModel = tblUnallocated.getModel();
+				Object row[] = new Object[4];
+				
+				toAllocateModel.addColumn("Task ID"); 
+				toAllocateModel.addColumn("Task Name"); 
+				toAllocateModel.addColumn("Task Category");
+				toAllocateModel.addColumn("Caretaker"); 
+				
+				int indexes[] = tblUnallocated.getSelectedRows();
+				
+				for(int i : indexes) {
+					System.out.println(selectedModel.getValueAt(i, 2));
+					if(selectedModel.getValueAt(i, 2).equals("DUE ALLOCATION")) {
+						int taskID = Integer.parseInt( selectedModel.getValueAt(i, 0).toString() );
+						System.out.println(taskID);
+						String taskCat = allTasks.getFirstTaskWithTaskID(taskID).getTaskCat();
+						row[0] = selectedModel.getValueAt(i, 0);
+						row[1] = selectedModel.getValueAt(i, 1);
+						row[2] = taskCat;
+						row[3] = allUsers.findToAssign(taskCat, allTasks);
+						
+						toAllocateModel.addRow(row);
+					}
+				}
+				
+				try {
+					AllocationMenu allocationMenu = new AllocationMenu();
+					allocationMenu.setToAllocateModel(toAllocateModel);
+					allocationMenu.setVisible(true);
+				} catch (ParseException | SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 			}
 		});
-		btnNewButton_1.setBounds(109, 0, 101, 23);
-		panel.add(btnNewButton_1);
-		
-		JPanel panel_1 = new JPanel();
-		panel_1.setLayout(null);
-		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
-		gbc_panel_1.insets = new Insets(0, 0, 5, 5);
-		gbc_panel_1.fill = GridBagConstraints.BOTH;
-		gbc_panel_1.gridx = 2;
-		gbc_panel_1.gridy = 4;
-		frame.getContentPane().add(panel_1, gbc_panel_1);
-		
-		JButton btnNewButton_2 = new JButton("Sign Off");
-		btnNewButton_2.setBounds(0, 0, 99, 23);
-		panel_1.add(btnNewButton_2);
+		btnAllocate.setBounds(111, 0, 126, 23);
+		panel.add(btnAllocate);
 		
 		menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
