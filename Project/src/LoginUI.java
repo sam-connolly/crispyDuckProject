@@ -86,7 +86,7 @@ public class LoginUI extends JFrame {
 					if (isAdmin) {
 						ManagerMenu managerMenu;
 						try {
-							managerMenu = new ManagerMenu();
+							managerMenu = new ManagerMenu(username);
 							managerMenu.setVisible(true);
 						} catch (ParseException | SQLException e1) {
 							// TODO Auto-generated catch block

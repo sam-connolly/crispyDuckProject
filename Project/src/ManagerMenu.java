@@ -44,7 +44,7 @@ public class ManagerMenu extends JFrame {
 	private TaskList allTasks = new TaskList();
 	private Database database = new Database();
 	private UserList allUsers = new UserList();
-	
+	private String username;
 	private ArrayList<Task> taskList;
 	private JTable tblUnallocated;
 	private JTable tblCompleted;
@@ -52,11 +52,11 @@ public class ManagerMenu extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args, String user) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ManagerMenu window = new ManagerMenu();
+					ManagerMenu window = new ManagerMenu(user);
 					window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -71,7 +71,8 @@ public class ManagerMenu extends JFrame {
 	 * @throws SQLException 
 	 * @throws ParseException 
 	 */
-	public ManagerMenu() throws ParseException, SQLException {
+	public ManagerMenu(String user) throws ParseException, SQLException {
+		username=user;
 		initialize();
 	}
 
