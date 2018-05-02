@@ -320,6 +320,27 @@ public class Database {
 		return preferenceLevel;
 	}
 
+	public float getEfficiency(String username, String cat) throws SQLException{
+		float efficiency=0;
+		System.out.println(username);
+		System.out.println(cat);
+		try {
+			PreparedStatement stmt = conn.prepareStatement("SELECT Efficiency FROM CaretakerCategory WHERE Caretaker = '"+ username +"' AND CatName = '"+ cat +"'");
+			ResultSet rs = stmt.executeQuery();
+			boolean moreRecords = rs.next();
+			if (!moreRecords) {
+				System.out.println("ResultSet contained no records");
+				return 0;
+			}
+			efficiency=Float.parseFloat(rs.getString("Efficiency"));
+		}
+		catch(Exception e) {
+			
+		}
+		System.out.println(efficiency);
+		return efficiency;
+	}
+	
 	public ArrayList<String> getCategories()
 	{
 		try {

@@ -40,6 +40,7 @@ public class UpdateUserUI extends JFrame {
 	 * Create the frame.
 	 */
 	public UpdateUserUI() {
+		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();

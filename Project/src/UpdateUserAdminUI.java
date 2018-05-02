@@ -18,6 +18,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 
 import java.util.ArrayList;
+import javax.swing.JSeparator;
 
 public class UpdateUserAdminUI extends JFrame {
 
@@ -29,6 +30,7 @@ public class UpdateUserAdminUI extends JFrame {
 	private String username, passwordString, roleString, forename, surname;
 	private boolean admin;
 	Database database = new Database();
+	private JTextField txtEfficiency;
 
 	/**
 	 * Launch the application.
@@ -50,8 +52,9 @@ public class UpdateUserAdminUI extends JFrame {
 	 * Create the frame.
 	 */
 	public UpdateUserAdminUI() {
+		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 334, 403);
+		setBounds(100, 100, 337, 452);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -59,7 +62,7 @@ public class UpdateUserAdminUI extends JFrame {
 		
 		//Combo box to allow Admin to select chosen user
 		JComboBox<String> cmbUsername = new JComboBox<String>();
-		cmbUsername.setSize(151, 22);
+		cmbUsername.setSize(153, 22);
 		cmbUsername.setLocation(139, 20);
 		//Default item
 		cmbUsername.addItem("Select a User");
@@ -106,7 +109,7 @@ public class UpdateUserAdminUI extends JFrame {
 		contentPane.add(lblSurname);
 		
 		//ComboBox to chose user role
-		JComboBox cmbRole = new JComboBox();
+		JComboBox<String> cmbRole = new JComboBox<String>();
 		cmbRole.setMaximumRowCount(2);
 		cmbRole.setBounds(139, 85, 153, 20);
 		cmbRole.setModel(new DefaultComboBoxModel(new String[] {"Admin", "User"}));
@@ -135,11 +138,11 @@ public class UpdateUserAdminUI extends JFrame {
 			    } 
 			}
 		});
-		btnDeleteUser.setBounds(103, 282, 116, 23);
+		btnDeleteUser.setBounds(103, 342, 116, 23);
 		contentPane.add(btnDeleteUser);
 		
 		JComboBox<String> cmbCat = new JComboBox<String>();
-		cmbCat.setBounds(139, 180, 151, 22);
+		cmbCat.setBounds(139, 223, 151, 22);
 		contentPane.add(cmbCat);
 		ArrayList<String> categories = new ArrayList<String>();
 		categories = database.getCategories();
@@ -149,7 +152,7 @@ public class UpdateUserAdminUI extends JFrame {
 		}
 		
 		JComboBox<String> cmbPrefLvl = new JComboBox<String>();
-		cmbPrefLvl.setBounds(139, 213, 151, 20);
+		cmbPrefLvl.setBounds(139, 256, 151, 20);
 		contentPane.add(cmbPrefLvl);
 		for (int i=0; i<11; i++)
 		{
@@ -157,28 +160,34 @@ public class UpdateUserAdminUI extends JFrame {
 		}
 		
 		JLabel lblCategory = new JLabel("Category");
-		lblCategory.setBounds(23, 184, 59, 14);
+		lblCategory.setBounds(23, 227, 59, 14);
 		contentPane.add(lblCategory);
 		
 		JLabel lblPreferenceLevel = new JLabel("Preference Level");
-		lblPreferenceLevel.setBounds(23, 216, 59, 14);
+		lblPreferenceLevel.setBounds(23, 259, 59, 14);
 		contentPane.add(lblPreferenceLevel);
 		
 		cmbUsername.addItemListener(new ItemListener()
 		{
 			public void itemStateChanged(ItemEvent evt)
 			{
+				String cat=cmbCat.getSelectedItem().toString();
 				username = cmbUsername.getSelectedItem().toString();
 				txtPassword.setText(database.getPassword(username));
 				txtForename.setText(database.getForename(username));
 				txtSurname.setText(database.getSurname(username));
+				try {
+					txtEfficiency.setText(String.valueOf(database.getEfficiency(username, cat)));
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				if (database.checkRole(username)==true) {
 					cmbRole.setSelectedItem("Admin");
 				}
 				else {
 					cmbRole.setSelectedItem("User");
 				}
-				String cat=cmbCat.getSelectedItem().toString();
 				int preferenceLevel = 0;
 				try {
 					preferenceLevel = database.getPreferenceLevel(username, cat);
@@ -204,12 +213,18 @@ public class UpdateUserAdminUI extends JFrame {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				try {
+					txtEfficiency.setText(String.valueOf(database.getEfficiency(username, cat)));
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				cmbPrefLvl.setSelectedItem(Integer.toString(preferenceLevel));
 			}
 		});
 		
 		JButton btnSubmit = new JButton("Submit");
-		btnSubmit.setBounds(103, 316, 116, 23);
+		btnSubmit.setBounds(103, 376, 116, 23);
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//Get values from textboxes
@@ -249,5 +264,18 @@ public class UpdateUserAdminUI extends JFrame {
 			}
 		});
 		contentPane.add(btnSubmit);
+		
+		JLabel lblEfficiency = new JLabel("Efficiency");
+		lblEfficiency.setBounds(23, 290, 59, 14);
+		contentPane.add(lblEfficiency);
+		
+		JSeparator separator = new JSeparator();
+		separator.setBounds(10, 193, 301, 2);
+		contentPane.add(separator);
+		
+		txtEfficiency = new JTextField();
+		txtEfficiency.setEditable(false);
+		txtEfficiency.setBounds(139, 287, 151, 20);
+		contentPane.add(txtEfficiency);
 	}
 }

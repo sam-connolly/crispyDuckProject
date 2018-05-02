@@ -40,6 +40,7 @@ public class ChangePassword extends JDialog implements ActionListener {
 	 * Create the dialog.
 	 */
 	public ChangePassword(String user) {
+		setResizable(false);
 		username = user;
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
