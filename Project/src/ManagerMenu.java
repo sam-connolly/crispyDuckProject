@@ -14,9 +14,7 @@ import javax.swing.JComboBox;
 import javax.swing.JButton;
 import javax.swing.JSplitPane;
 import javax.swing.JPanel;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -26,7 +24,8 @@ import javax.swing.JMenuItem;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.Color;
 
-public class ManagerMenu extends JFrame {
+public class ManagerMenu extends JFrame
+{
 
 	private JFrame frame;
 	private JTable tblActiveTasks;
@@ -52,11 +51,12 @@ public class ManagerMenu extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args/*, String user*/) {
+	public static void main(String[] args) 
+	{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ManagerMenu window = new ManagerMenu(/*user*/);
+					ManagerMenu window = new ManagerMenu();
 					window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -71,8 +71,8 @@ public class ManagerMenu extends JFrame {
 	 * @throws SQLException 
 	 * @throws ParseException 
 	 */
-	public ManagerMenu(/*String user*/) throws ParseException, SQLException {
-		// username=user;
+	public ManagerMenu() throws ParseException, SQLException 
+	{
 		initialize();
 	}
 
@@ -81,10 +81,10 @@ public class ManagerMenu extends JFrame {
 	 * @throws SQLException 
 	 * @throws ParseException 
 	 */
-	private void initialize() throws ParseException, SQLException {		
+	private void initialize() throws ParseException, SQLException 
+	{		
 		allTasks = database.getTasks();
 		allUsers = database.getUsers();
-
 	
 		frame = new JFrame();
 		frame.setBounds(100, 100, 873, 573);
@@ -203,6 +203,25 @@ public class ManagerMenu extends JFrame {
 		tblUnallocated = new JTable(allTasks.getAllUnallocated("All Unallocated"));
 		pnlUnallocated.setViewportView(tblUnallocated);
 		
+		/*tblUnallocated.addMouseListener(new MouseAdapter()
+			{
+				public void mouseClicked(MouseEvent e) 
+				{
+					if (e.getClickCount() == 2)
+					{
+						JTable target = (JTable)e.getSource();
+						int row = target.getSelectedRow();
+						int taskID = (Integer) tblUnallocated.getValueAt(row, 0);
+						
+						EditTaskUI editTask = new EditTaskUI(taskID);
+						editTask.setVisible(true);
+						setVisible(false);
+						System.out.println("Is this being called");
+						dispose();
+					}
+				}
+			});*/
+		
 		pnlAllocated = new JScrollPane();
 		
 		GridBagConstraints gbc_pnlAllocated = new GridBagConstraints();
@@ -249,6 +268,8 @@ public class ManagerMenu extends JFrame {
 			{
 				TaskCreationUI addTask = new TaskCreationUI();
 				addTask.setVisible(true);
+				setVisible(false);
+				System.out.println("Is this being called");
 				dispose();
 			}
 		});
