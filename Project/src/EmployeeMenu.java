@@ -8,7 +8,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import net.miginfocom.swing.MigLayout;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JTextField;
@@ -30,7 +29,7 @@ public class EmployeeMenu extends JFrame{
 
 	private JFrame frame;
 	private JScrollPane scrollPane;
-	private JTable inProgress;
+	private JTable tblInProgress;
 	private JScrollPane scrollPane_1;
 	private JTable completed;
 	private JButton completeButton;
@@ -43,6 +42,9 @@ public class EmployeeMenu extends JFrame{
 	private JComboBox completedSort;
 	private JTextField inProgressSearch;
 	private JTextField completedSearch;
+	
+	private Database database = new Database();
+	private TaskList allTasks;
 
 	/**
 	 * Launch the application.
@@ -68,14 +70,10 @@ public class EmployeeMenu extends JFrame{
 	}
 
 	/**
-	 * Initialize the contents of the frame.
+	 * Initialise the contents of the frame.
 	 */
 	private void initialize() {
-		Database database = new Database();
-
-		TaskList allActiveTasks = new TaskList();
-		
-		allActiveTasks = database.getActiveTasks();
+		allTasks = database.getTasks();
 		
 		frame = new JFrame();
 		frame.setBounds(100, 100, 1169, 686);
@@ -133,27 +131,16 @@ public class EmployeeMenu extends JFrame{
 		gbc_scrollPane.gridy = 3;
 		frame.getContentPane().add(scrollPane, gbc_scrollPane);
 		
-		String[] columnNames = {"Caretaker", "Date Issued", "Date Due"};
-
-		DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+		tblInProgress = new JTable(allTasks.getAllocatedToCaretaker("sConnolly"));
 		
-		for (int i = 0; i < allActiveTasks.getSize(); i++) {
-			ActiveTask taskToDisplay = allActiveTasks.retrieveActiveTask(i);
-			
-			Vector row = new Vector();
-			row.add(taskToDisplay.getCaretaker());
-			row.add(taskToDisplay.getDateIssued());
-			row.add(taskToDisplay.getDateDue());
-			
-			model.addRow(row);
-			
-		}
-		
-		inProgress = new JTable(model);
-		
-		scrollPane.setViewportView(inProgress);
+		scrollPane.setViewportView(tblInProgress);
 		
 		completeButton = new JButton("Complete");
+		completeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int indexes[] = tblInProgress.getSelectedRows();
+			}
+		});
 		GridBagConstraints gbc_completeButton = new GridBagConstraints();
 		gbc_completeButton.insets = new Insets(0, 0, 5, 5);
 		gbc_completeButton.gridx = 2;

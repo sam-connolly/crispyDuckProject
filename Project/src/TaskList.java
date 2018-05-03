@@ -28,7 +28,7 @@ public class TaskList {
 	 */
 	public void addTask(Task taskToAdd) 
 	{
-		DateFormat dateFormat = new SimpleDateFormat("yy/MM/dd");
+		/*DateFormat dateFormat = new SimpleDateFormat("yy/MM/dd");
 		Date currentDate = new Date();
 		Date dateDue = null;
 		try 
@@ -48,7 +48,7 @@ public class TaskList {
 		if(dateDue.before(currentDate) && dateDue != null)
 		{
 			taskToAdd.setHighestPriority();
-		}
+		}*/
 		taskList.add(taskToAdd);
 	}
 	
@@ -205,6 +205,34 @@ public class TaskList {
 				taskToUpdate.setLastAllocated(lastAllocation);
 			}
 		}
+	}
+	
+	public DefaultTableModel getAllocatedToCaretaker(String username) {
+		DefaultTableModel allocatedToCaretakerModel = new DefaultTableModel() {
+		    @Override
+		    public boolean isCellEditable(int row, int column) {
+		       return false;
+		    }
+		};
+		Object[] row = new Object[5];
+		allocatedToCaretakerModel.addColumn("Task ID");
+		allocatedToCaretakerModel.addColumn("Task Name");
+		allocatedToCaretakerModel.addColumn("Location");
+		allocatedToCaretakerModel.addColumn("Priority");
+		allocatedToCaretakerModel.addColumn("Date Due");
+		for (Task taskToCheck : taskList ) {
+			if (taskToCheck.getCaretaker().equals(username)) { 
+				row[0] = taskToCheck.getTaskID();
+				row[1] = taskToCheck.getTaskName();
+				row[2] = taskToCheck.getLocation();
+				row[3] = taskToCheck.getPriority();
+				row[4] = taskToCheck.getDateDue();
+				
+				allocatedToCaretakerModel.addRow(row);
+			}
+		}
+		
+		return allocatedToCaretakerModel;
 	}
 	
 	public DefaultTableModel getAllUnallocated(String filter) throws ParseException, SQLException {

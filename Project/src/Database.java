@@ -7,7 +7,7 @@ import javax.swing.JOptionPane;
 
 public class Database {
 	private String driver = "jdbc:ucanaccess://";
-	private String Db = "database//crispyDuckDatabase.accdb";
+	private String Db = "project//database//crispyDuckDatabase.accdb";
 	private Connection conn = null;
 	private String url = driver + Db;
 	private String user, password, forename, surname;

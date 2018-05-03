@@ -52,11 +52,11 @@ public class ManagerMenu extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args, String user) {
+	public static void main(String[] args/*, String user*/) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ManagerMenu window = new ManagerMenu(user);
+					ManagerMenu window = new ManagerMenu(/*user*/);
 					window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -71,8 +71,8 @@ public class ManagerMenu extends JFrame {
 	 * @throws SQLException 
 	 * @throws ParseException 
 	 */
-	public ManagerMenu(String user) throws ParseException, SQLException {
-		username=user;
+	public ManagerMenu(/*String user*/) throws ParseException, SQLException {
+		// username=user;
 		initialize();
 	}
 
