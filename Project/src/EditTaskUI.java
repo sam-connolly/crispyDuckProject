@@ -36,11 +36,11 @@ public class EditTaskUI extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args, Task task) {
+	public static void main(String[] args, int taskID) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					EditTaskUI frame = new EditTaskUI(task);
+					EditTaskUI frame = new EditTaskUI(taskID);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -52,7 +52,10 @@ public class EditTaskUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public EditTaskUI(Task task) {
+	public EditTaskUI(int taskID) 
+	{
+		Task task = database.getTask(taskID);
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 605, 720);
 		contentPane = new JPanel();
