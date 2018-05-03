@@ -25,7 +25,7 @@ import javax.swing.JMenu;
 import javax.swing.JComboBox;
 import java.awt.Color;
 
-public class EmployeeMenu extends JFrame{
+public class EmployeeMenu{
 
 	private JFrame frame;
 	private JScrollPane scrollPane;
@@ -202,5 +202,6 @@ public class EmployeeMenu extends JFrame{
 		
 		btnNewButton_4 = new JButton("Account");
 		menuBar.add(btnNewButton_4);
+		this.frame.setVisible(true);
 	}
 }

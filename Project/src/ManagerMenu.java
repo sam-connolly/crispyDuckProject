@@ -24,8 +24,7 @@ import javax.swing.JMenuItem;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.Color;
 
-public class ManagerMenu extends JFrame
-{
+public class ManagerMenu extends JFrame{
 
 	private JFrame frame;
 	private JTable tblActiveTasks;
@@ -325,5 +324,6 @@ public class ManagerMenu extends JFrame
 		
 		menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
+		this.frame.setVisible(true);
 	}
 }

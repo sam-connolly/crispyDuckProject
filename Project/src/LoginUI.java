@@ -86,8 +86,7 @@ public class LoginUI extends JFrame {
 					if (isAdmin) {
 						ManagerMenu managerMenu;
 						try {
-							managerMenu = new ManagerMenu(username);
-							managerMenu.setVisible(true);
+							managerMenu = new ManagerMenu();
 						} catch (ParseException | SQLException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -96,7 +95,6 @@ public class LoginUI extends JFrame {
 					//If user is NOT Admin will open EmployeeMenu UI
 					else {
 						EmployeeMenu employeeMenu = new EmployeeMenu();
-						employeeMenu.setVisible(true);
 					}
 					//Close login window
 					setVisible(false);
