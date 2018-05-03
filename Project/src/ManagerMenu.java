@@ -18,7 +18,7 @@ import java.awt.event.*;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.awt.event.ActionEvent;
+
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.DefaultComboBoxModel;
@@ -321,6 +321,16 @@ public class ManagerMenu extends JFrame{
 		});
 		btnAllocate.setBounds(111, 0, 126, 23);
 		panel.add(btnAllocate);
+		
+		JButton btnManageUser = new JButton("Manage User");
+		btnManageUser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				UpdateUserAdminUI updateUser = new UpdateUserAdminUI();
+				updateUser.setVisible(true);
+			}
+		});
+		btnManageUser.setBounds(247, 0, 126, 23);
+		panel.add(btnManageUser);
 		
 		menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
