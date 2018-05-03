@@ -3,11 +3,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
+
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Database {
 	private String driver = "jdbc:ucanaccess://";
-	private String Db = "project//database//crispyDuckDatabase.accdb";
+	private String Db = "database//crispyDuckDatabase.accdb";
 	private Connection conn = null;
 	private String url = driver + Db;
 	private String user, password, forename, surname;
@@ -23,11 +25,13 @@ public class Database {
 			System.err.println("yay");
 			return true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(new JFrame(),
+				    "Could not establish databse connection. Contact database administrator",
+				    "Database error",
+				    JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 			return false;
 		}
-		
 	}	
 	
 	public String getPassword(String username) {
@@ -501,7 +505,8 @@ public class Database {
 	 */
 	public TaskList getTasks()
 	{
-		try {
+		try 
+		{
 			// query database for data in TaskList
 			Statement stmt = conn.createStatement();
 			String query = "SELECT JobID, TaskID, Caretaker, DateIssued, DateDue,"
@@ -559,6 +564,70 @@ public class Database {
 			return null;
 		} // catch
 	} // function
+	
+	public Task getTask(int passedTaskID)
+	{
+			// Query database for a specific task, matching the passed taskID
+			Statement stmt;
+			Task task = null;
+			try 
+			{
+				stmt = conn.createStatement();
+			
+				String query = "SELECT JobID, TaskID, Caretaker, DateIssued, DateDue,"
+						+ " Completed, TimeTaken, Issue, IssueDesc, SignedOff, signedOffOn,"
+						+ " TaskName, TaskDesc, TaskCat, Priority, Repeating, TimeEstimate, Location, "
+						+ " FirstAllocation, LastAllocated, TimeGiven"
+						+ " FROM Task"
+						+ " LEFT JOIN TaskList ON Task.taskID = TaskList.taskID"
+						+ "WHERE Task.taskID = " + passedTaskID;
+				
+				//Execute the query
+				ResultSet rs = stmt.executeQuery(query);
+				
+				// iterate over data. There should only ever be 1 return
+				while (rs.next())
+				{
+					// assign data to variables
+					int jobID = rs.getInt("jobID");
+					int taskID = rs.getInt("TaskID");
+					String caretaker= rs.getString("Caretaker");	
+					boolean completed = rs.getBoolean("Completed");
+					Date dateIssued= rs.getDate("DateIssued");
+					String dateDue = rs.getString("DateDue");
+					int timeTaken = rs.getInt("TimeTaken");
+					boolean issue = rs.getBoolean("Issue");
+					String issueDesc = rs.getString("IssueDesc");
+					boolean signedOff = rs.getBoolean("SignedOff");
+					Date signedOffOn = rs.getDate("SignedOffOn");
+					String taskName = rs.getString("TaskName");
+					String taskDesc = rs.getString("TaskDesc");
+					String taskCat = rs.getString("TaskCat");
+					String priority = rs.getString("Priority");
+					int repeating = rs.getInt("Repeating");
+					int timeEstimate = rs.getInt("TimeEstimate");
+					String location = rs.getString("location");
+					Date firstAllocation = rs.getDate("FirstAllocation");
+					Date lastAllocated = rs.getDate("LastAllocated");
+				
+				
+						
+				task = new Task.TaskBuilder().jobID(jobID).taskID(taskID).taskName(taskName).taskDesc(taskDesc).taskCat(taskCat)
+						.priority(priority).repeating(repeating).timeEstimate(timeEstimate).location(location)
+						.caretaker(caretaker).completed(completed).dateIssued(dateIssued).dateDue(dateDue)
+						.timeEstimate(timeEstimate).timeTaken(timeTaken).issue(issue).issueDesc(issueDesc).signedOff(signedOff)
+						.lastAllocated(lastAllocated).firstAllocation(firstAllocation).signedOffOn(signedOffOn).build();
+			
+				}
+			}
+			catch (SQLException e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		return task;
+	}
 	
 	public void insertTaskList(int taskID, String caretaker, String dateIssued, boolean completed,
 			 int timeTaken, boolean issue, String issueDesc, boolean signedOff, String signedOffOn, String dateDue) throws SQLException, ParseException{
