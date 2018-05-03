@@ -1,18 +1,16 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.basic.BasicComboBoxRenderer;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
 
 public class TaskCreationUI extends JFrame 
 {
@@ -20,6 +18,7 @@ public class TaskCreationUI extends JFrame
 	private JPanel contentPane;
 	private JTextField txtTaskName;
 	private JTextField txtLocation;
+	private String username;
 	
 	Database database = new Database();
 
@@ -43,7 +42,6 @@ public class TaskCreationUI extends JFrame
 				}
 			}
 		});
-
 	}
 	
 	/**
@@ -94,9 +92,18 @@ public class TaskCreationUI extends JFrame
 			//When this window is closed, dispose of it and open the ManagerMenu UI
 			public void actionPerformed(ActionEvent e) 
 			{
-				//ManagerMenu menu = new ManagerMenu();
-				//menu.setVisible(true);
-				dispose();
+				ManagerMenu managerMenuNew;
+				try 
+				{
+					managerMenuNew = new ManagerMenu();
+					managerMenuNew.setVisible(true);
+					dispose();
+				} 
+				catch (ParseException | SQLException e1) 
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		pnlTopButtons.add(btnBack);
@@ -362,6 +369,32 @@ public class TaskCreationUI extends JFrame
 				int hours = (Integer) cmbHours.getSelectedItem();		//The inputted hours
 				int minutes = (Integer) cmbMinutes.getSelectedItem();	//The inputted minutes
 				
+				//The KeyValue object from the month ComboBox
+				KeyValue month = (KeyValue) cmbDateMonth.getSelectedItem();
+				//The value (number) of this month
+				String monthValue = month.getValue();
+				
+				//String value of the date
+				String strDateDue = cmbDateDay.getSelectedItem() + "/" + monthValue + "/" +
+				cmbDateYear.getSelectedItem();
+				//SQL version of the date
+				java.sql.Date sqlDate = null;
+				
+				try 
+				{
+					//Format the date using convertStringToSQLDate in the database class
+					sqlDate = database.convertStringToSQLDate(strDateDue);
+				} catch (ParseException e1) 
+				{
+					JOptionPane.showMessageDialog(new JFrame(),
+						    "Could not format date input. Task may not be created. Contact support",
+						    "Date conversion error",
+						    JOptionPane.ERROR_MESSAGE);
+					e1.printStackTrace();
+				}
+				
+				Date currentDate = new Date();
+				
 				//If any of the required fields are not filled, alert the user and do not continue
 				if (txtTaskName.getText().equals("") || txtLocation.getText().equals("") ||
 					cmbCategory.getSelectedItem().equals("Select a category") || (hours == 0 && minutes == 0))
@@ -372,29 +405,17 @@ public class TaskCreationUI extends JFrame
 						    "Enter all info",
 						    JOptionPane.WARNING_MESSAGE);
 				}
+				else if (sqlDate.before(currentDate))
+				{
+					//Dialog to tell the user to enter all required fields
+					JOptionPane.showMessageDialog(new JFrame(),
+						    "Due date entered is in the past. Please enter a date not in the past",
+						    "Date entry error",
+						    JOptionPane.WARNING_MESSAGE);
+				}
 				//If all required fields are entered, then continue
 				else
-				{
-					//The KeyValue object from the month ComboBox
-					KeyValue month = (KeyValue) cmbDateMonth.getSelectedItem();
-					//The value (number) of this month
-					String monthValue = month.getValue();
-					
-					//String value of the date
-					String strDateDue = cmbDateDay.getSelectedItem() + "/" + monthValue + "/" +
-					cmbDateYear.getSelectedItem();
-					//SQL version of the date
-					java.sql.Date sqlDate = null;
-					try 
-					{
-						//Format the date using convertStringToSQLDate in the database class
-						sqlDate = database.convertStringToSQLDate(strDateDue);
-					} catch (ParseException e1) 
-					{
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}			
-
+				{	
 					//Calculate the total minutes of the time entered
 					int timeEstimateInMinutes = (hours * 60) + minutes;
 					//SQL for creating a new database entry
@@ -418,6 +439,14 @@ public class TaskCreationUI extends JFrame
 					if (created)
 					{
 						JOptionPane.showMessageDialog(new JFrame(), "Task successfully created");
+						txtTaskName.setText("");
+						txtaDescription.setText("");
+						cmbCategory.setSelectedItem("Select a category");
+						cmbPriority.setSelectedItem("3");
+						cmbRepeatingDays.setSelectedItem(0);
+						cmbHours.setSelectedItem(0);
+						cmbMinutes.setSelectedItem(0);
+						txtLocation.setText("");
 					}
 					//If data entry failed, tell the user and recommend they contact their database admin
 					else
