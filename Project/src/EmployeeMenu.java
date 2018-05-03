@@ -37,7 +37,7 @@ public class EmployeeMenu{
 	private JButton issueButon;
 	private JMenuBar menuBar;
 	private JButton btnNewButton_3;
-	private JButton btnNewButton_4;
+	private JButton btnAccount;
 	private JComboBox inProgressSort;
 	private JComboBox completedSort;
 	private JTextField inProgressSearch;
@@ -200,8 +200,14 @@ public class EmployeeMenu{
 		btnNewButton_3 = new JButton("Logout");
 		menuBar.add(btnNewButton_3);
 		
-		btnNewButton_4 = new JButton("Account");
-		menuBar.add(btnNewButton_4);
+		btnAccount = new JButton("Account");
+		btnAccount.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				UpdateUserUI updateUser = new UpdateUserUI();
+				updateUser.setVisible(true);
+			}
+		});
+		menuBar.add(btnAccount);
 		this.frame.setVisible(true);
 	}
 }

@@ -46,6 +46,7 @@ public class ManagerMenu extends JFrame{
 	private ArrayList<Task> taskList;
 	private JTable tblUnallocated;
 	private JTable tblCompleted;
+	private JButton btnNewUser;
 
 	/**
 	 * Launch the application.
@@ -331,6 +332,16 @@ public class ManagerMenu extends JFrame{
 		});
 		btnManageUser.setBounds(247, 0, 126, 23);
 		panel.add(btnManageUser);
+		
+		btnNewUser = new JButton("New User");
+		btnNewUser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				NewUserUI newUser = new NewUserUI();
+				newUser.setVisible(true);
+			}
+		});
+		btnNewUser.setBounds(383, 0, 126, 23);
+		panel.add(btnNewUser);
 		
 		menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
