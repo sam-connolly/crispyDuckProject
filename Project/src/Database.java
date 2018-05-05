@@ -607,7 +607,7 @@ public class Database {
 						+ " TaskName, TaskDesc, TaskCat, Priority, Repeating, TimeEstimate, Location, "
 						+ " FirstAllocation, LastAllocated, TimeGiven"
 						+ " FROM Task"
-						+ " LEFT JOIN TaskList ON Task.taskID = TaskList.taskID"
+						+ " LEFT JOIN TaskList ON Task.taskID = TaskList.taskID "
 						+ "WHERE Task.taskID = " + passedTaskID;
 				
 				//Execute the query
