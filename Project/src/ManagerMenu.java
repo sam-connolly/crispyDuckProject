@@ -47,6 +47,7 @@ public class ManagerMenu extends JFrame{
 	private JTable tblUnallocated;
 	private JTable tblCompleted;
 	private JButton btnNewUser;
+	private JButton btnLogout;
 
 	/**
 	 * Launch the application.
@@ -382,6 +383,14 @@ public class ManagerMenu extends JFrame{
 		
 		menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
+		
+		btnLogout = new JButton("Logout");
+		btnLogout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+			}
+		});
+		menuBar.add(btnLogout);
 		this.frame.setVisible(true);
 	}
 }

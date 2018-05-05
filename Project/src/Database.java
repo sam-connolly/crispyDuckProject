@@ -171,7 +171,7 @@ public class Database {
 		PreparedStatement sqlInsert = null;
 		for (int i = 1;  i <= 7;  i ++) {
 			try {
-				sqlInsert = conn.prepareStatement("INSERT INTO CaretakerCategory (CatName, Caretaker) VALUES (?,?) ");
+				sqlInsert = conn.prepareStatement("INSERT INTO CaretakerCategory (CatName, Caretaker,  PreferenceLevel) VALUES (?,?,?) ");
 			}
 			catch (SQLException sqlex) {
 				System.err.println("SQL Exception");
@@ -185,6 +185,7 @@ public class Database {
 			else if (i==6) {catName="Restocking";}
 			sqlInsert.setString(1, catName);
 			sqlInsert.setString(2, username);
+			sqlInsert.setInt(3, 5);
 			int result = sqlInsert.executeUpdate();
 			System.err.println("Result code from insert: " + result);
 			if (result == 0) {
@@ -194,7 +195,32 @@ public class Database {
 		return success;
 	}
 	
+	
+	public boolean deleteUserPreferences(String username) throws SQLException{
+		PreparedStatement sqlDelete = null;
+		try {
+			sqlDelete = conn.prepareStatement("DELETE FROM CaretakerCategory WHERE Caretaker = ?");
+		}
+		catch (SQLException sqlex) {
+			System.err.println("SQL Exception");
+			sqlex.printStackTrace();
+		}
+		sqlDelete.setString(1, username);
+		int result = sqlDelete.executeUpdate();
+		System.err.println("Result code from Delete: " + result);
+		if (result == 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	
 	public boolean deleteUser(String username) throws SQLException{
+		boolean deletePreference = deleteUserPreferences(username);
+		if (!deletePreference) {
+			return false;
+		}
 		PreparedStatement sqlDelete = null;
 		try {
 			sqlDelete = conn.prepareStatement("DELETE FROM User WHERE Username = ?");

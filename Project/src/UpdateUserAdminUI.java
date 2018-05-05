@@ -131,6 +131,7 @@ public class UpdateUserAdminUI extends JFrame {
 			    	try {
 						boolean deleteUser = database.deleteUser(username);
 						System.out.println(deleteUser);
+						dispose();
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
