@@ -84,9 +84,8 @@ public class LoginUI extends JFrame {
 					boolean isAdmin = database.checkRole(username);
 					//If user is Admin will open ManagerMenu UI 
 					if (isAdmin) {
-						ManagerMenu managerMenu;
 						try {
-							managerMenu = new ManagerMenu();
+							ManagerMenu managerMenu = new ManagerMenu();
 						} catch (ParseException | SQLException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();

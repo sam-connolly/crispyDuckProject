@@ -38,8 +38,8 @@ public class EmployeeMenu extends JFrame{
 	private JButton uncompleteButton;
 	private JButton issueButon;
 	private JMenuBar menuBar;
-	private JButton btnNewButton_3;
-	private JButton btnNewButton_4;
+	private JButton btnLogout;
+	private JButton btnAccount;
 	private JComboBox inProgressSort;
 	private JComboBox completedSort;
 	private JTextField inProgressSearch;
@@ -245,11 +245,24 @@ public class EmployeeMenu extends JFrame{
 		menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 		
-		btnNewButton_3 = new JButton("Logout");
-		menuBar.add(btnNewButton_3);
+		 btnLogout = new JButton("Logout");
+		    btnLogout.addActionListener(new ActionListener() {
+		      public void actionPerformed(ActionEvent e) {
+		        frame.dispose();
+		      }
+		    });
+		menuBar.add(btnLogout);
+		 
 		
-		btnNewButton_4 = new JButton("Account");
-		menuBar.add(btnNewButton_4);
+		btnAccount = new JButton("Account");		 
+	    btnAccount.addActionListener(new ActionListener() {	 
+	      public void actionPerformed(ActionEvent e) {	 
+	        UpdateUserUI updateUser = new UpdateUserUI();	 
+	        updateUser.setVisible(true);	 
+	      }	 
+	    });
+	    menuBar.add(btnAccount);
+	 
 	}
 	
 	public void setUser(String username) { 
