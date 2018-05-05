@@ -138,7 +138,7 @@ public class EmployeeMenu extends JFrame{
 		gbc_inProgressScrollPane.gridy = 3;
 		frame.getContentPane().add(inProgressScrollPane, gbc_inProgressScrollPane);
 		
-		tblInProgress = new JTable(allTasks.getAllocatedToCaretaker("sConnolly"));
+		tblInProgress = new JTable(allTasks.getAllocatedToCaretaker(username));
 		
 		inProgressScrollPane.setViewportView(tblInProgress);
 		
@@ -232,7 +232,7 @@ public class EmployeeMenu extends JFrame{
 		gbc_completedScrollPane.gridy = 3;
 		frame.getContentPane().add(completedScrollPane, gbc_completedScrollPane);
 		
-		tblCompleted = new JTable(allTasks.getCompletedByCaretaker("sConnolly"));
+		tblCompleted = new JTable(allTasks.getCompletedByCaretaker(username));
 		
 		completedScrollPane.setViewportView(tblCompleted);
 		
