@@ -9,9 +9,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -53,6 +56,29 @@ public class EditTaskUI extends JFrame {
 				}
 			}
 		});
+	}
+	
+	/**
+	 * Method for formatting the day part of the dates, to ensure all days have 2 digits
+	 * @param day The day of the month
+	 * @return the formatted, 2 digit day of the month
+	 */
+	public String formatDateDay (int day)
+	{
+		String formattedDay;
+		
+		//If the day would normally have only 1 digit, add a zero to the beginning
+		if (day < 10)
+		{
+			formattedDay = "0" + day;
+		}
+		else
+		{
+			formattedDay = "" + day;
+		}
+		
+		//Return the formatted day
+		return formattedDay;
 	}
 
 	/**
@@ -163,8 +189,8 @@ public class EditTaskUI extends JFrame {
 			String strDateMonthNum = strFullDate.substring(5,6);
 			String strDateDays = strFullDate.substring(8,9);*/
 			
-			JComboBox<Integer> cmbDateDay = new JComboBox<Integer>();
-			cmbDateDay.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+			JComboBox<String> cmbDateDay = new JComboBox<String>();
+			cmbDateDay.setModel(new DefaultComboBoxModel<String>(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
 					"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28",
 					"29", "30", "31"}));
 			//cmbDateDay.setSelectedItem(strDateDays);
@@ -173,9 +199,19 @@ public class EditTaskUI extends JFrame {
 			JLabel lblDateSeperator1 = new JLabel("/");
 			pnlDateInput.add(lblDateSeperator1);
 			
-			JComboBox<String> cmbDateMonth = new JComboBox<String>();
-			cmbDateMonth.setModel(new DefaultComboBoxModel<String>(new String[] {"January", "February", "March", "April",
-					"May", "June", "July", "August", "September", "October", "November", "December"}));
+			JComboBox<KeyValue> cmbDateMonth = new JComboBox<KeyValue>();
+			cmbDateMonth.addItem(new KeyValue("January", "01"));
+			cmbDateMonth.addItem(new KeyValue("February", "02"));
+			cmbDateMonth.addItem(new KeyValue("March", "03"));
+			cmbDateMonth.addItem(new KeyValue("April", "04"));
+			cmbDateMonth.addItem(new KeyValue("May", "05"));
+			cmbDateMonth.addItem(new KeyValue("June", "06"));
+			cmbDateMonth.addItem(new KeyValue("July", "07"));
+			cmbDateMonth.addItem(new KeyValue("August", "08"));
+			cmbDateMonth.addItem(new KeyValue("September", "09"));
+			cmbDateMonth.addItem(new KeyValue("October", "10"));
+			cmbDateMonth.addItem(new KeyValue("November", "11"));
+			cmbDateMonth.addItem(new KeyValue("December", "12"));
 			/*int month = Integer.parseInt(strDateMonthNum);
 			switch (month)
 			{
@@ -240,42 +276,57 @@ public class EditTaskUI extends JFrame {
 			{
 				public void itemStateChanged(ItemEvent evt)
 				{
-					String month = (String) cmbDateMonth.getSelectedItem();
+					KeyValue month =  (KeyValue) cmbDateMonth.getSelectedItem();	//The object from the ComboBox
+					String monthKey = month.getKey();								//The key (name) of the month
 					int year = (Integer) cmbDateYear.getSelectedItem();
 					
+					//If a new month has been selected, repopulate the days ComboBox
 					if (evt.getStateChange() == ItemEvent.SELECTED)
 					{
+						//Empty the day ComboBox
 						cmbDateDay.removeAllItems();
 						
-						if (month == "September" || month == "April" || month =="June" || month =="November")
+						//If the selected month only has 30 days, add 30 days to the days ComboBox
+						if (monthKey == "September" || monthKey == "April" || monthKey =="June" ||	monthKey =="November")
 						{
 							for (int i = 1; i <= 30; i++)
 							{
-								cmbDateDay.addItem(i);
+								//Add the formatted version of the date
+								cmbDateDay.addItem(formatDateDay(i));
 							}
 						}
-						else if (cmbDateMonth.getSelectedItem() == "February")
+						//Perform further checks if the selected month is February
+						else if (monthKey == "February")
 						{
+							//This algorithm return true if the entered year is a leap year
 							if ((year % 400 == 0) || ((year % 4 == 0) && (year % 100 != 0)))
 							{
+								//If the year is a leap year, add 29 days to the ComboBox
 								for (int i = 1; i <= 29; i++)
 								{
-									cmbDateDay.addItem(i);
+									//Add the formatted version of the date
+									cmbDateDay.addItem(formatDateDay(i));
 								}
 							}
+							//If it isn't a leap year, add only 28 days
 							else
 							{
+								//Add 28 days to the ComboBox
 								for (int i = 1; i <= 28; i++)
 								{
-									cmbDateDay.addItem(i);
+									//Add the formatted version of the date
+									cmbDateDay.addItem(formatDateDay(i));
 								}
 							}
 						}
+						//If none of the above conditions are true, add 31 days to the ComboBox
 						else
 						{
-							for (int i = 0; i <=31; i++)
+							//Add 31 days to the ComboBox
+							for (int i = 1; i <=31; i++)
 							{
-								cmbDateDay.addItem(i);
+								//Add the formatted version of the date
+								cmbDateDay.addItem(formatDateDay(i));
 							}
 						}
 					}
@@ -284,19 +335,26 @@ public class EditTaskUI extends JFrame {
 			
 			cmbDateYear.addItemListener(new ItemListener()
 			{
+				//If the year ComboBox is changed, check to see if the selected month is February, and if it's a leap year
 				public void itemStateChanged(ItemEvent evt)
 				{
-					String month = (String) cmbDateMonth.getSelectedItem();
-					int year = (Integer) cmbDateYear.getSelectedItem();
+					KeyValue month =  (KeyValue) cmbDateMonth.getSelectedItem();	//The object from the ComboBox
+					String monthKey = month.getKey();								//The key (name) of the month
+					int year = (Integer) cmbDateYear.getSelectedItem();				//The selected year
 					
+					//If a new month has been selected, repopulate the days ComboBox
 					if (evt.getStateChange() == ItemEvent.SELECTED)
-					{				
-						if (month == "February" && ((year % 400 == 0) || ((year % 4 == 0) && (year % 100 != 0))))
+					{			
+						//If the new year is a leap year, and the selected month is February, put 29 days in the ComboBox
+						if (monthKey == "February" && ((year % 400 == 0) || ((year % 4 == 0) && (year % 100 != 0))))
 						{
+							//Clear the ComboBox
 							cmbDateDay.removeAllItems();
+							//Add 29 days to the ComboBox
 							for (int i = 1; i <= 29; i++)
 							{
-								cmbDateDay.addItem(i);
+								//Add teh formatted version of the date
+								cmbDateDay.addItem(formatDateDay(i));
 							}
 						}
 					}
@@ -313,13 +371,11 @@ public class EditTaskUI extends JFrame {
 			cmbCategory.addItem("Select a category");
 			for (int i = 0; i < categories.size(); i++)
 			{
-				if (categories.get(i) == task.getTaskCat())
+				cmbCategory.addItem(categories.get(i));
+				
+				if (categories.get(i).equals(task.getTaskCat()))
 				{
 					cmbCategory.setSelectedItem(categories.get(i));
-				}
-				else
-				{
-					cmbCategory.addItem(categories.get(i));
 				}
 			}
 			pnlDataEntry.add(cmbCategory);
@@ -392,7 +448,8 @@ public class EditTaskUI extends JFrame {
 			pnlDataEntry.add(lblCaretakers);
 	 		
 			JComboBox<String> cmbCaretakers = new JComboBox<String>();
-			cmbCaretakers.setSelectedItem("Choose a caretaker");
+			cmbCaretakers.addItem("Unallocated");
+			cmbCaretakers.setSelectedItem("Unallocated");
 	 		//ArrayList to store users returned from the database
 			ArrayList<String> users = new ArrayList<String>();
 			//Populate ArrayList with contents of database
@@ -400,13 +457,11 @@ public class EditTaskUI extends JFrame {
 			//Loop through arraylist adding items to ComboBox
 			for (int i = 0; i < users.size(); i++)
 			{
-				if (users.get(i) == task.getCaretaker())
+				cmbCaretakers.addItem(users.get(i));
+				
+				if (users.get(i).equals(task.getCaretaker()))
 				{
 					cmbCaretakers.setSelectedItem(users.get(i));
-				}
-				else
-				{
-					cmbCaretakers.addItem(users.get(i));
 				}
 			}
 			pnlDataEntry.add(cmbCaretakers);
@@ -441,40 +496,49 @@ public class EditTaskUI extends JFrame {
 						//String value of the date
 						String strDateDue = cmbDateDay.getSelectedItem() + "/" + monthValue + "/" +
 						cmbDateYear.getSelectedItem();
+
 						//SQL version of the date
-						java.sql.Date sqlDate = null;
+						java.sql.Date sqlDateDue = null;
+						
+						DateFormat dateFormat = new SimpleDateFormat("yy/MM/dd");
+						Date currentDate = new Date();
+						
 						try 
 						{
 							//Format the date using convertStringToSQLDate in the database class
-							sqlDate = database.convertStringToSQLDate(strDateDue);
-						} catch (ParseException e1) 
+							sqlDateDue = database.convertStringToSQLDate(strDateDue);
+						} 
+						catch (ParseException e1) 
 						{
-							// TODO Auto-generated catch block
+							JOptionPane.showMessageDialog(new JFrame(),
+								    "Could not format date input. Task may not be created. Contact support",
+								    "Date conversion error",
+								    JOptionPane.ERROR_MESSAGE);
 							e1.printStackTrace();
 						}	
 						
 						int timeEstimateInMinutes = (hours * 60) + minutes;
 						String updateSQL = "UPDATE Task SET "
-								+ "TaskName = " + txtTaskName.getText() + 
-								", TaskDesc = " + txtaDescription.getText() + 
-								", TaskCat = " + cmbCategory.getSelectedItem() + 
-								", Priority = " + cmbPriority.getSelectedItem() +
-								", Repeating = " + cmbRepeatingDays.getSelectedItem() + 
-								", TimeEstimate = " + timeEstimateInMinutes +
-								", Location = " + txtLocation.getText() +
-								" WHERE taskID = " + taskID;
+								+ "TaskName = '" + txtTaskName.getText() + 
+								"', TaskDesc = '" + txtaDescription.getText() + 
+								"', TaskCat = '" + cmbCategory.getSelectedItem() + 
+								"', Priority = '" + cmbPriority.getSelectedItem() +
+								"', Repeating = '" + cmbRepeatingDays.getSelectedItem() + 
+								"', TimeEstimate = '" + timeEstimateInMinutes +
+								"', Location = '" + txtLocation.getText() +
+								"' WHERE taskID = " + taskID;
 	
 						
 						Boolean created = database.executeSQL(updateSQL);
 						
 						if (created)
 						{
-							JOptionPane.showMessageDialog(new JFrame(), "Task successfully created");
+							JOptionPane.showMessageDialog(new JFrame(), "Task successfully edited");
 						}
 						else
 						{
 							JOptionPane.showMessageDialog(new JFrame(),
-								    "Could not create task. Contact database administrator",
+								    "Could not edit task. Contact database administrator",
 								    "Database error",
 								    JOptionPane.ERROR_MESSAGE);
 						}
@@ -485,22 +549,22 @@ public class EditTaskUI extends JFrame {
 						{
 							jobID = task.getJobID();
 						}
-						String caretakerUsrnm = ((KeyValue) cmbCaretakers.getSelectedItem()).getKey();
-						updateSQL = "UPDATE TaskList SET "
-								+ "Caretaker = " + caretakerUsrnm + 
-								", DateDue = " + sqlDate +
-								" WHERE jobID = " + jobID;
+						String caretakerUsrnm = cmbCaretakers.getSelectedItem().toString();
+						updateSQL = "UPDATE TaskList SET " +
+								"Caretaker = '" + caretakerUsrnm + 
+								"', DateDue = #" + sqlDateDue +
+								"# WHERE jobID = " + jobID;
 	
 						created = database.executeSQL(updateSQL);
 						
 						if (created)
 						{
-							JOptionPane.showMessageDialog(new JFrame(), "Task successfully created");
+							JOptionPane.showMessageDialog(new JFrame(), "Job successfully edited");
 						}
 						else
 						{
 							JOptionPane.showMessageDialog(new JFrame(),
-								    "Could not create task. Contact database administrator",
+								    "Could not edit job. Contact database administrator",
 								    "Database error",
 								    JOptionPane.ERROR_MESSAGE);
 						}
