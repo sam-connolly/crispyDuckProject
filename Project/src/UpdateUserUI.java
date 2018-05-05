@@ -10,6 +10,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 public class UpdateUserUI extends JFrame {
 
@@ -100,7 +101,10 @@ public class UpdateUserUI extends JFrame {
 			    try {
 					boolean updateUser = database.updateUser(username,
 							forename, surname);
-					System.out.println(updateUser);
+					if (updateUser) {
+						JOptionPane.showMessageDialog(null, "User updated.", 
+								"Update Success", JOptionPane.INFORMATION_MESSAGE);
+					}
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
