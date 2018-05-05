@@ -218,7 +218,7 @@ public class ManagerMenu extends JFrame{
 						editTask.setTaskID(taskID);
 						editTask.setVisible(true);
 						setVisible(false);
-						dispose();
+						frame.dispose();
 					}
 				}
 			});
@@ -250,7 +250,7 @@ public class ManagerMenu extends JFrame{
 					editTask.setTaskID(taskID);
 					editTask.setVisible(true);
 					setVisible(false);
-					dispose();
+					frame.dispose();
 				}
 			}
 		});
@@ -284,7 +284,7 @@ public class ManagerMenu extends JFrame{
 					editTask.setTaskID(taskID);
 					editTask.setVisible(true);
 					setVisible(false);
-					dispose();
+					frame.dispose();
 				}
 			}
 		});
