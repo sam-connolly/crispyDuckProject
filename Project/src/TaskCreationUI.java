@@ -278,7 +278,7 @@ public class TaskCreationUI extends JFrame
 						//Add 29 days to the ComboBox
 						for (int i = 1; i <= 29; i++)
 						{
-							//Add teh formatted version of the date
+							//Add the formatted version of the date
 							cmbDateDay.addItem(formatDateDay(i));
 						}
 					}
@@ -384,17 +384,14 @@ public class TaskCreationUI extends JFrame
 				
 				DateFormat dateFormat = new SimpleDateFormat("yy/MM/dd");
 				Date currentDate = new Date();
-				System.out.println(currentDate);
 				strCurrentDate = dateFormat.format(currentDate);
 				System.out.println(strCurrentDate);
-				
 				
 				try 
 				{
 					//Format the date using convertStringToSQLDate in the database class
 					sqlDateDue = database.convertStringToSQLDate(strDateDue);
 					sqlCurrentDate = database.convertStringToSQLDate(strCurrentDate);
-					System.out.println(sqlCurrentDate);
 				} 
 				catch (ParseException e1) 
 				{
@@ -452,6 +449,8 @@ public class TaskCreationUI extends JFrame
 					if (created)
 					{
 						JOptionPane.showMessageDialog(new JFrame(), "Task successfully created");
+						
+						//Reset al the input fields to blank or their default
 						txtTaskName.setText("");
 						txtaDescription.setText("");
 						cmbCategory.setSelectedItem("Select a category");
