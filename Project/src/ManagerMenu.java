@@ -203,7 +203,7 @@ public class ManagerMenu extends JFrame{
 		tblUnallocated = new JTable(allTasks.getAllUnallocated("All Unallocated"));
 		pnlUnallocated.setViewportView(tblUnallocated);
 		
-		/*tblUnallocated.addMouseListener(new MouseAdapter()
+		tblUnallocated.addMouseListener(new MouseAdapter()
 			{
 				public void mouseClicked(MouseEvent e) 
 				{
@@ -214,13 +214,13 @@ public class ManagerMenu extends JFrame{
 						int taskID = (Integer) tblUnallocated.getValueAt(row, 0);
 						
 						EditTaskUI editTask = new EditTaskUI(taskID);
+						editTask.setTaskID(taskID);
 						editTask.setVisible(true);
 						setVisible(false);
-						System.out.println("Is this being called");
 						dispose();
 					}
 				}
-			});*/
+			});
 		
 		pnlAllocated = new JScrollPane();
 		
@@ -234,6 +234,25 @@ public class ManagerMenu extends JFrame{
 		DefaultTableModel allocatedModel = allTasks.getAllAllocated();
 		tblAllocated = new JTable(allocatedModel);
 		pnlAllocated.setViewportView(tblAllocated);
+		
+		tblAllocated.addMouseListener(new MouseAdapter()
+		{
+			public void mouseClicked(MouseEvent e) 
+			{
+				if (e.getClickCount() == 2)
+				{
+					JTable target = (JTable)e.getSource();
+					int row = target.getSelectedRow();
+					int taskID = (Integer) tblAllocated.getValueAt(row, 0);
+					
+					EditTaskUI editTask = new EditTaskUI(taskID);
+					editTask.setTaskID(taskID);
+					editTask.setVisible(true);
+					setVisible(false);
+					dispose();
+				}
+			}
+		});
 		
 		pnlCompleted = new JScrollPane();
 		GridBagConstraints gbc_pnlCompleted = new GridBagConstraints();
@@ -249,6 +268,25 @@ public class ManagerMenu extends JFrame{
 		DefaultTableModel completedModel = allTasks.getAllCompleted();
 		tblCompleted = new JTable(completedModel);
 		pnlCompleted.setViewportView(tblCompleted);
+		
+		tblCompleted.addMouseListener(new MouseAdapter()
+		{
+			public void mouseClicked(MouseEvent e) 
+			{
+				if (e.getClickCount() == 2)
+				{
+					JTable target = (JTable)e.getSource();
+					int row = target.getSelectedRow();
+					int taskID = (Integer) tblCompleted.getValueAt(row, 0);
+					
+					EditTaskUI editTask = new EditTaskUI(taskID);
+					editTask.setTaskID(taskID);
+					editTask.setVisible(true);
+					setVisible(false);
+					dispose();
+				}
+			}
+		});
 		
 		panel = new JPanel();
 		panel.setLayout(null);
@@ -269,8 +307,7 @@ public class ManagerMenu extends JFrame{
 				TaskCreationUI addTask = new TaskCreationUI();
 				addTask.setVisible(true);
 				setVisible(false);
-				System.out.println("Is this being called");
-				dispose();
+				frame.dispose();
 			}
 		});
 		panel.add(btnAddTask);
