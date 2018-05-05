@@ -1,8 +1,11 @@
 import java.util.ArrayList;
+
 import java.util.concurrent.*;
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+
+
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -26,6 +29,7 @@ public class Task {
   private String firstAllocation;
   private String lastAllocated;
   private int timeGiven;
+  private boolean caretakerSignOff;
   
   private String caretaker;
   private boolean completed; 
@@ -60,6 +64,7 @@ public class Task {
     signedOffOn = builder.signedOffOn;
     firstAllocation = builder.firstAllocation;
     lastAllocated = builder.lastAllocated;
+    caretakerSignOff = builder.caretakerSignOff;
   }
 
   //getters
@@ -236,14 +241,23 @@ public class Task {
 	  dateIssued = null;
   }
   
-  public void completeTask(/* int timeTaken */) {
+  public void completeTask(/* int timeTaken */) throws SQLException {
+	  Database database = new Database();
 	  completed = true;
+	  
+	  System.out.println("Complete task" + jobID);
+	  database.completeTask(jobID);
 	  // this.timeTaken = timeTaken;
   }
   
-  public void uncompleteTask() {
+  public void uncompleteTask() throws SQLException {
+	  Database database = new Database();
 	  completed = false;
 	  timeTaken = 0;
+	  signedOff = false;
+	  signedOffOn = null;
+	  
+	  database.uncompleteTask(jobID);
   }
   
   public void signOffTask() {
@@ -266,6 +280,7 @@ public class Task {
     private String location;
     private String firstAllocation;
     private String lastAllocated;
+    private boolean caretakerSignOff;
     
     // optional
     private String caretaker;
@@ -400,6 +415,11 @@ public class Task {
   		  lastAllocated = null;
   	  }
 	  return this;
+    }
+    
+    public TaskBuilder caretakerSignOff(boolean val) { 
+    	caretakerSignOff = val;
+    	return this;
     }
     
     public TaskBuilder signedOffOn(Date val) {

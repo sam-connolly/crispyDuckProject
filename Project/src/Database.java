@@ -536,7 +536,7 @@ public class Database {
 			// query database for data in TaskList
 			Statement stmt = conn.createStatement();
 			String query = "SELECT JobID, TaskID, Caretaker, DateIssued, DateDue,"
-					+ " Completed, TimeTaken, Issue, IssueDesc, SignedOff, signedOffOn,"
+					+ " Completed, TimeTaken, Issue, IssueDesc, SignedOff, signedOffOn, "
 					+ " TaskName, TaskDesc, TaskCat, Priority, Repeating, TimeEstimate, Location, "
 					+ " FirstAllocation, LastAllocated, TimeGiven"
 					+ " FROM Task"
@@ -570,6 +570,7 @@ public class Database {
 				String location = rs.getString("location");
 				Date firstAllocation = rs.getDate("FirstAllocation");
 				Date lastAllocated = rs.getDate("LastAllocated");
+				//boolean caretakerSignOff = rs.getBoolean("CaretakerSignOff");
 
 				// create new ActiveTask to be added on every loop
 				Task taskToAdd;		
@@ -577,7 +578,8 @@ public class Database {
 							.priority(priority).repeating(repeating).timeEstimate(timeEstimate).location(location)
 							.caretaker(caretaker).completed(completed).dateIssued(dateIssued).dateDue(dateDue)
 							.timeEstimate(timeEstimate).timeTaken(timeTaken).issue(issue).issueDesc(issueDesc).signedOff(signedOff)
-							.lastAllocated(lastAllocated).firstAllocation(firstAllocation).signedOffOn(signedOffOn).build();
+							.lastAllocated(lastAllocated).firstAllocation(firstAllocation).signedOffOn(signedOffOn)/*.caretakerSignOff(caretakerSignOff)*/
+							.build();
 				
 				// add new task to the list
 				allActiveTasks.addTask(taskToAdd);				
@@ -700,6 +702,40 @@ public class Database {
 			PreparedStatement sqlInsert = conn.prepareStatement("DELETE FROM TaskList WHERE jobID = ?");
 			
 			sqlInsert.setInt(1, jobID);
+			
+			sqlInsert.executeUpdate();
+		}
+		catch (SQLException sqlex) {
+			System.err.println("SQL Exception");
+			sqlex.printStackTrace();
+		}
+	}
+	
+	public void completeTask(int jobID) throws SQLException {
+		try {
+			PreparedStatement sqlInsert = conn.prepareStatement("UPDATE TaskList SET Completed = ? WHERE jobID = ?");
+			
+			System.out.println("Complete task DB" + jobID);
+			sqlInsert.setBoolean(1, true);
+			sqlInsert.setInt(2, jobID);
+			
+			sqlInsert.executeUpdate();
+		}
+		catch (SQLException sqlex) {
+			System.err.println("SQL Exception");
+			sqlex.printStackTrace();
+		}
+	}
+	
+	
+	public void uncompleteTask(int jobID) throws SQLException {
+		try {
+			PreparedStatement sqlInsert = conn.prepareStatement("UPDATE TaskList SET Completed = ?, SignedOff = ? WHERE jobID = ?");
+			
+			System.out.println("Complete task DB" + jobID);
+			sqlInsert.setBoolean(1, false);
+			sqlInsert.setBoolean(2, false);
+			sqlInsert.setInt(3, jobID);
 			
 			sqlInsert.executeUpdate();
 		}

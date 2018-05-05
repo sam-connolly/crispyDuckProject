@@ -235,6 +235,34 @@ public class TaskList {
 		return allocatedToCaretakerModel;
 	}
 	
+	public DefaultTableModel getCompletedByCaretaker(String username) {
+		DefaultTableModel completedByCaretakerModel = new DefaultTableModel() {
+		    @Override
+		    public boolean isCellEditable(int row, int column) {
+		       return false;
+		    }
+		};
+		Object[] row = new Object[5];
+		completedByCaretakerModel.addColumn("Job ID");
+		completedByCaretakerModel.addColumn("Task Name");
+		completedByCaretakerModel.addColumn("Location");
+		completedByCaretakerModel.addColumn("Signed Off");
+		completedByCaretakerModel.addColumn("Signed Off On");
+		for (Task taskToCheck : taskList ) {
+			if (taskToCheck.getCaretaker().equals(username) && taskToCheck.getCompleted() == true) { 
+				row[0] = taskToCheck.getJobID();
+				row[1] = taskToCheck.getTaskName();
+				row[2] = taskToCheck.getLocation();
+				row[3] = taskToCheck.getSignedOff();
+				row[4] = taskToCheck.getSignedOffOn();
+				
+				completedByCaretakerModel.addRow(row);
+			}
+		}
+		
+		return completedByCaretakerModel;
+	}
+	
 	public DefaultTableModel getAllUnallocated(String filter) throws ParseException, SQLException {
 		DefaultTableModel allUnallocatedModel = new DefaultTableModel() {
 		    @Override
@@ -379,6 +407,21 @@ public class TaskList {
 	
 	public Task getTaskIndexed(int index) {
 		return taskList.get(index);
+	}
+	
+	/*
+	 * return first task matching a certain taskID
+	 */
+	public Task getTaskWithJobID(int jobID) {
+		// loop through all tasks
+		for (Task taskToCheck : taskList) {
+			// if task is not assigned
+			if(taskToCheck.getJobID() == jobID) {
+				return taskToCheck;
+			}
+		} // for 
+		
+		return null;
 	}
 	
 	/*
