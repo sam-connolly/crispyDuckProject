@@ -17,7 +17,6 @@ public class UpdateUserUI extends JFrame {
 	private JTextField txtUsername;
 	private JTextField txtForename;
 	private JTextField txtSurname;
-	private String username = "sdean";
 	Database database = new Database();
 	
 	/**
@@ -27,7 +26,7 @@ public class UpdateUserUI extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					UpdateUserUI frame = new UpdateUserUI();
+					UpdateUserUI frame = new UpdateUserUI(args[0]);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -39,7 +38,7 @@ public class UpdateUserUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public UpdateUserUI() {
+	public UpdateUserUI(String username) {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -108,9 +107,5 @@ public class UpdateUserUI extends JFrame {
 				}		
 			}
 		});
-	}
-	
-	public String getUsername() {
-		return username;
 	}
 }

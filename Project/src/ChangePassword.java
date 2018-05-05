@@ -26,9 +26,9 @@ public class ChangePassword extends JDialog implements ActionListener {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args, String user) {
+	public static void main(String[] args) {
 		try {
-			ChangePassword dialog = new ChangePassword(user);
+			ChangePassword dialog = new ChangePassword(args[0]);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
