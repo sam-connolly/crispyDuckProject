@@ -377,14 +377,26 @@ public class TaskCreationUI extends JFrame
 				//String value of the date
 				String strDateDue = cmbDateDay.getSelectedItem() + "/" + monthValue + "/" +
 				cmbDateYear.getSelectedItem();
-				//SQL version of the date
-				java.sql.Date sqlDate = null;
+				String strCurrentDate = null;
+				//SQL versions of the dates
+				java.sql.Date sqlDateDue = null;
+				java.sql.Date sqlCurrentDate = null;
+				
+				DateFormat dateFormat = new SimpleDateFormat("yy/MM/dd");
+				Date currentDate = new Date();
+				System.out.println(currentDate);
+				strCurrentDate = dateFormat.format(currentDate);
+				System.out.println(strCurrentDate);
+				
 				
 				try 
 				{
 					//Format the date using convertStringToSQLDate in the database class
-					sqlDate = database.convertStringToSQLDate(strDateDue);
-				} catch (ParseException e1) 
+					sqlDateDue = database.convertStringToSQLDate(strDateDue);
+					sqlCurrentDate = database.convertStringToSQLDate(strCurrentDate);
+					System.out.println(sqlCurrentDate);
+				} 
+				catch (ParseException e1) 
 				{
 					JOptionPane.showMessageDialog(new JFrame(),
 						    "Could not format date input. Task may not be created. Contact support",
@@ -393,7 +405,7 @@ public class TaskCreationUI extends JFrame
 					e1.printStackTrace();
 				}
 				
-				Date currentDate = new Date();
+				
 				
 				//If any of the required fields are not filled, alert the user and do not continue
 				if (txtTaskName.getText().equals("") || txtLocation.getText().equals("") ||
@@ -405,7 +417,7 @@ public class TaskCreationUI extends JFrame
 						    "Enter all info",
 						    JOptionPane.WARNING_MESSAGE);
 				}
-				else if (sqlDate.before(currentDate))
+				else if (sqlDateDue.before(currentDate))
 				{
 					//Dialog to tell the user to enter all required fields
 					JOptionPane.showMessageDialog(new JFrame(),
@@ -420,7 +432,7 @@ public class TaskCreationUI extends JFrame
 					int timeEstimateInMinutes = (hours * 60) + minutes;
 					//SQL for creating a new database entry
 					String insertSQL = "INSERT INTO Task (TaskName, TaskDesc,"
-							+ " TaskCat, Priority, Repeating, TimeEstimate, Location, FirstAllocation)"
+							+ " TaskCat, Priority, Repeating, TimeEstimate, Location, FirstAllocation, FirstDueDate)"
 							+ "VALUES ('" 
 							+ txtTaskName.getText() + "', '" 
 							+ txtaDescription.getText() + "', '"
@@ -429,7 +441,8 @@ public class TaskCreationUI extends JFrame
 							+ cmbRepeatingDays.getSelectedItem() + "', '"
 							+ timeEstimateInMinutes + "', '"
 							+ txtLocation.getText() + "', #"
-							+ sqlDate + "#);";
+							+ sqlCurrentDate + "# , #"
+							+ sqlDateDue + "#);";
 					
 					/*Create the database field by calling createTask in the database class. Store whether it was a 
 					success*/
