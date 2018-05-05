@@ -57,7 +57,7 @@ public class ManagerMenu extends JFrame{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ManagerMenu window = new ManagerMenu();
+					ManagerMenu window = new ManagerMenu(args[0]);
 					window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -72,8 +72,9 @@ public class ManagerMenu extends JFrame{
 	 * @throws SQLException 
 	 * @throws ParseException 
 	 */
-	public ManagerMenu() throws ParseException, SQLException 
+	public ManagerMenu(String username) throws ParseException, SQLException 
 	{
+		this.username=username;
 		initialize();
 	}
 
@@ -214,7 +215,7 @@ public class ManagerMenu extends JFrame{
 						int row = target.getSelectedRow();
 						int taskID = (Integer) tblUnallocated.getValueAt(row, 0);
 						
-						EditTaskUI editTask = new EditTaskUI(taskID);
+						EditTaskUI editTask = new EditTaskUI(taskID, username);
 						editTask.setTaskID(taskID);
 						editTask.setVisible(true);
 						setVisible(false);
@@ -246,7 +247,7 @@ public class ManagerMenu extends JFrame{
 					int row = target.getSelectedRow();
 					int taskID = (Integer) tblAllocated.getValueAt(row, 0);
 					
-					EditTaskUI editTask = new EditTaskUI(taskID);
+					EditTaskUI editTask = new EditTaskUI(taskID, username);
 					editTask.setTaskID(taskID);
 					editTask.setVisible(true);
 					setVisible(false);
@@ -280,7 +281,7 @@ public class ManagerMenu extends JFrame{
 					int row = target.getSelectedRow();
 					int taskID = (Integer) tblCompleted.getValueAt(row, 0);
 					
-					EditTaskUI editTask = new EditTaskUI(taskID);
+					EditTaskUI editTask = new EditTaskUI(taskID, username);
 					editTask.setTaskID(taskID);
 					editTask.setVisible(true);
 					setVisible(false);
@@ -305,7 +306,7 @@ public class ManagerMenu extends JFrame{
 		{
 			public void actionPerformed(ActionEvent e) 
 			{
-				TaskCreationUI addTask = new TaskCreationUI();
+				TaskCreationUI addTask = new TaskCreationUI(username);
 				addTask.setVisible(true);
 				setVisible(false);
 				frame.dispose();

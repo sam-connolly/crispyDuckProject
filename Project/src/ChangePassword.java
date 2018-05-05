@@ -26,9 +26,9 @@ public class ChangePassword extends JDialog implements ActionListener {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args, String user) {
+	public static void main(String[] args) {
 		try {
-			ChangePassword dialog = new ChangePassword(user);
+			ChangePassword dialog = new ChangePassword(args[0]);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -97,7 +97,11 @@ public class ChangePassword extends JDialog implements ActionListener {
 			//Check old password is correct before allowing to change
 			boolean valid = database.validateLogin(username, oldPasswordString);
 			//If valid username password combo
-			if(valid) {
+			if (newPasswordString==null) {
+					JOptionPane.showMessageDialog(null, "Password must not be blank", 
+							"Invalid Password", JOptionPane.INFORMATION_MESSAGE);
+			}
+			else if(valid) {
 				try {
 					//Attempt update using new password
 					boolean updated = database.updatePassword(username, newPasswordString);

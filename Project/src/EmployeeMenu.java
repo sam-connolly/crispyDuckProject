@@ -58,7 +58,7 @@ public class EmployeeMenu extends JFrame{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					EmployeeMenu window = new EmployeeMenu();
+					EmployeeMenu window = new EmployeeMenu(args[1]);
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -70,7 +70,8 @@ public class EmployeeMenu extends JFrame{
 	/**
 	 * Create the application.
 	 */
-	public EmployeeMenu() {
+	public EmployeeMenu(String username) {
+		this.username=username;
 		initialize();
 	}
 
@@ -257,12 +258,12 @@ public class EmployeeMenu extends JFrame{
 		btnAccount = new JButton("Account");		 
 	    btnAccount.addActionListener(new ActionListener() {	 
 	      public void actionPerformed(ActionEvent e) {	 
-	        UpdateUserUI updateUser = new UpdateUserUI();	 
+	        UpdateUserUI updateUser = new UpdateUserUI(username);	 
 	        updateUser.setVisible(true);	 
 	      }	 
 	    });
 	    menuBar.add(btnAccount);
-	 
+	    this.frame.setVisible(true);
 	}
 	
 	public void setUser(String username) { 

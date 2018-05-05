@@ -130,7 +130,10 @@ public class UpdateUserAdminUI extends JFrame {
 			    if (response == JOptionPane.YES_OPTION) {
 			    	try {
 						boolean deleteUser = database.deleteUser(username);
-						System.out.println(deleteUser);
+						if (deleteUser) {
+							JOptionPane.showMessageDialog(null, "User deleted.", 
+									"Delete Success", JOptionPane.INFORMATION_MESSAGE);
+						}
 						dispose();
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
@@ -249,7 +252,10 @@ public class UpdateUserAdminUI extends JFrame {
 			    try {
 					boolean updateUser = database.updateUserAdmin(username, passwordString,
 							admin, forename, surname);
-					System.out.println(updateUser);
+					if (updateUser) {
+						JOptionPane.showMessageDialog(null, "User updated.", 
+								"Update Success", JOptionPane.INFORMATION_MESSAGE);
+					}
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

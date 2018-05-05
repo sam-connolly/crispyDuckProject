@@ -47,7 +47,7 @@ public class EditTaskUI extends JFrame {
 				int taskID = Integer.parseInt(args[0]);
 				try 
 				{
-					EditTaskUI frame = new EditTaskUI(taskID);
+					EditTaskUI frame = new EditTaskUI(taskID, args[1]);
 					frame.setVisible(true);
 				} 
 				catch (Exception e) 
@@ -84,7 +84,7 @@ public class EditTaskUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public EditTaskUI(int taskID) 
+	public EditTaskUI(int taskID, String username) 
 	{
 		if (taskID == -1)
 		{
@@ -123,7 +123,7 @@ public class EditTaskUI extends JFrame {
 					ManagerMenu managerMenuNew;
 					try 
 					{
-						managerMenuNew = new ManagerMenu();
+						managerMenuNew = new ManagerMenu(username);
 						managerMenuNew.setVisible(true);
 						dispose();
 					} 

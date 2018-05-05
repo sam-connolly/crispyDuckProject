@@ -31,7 +31,7 @@ public class TaskCreationUI extends JFrame
 			{
 				try 
 				{
-					TaskCreationUI frame = new TaskCreationUI();
+					TaskCreationUI frame = new TaskCreationUI(args[1]);
 					// When the window is closed, it should actually close, not hide
 					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					frame.setVisible(true);
@@ -68,8 +68,9 @@ public class TaskCreationUI extends JFrame
 	}
 
 	 // Create the frame.
-	public TaskCreationUI() 
+	public TaskCreationUI(String username) 
 	{
+		this.username=username;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 605, 619);
 		contentPane = new JPanel();
@@ -95,7 +96,7 @@ public class TaskCreationUI extends JFrame
 				ManagerMenu managerMenuNew;
 				try 
 				{
-					managerMenuNew = new ManagerMenu();
+					managerMenuNew = new ManagerMenu(username);
 					managerMenuNew.setVisible(true);
 					dispose();
 				} 
