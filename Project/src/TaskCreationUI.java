@@ -148,9 +148,9 @@ public class TaskCreationUI extends JFrame
 		pnlDataEntry.add(txtLocation);
 		txtLocation.setColumns(10);
 		
-		JLabel lblDateDue = new JLabel("(First) Date Due");
-		lblDateDue.setHorizontalAlignment(SwingConstants.CENTER);
-		pnlDataEntry.add(lblDateDue);
+		JLabel lblAllocationDate = new JLabel("(First) Allocation Date");
+		lblAllocationDate.setHorizontalAlignment(SwingConstants.CENTER);
+		pnlDataEntry.add(lblAllocationDate);
 		
 		JPanel pnlDateInput = new JPanel();
 		pnlDataEntry.add(pnlDateInput);
@@ -430,7 +430,7 @@ public class TaskCreationUI extends JFrame
 					int timeEstimateInMinutes = (hours * 60) + minutes;
 					//SQL for creating a new database entry
 					String insertSQL = "INSERT INTO Task (TaskName, TaskDesc,"
-							+ " TaskCat, Priority, Repeating, TimeEstimate, Location, FirstAllocation, FirstDueDate)"
+							+ " TaskCat, Priority, Repeating, TimeEstimate, Location, FirstAllocation)"
 							+ "VALUES ('" 
 							+ txtTaskName.getText() + "', '" 
 							+ txtaDescription.getText() + "', '"
@@ -439,7 +439,6 @@ public class TaskCreationUI extends JFrame
 							+ cmbRepeatingDays.getSelectedItem() + "', '"
 							+ timeEstimateInMinutes + "', '"
 							+ txtLocation.getText() + "', #"
-							+ sqlCurrentDate + "# , #"
 							+ sqlDateDue + "#);";
 					
 					/*Create the database field by calling createTask in the database class. Store whether it was a 
