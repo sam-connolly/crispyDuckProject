@@ -94,10 +94,12 @@ public class ChangePassword extends JDialog implements ActionListener {
 			//Convert password inputs to Strings
 			oldPasswordString = new String (oldPassword);
 			newPasswordString = new String (newPassword);
+			oldPasswordString.trim();
+			newPasswordString.trim();
 			//Check old password is correct before allowing to change
 			boolean valid = database.validateLogin(username, oldPasswordString);
 			//If valid username password combo
-			if (newPasswordString==null) {
+			if (newPasswordString.equals("")) {
 					JOptionPane.showMessageDialog(null, "Password must not be blank", 
 							"Invalid Password", JOptionPane.INFORMATION_MESSAGE);
 			}

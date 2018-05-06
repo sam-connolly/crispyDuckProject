@@ -42,37 +42,38 @@ public class LoginUI extends JFrame {
 	public LoginUI() {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 315, 196);
+		setBounds(100, 100, 370, 196);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
 		txtUsername = new JTextField();
-		txtUsername.setBounds(110, 33, 139, 20);
+		txtUsername.setBounds(144, 33, 177, 20);
 		contentPane.add(txtUsername);
 		txtUsername.setColumns(10);
 		
 		txtPassword = new JPasswordField();
-		txtPassword.setBounds(110, 61, 139, 20);
+		txtPassword.setBounds(144, 61, 177, 20);
 		contentPane.add(txtPassword);
 		
 		JLabel lblUsername = new JLabel("Username");
-		lblUsername.setBounds(45, 36, 55, 14);
+		lblUsername.setBounds(45, 36, 89, 14);
 		contentPane.add(lblUsername);
 		
 		JLabel lblPassword = new JLabel("Password");
-		lblPassword.setBounds(45, 64, 55, 14);
+		lblPassword.setBounds(45, 64, 89, 14);
 		contentPane.add(lblPassword);
 		
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//Get values from user input
-				username = txtUsername.getText();
+				username = txtUsername.getText().trim();
 				password = txtPassword.getPassword();
 				//Convert password input to String
 				passwordString = new String (password);
+				passwordString.trim();
 				//Check if username password combo matches
 				Boolean valid = database.validateLogin(username, passwordString);
 				//If login successful
@@ -106,7 +107,7 @@ public class LoginUI extends JFrame {
 				}
 			}
 		});
-		btnLogin.setBounds(110, 111, 89, 23);
+		btnLogin.setBounds(144, 116, 89, 23);
 		contentPane.add(btnLogin);		
 	}
 	

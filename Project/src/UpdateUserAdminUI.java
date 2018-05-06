@@ -69,11 +69,11 @@ public class UpdateUserAdminUI extends JFrame {
 		contentPane.add(cmbUsername);
 		
 		JLabel lblUsername = new JLabel("Password");
-		lblUsername.setBounds(23, 56, 59, 14);
+		lblUsername.setBounds(23, 56, 116, 14);
 		contentPane.add(lblUsername);
 		
 		JLabel label = new JLabel("Username");
-		label.setBounds(23, 24, 59, 14);
+		label.setBounds(23, 24, 116, 14);
 		contentPane.add(label);
 		
 		//ArrayList to store users returned from the database
@@ -96,7 +96,7 @@ public class UpdateUserAdminUI extends JFrame {
 		contentPane.add(txtForename);
 		
 		JLabel lblForename = new JLabel("Forename");
-		lblForename.setBounds(23, 120, 59, 14);
+		lblForename.setBounds(23, 120, 116, 14);
 		contentPane.add(lblForename);
 		
 		txtSurname = new JTextField();
@@ -105,7 +105,7 @@ public class UpdateUserAdminUI extends JFrame {
 		contentPane.add(txtSurname);
 		
 		JLabel lblSurname = new JLabel("Surname");
-		lblSurname.setBounds(23, 152, 59, 14);
+		lblSurname.setBounds(23, 152, 116, 14);
 		contentPane.add(lblSurname);
 		
 		//ComboBox to chose user role
@@ -116,7 +116,7 @@ public class UpdateUserAdminUI extends JFrame {
 		contentPane.add(cmbRole);
 		
 		JLabel lblRole = new JLabel("Role");
-		lblRole.setBounds(23, 88, 59, 14);
+		lblRole.setBounds(23, 88, 116, 14);
 		contentPane.add(lblRole);
 
 		JButton btnDeleteUser = new JButton("Delete User");
@@ -124,22 +124,28 @@ public class UpdateUserAdminUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				//Get username value
 				username = cmbUsername.getSelectedItem().toString();
-			    int response = JOptionPane.showConfirmDialog(null, "Are you sure you wish to delete "
-			    		+ username + "?", "Confirm",
-			        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-			    if (response == JOptionPane.YES_OPTION) {
-			    	try {
-						boolean deleteUser = database.deleteUser(username);
-						if (deleteUser) {
-							JOptionPane.showMessageDialog(null, "User deleted.", 
-									"Delete Success", JOptionPane.INFORMATION_MESSAGE);
+				if (username.equals("Select a User")) {
+					JOptionPane.showMessageDialog(null, "Please select a user to delete.", 
+							"Invalid Input", JOptionPane.INFORMATION_MESSAGE);
+				}
+				else {
+					int response = JOptionPane.showConfirmDialog(null, "Are you sure you wish to delete "
+				    		+ username + "?", "Confirm",
+				        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				    if (response == JOptionPane.YES_OPTION) {
+				    	try {
+							boolean deleteUser = database.deleteUser(username);
+							if (deleteUser) {
+								JOptionPane.showMessageDialog(null, "User deleted.", 
+										"Delete Success", JOptionPane.INFORMATION_MESSAGE);
+							}
+							dispose();
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
 						}
-						dispose();
-					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-			    } 
+				    } 
+				}
 			}
 		});
 		btnDeleteUser.setBounds(103, 342, 116, 23);
@@ -164,11 +170,11 @@ public class UpdateUserAdminUI extends JFrame {
 		}
 		
 		JLabel lblCategory = new JLabel("Category");
-		lblCategory.setBounds(23, 227, 59, 14);
+		lblCategory.setBounds(23, 227, 116, 14);
 		contentPane.add(lblCategory);
 		
 		JLabel lblPreferenceLevel = new JLabel("Preference Level");
-		lblPreferenceLevel.setBounds(23, 259, 59, 14);
+		lblPreferenceLevel.setBounds(23, 259, 116, 14);
 		contentPane.add(lblPreferenceLevel);
 		
 		cmbUsername.addItemListener(new ItemListener()
@@ -234,9 +240,9 @@ public class UpdateUserAdminUI extends JFrame {
 				//Get values from textboxes
 				username = cmbUsername.getSelectedItem().toString();
 				roleString = cmbRole.getSelectedItem().toString();
-				password = txtPassword.getText();
-				forename = txtForename.getText();
-				surname = txtSurname.getText();
+				password = txtPassword.getText().trim();
+				forename = txtForename.getText().trim();
+				surname = txtSurname.getText().trim();
 				String cat = cmbCat.getSelectedItem().toString();
 				int preference = Integer.parseInt(cmbPrefLvl.getSelectedItem().toString());
 				//Convert password to String
@@ -248,32 +254,39 @@ public class UpdateUserAdminUI extends JFrame {
 				else { //User is not Admin
 					admin=false;
 				}	
-				//Attempt to update User 
-			    try {
-					boolean updateUser = database.updateUserAdmin(username, passwordString,
-							admin, forename, surname);
-					if (updateUser) {
-						JOptionPane.showMessageDialog(null, "User updated.", 
-								"Update Success", JOptionPane.INFORMATION_MESSAGE);
-					}
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				//Attempt to update User
+				if (password.equals("")||forename.equals("")||surname.equals("")) {
+					JOptionPane.showMessageDialog(null, "One or more fields is empty,"
+							+ " ensure valid data is entered in all fields.", 
+							"Invalid Input", JOptionPane.INFORMATION_MESSAGE);
 				}
-			    try {
-					boolean updatePreference = database.updateUserPreference(username, cat,
-							preference);
-					System.out.println(updatePreference);
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				else {
+				    try {
+						boolean updateUser = database.updateUserAdmin(username, passwordString,
+								admin, forename, surname);
+						if (updateUser) {
+							JOptionPane.showMessageDialog(null, "User updated.", 
+									"Update Success", JOptionPane.INFORMATION_MESSAGE);
+						}
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				    try {
+						boolean updatePreference = database.updateUserPreference(username, cat,
+								preference);
+						System.out.println(updatePreference);
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
 		contentPane.add(btnSubmit);
 		
 		JLabel lblEfficiency = new JLabel("Efficiency");
-		lblEfficiency.setBounds(23, 290, 59, 14);
+		lblEfficiency.setBounds(23, 290, 116, 14);
 		contentPane.add(lblEfficiency);
 		
 		JSeparator separator = new JSeparator();

@@ -20,6 +20,8 @@ public class TaskCreationUI extends JFrame
 	private JTextField txtLocation;
 	private String username;
 	
+	/*Create a new database object for interacting with the database. No need to get rid of it at the end as Java does
+	 *this automatically*/
 	Database database = new Database();
 
 	 // Launch the application.
@@ -67,17 +69,23 @@ public class TaskCreationUI extends JFrame
 		return formattedDay;
 	}
 
-	 // Create the frame.
+	/**
+	 * Constructor for the UI
+	 * 
+	 * @param username	The username of the currently logged in user
+	 */
 	public TaskCreationUI(String username) 
 	{
+		//Username of the currently logged in user
 		this.username=username;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 605, 619);
+		setBounds(100, 100, 606, 758);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
 		
+		//Top panel to separate the back button from the rest of the UI
 		JPanel pnlTopButtons = new JPanel();
 		pnlTopButtons.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		pnlTopButtons.setAlignmentY(Component.TOP_ALIGNMENT);
@@ -87,6 +95,7 @@ public class TaskCreationUI extends JFrame
 		flowLayout.setHgap(2);
 		contentPane.add(pnlTopButtons);
 		
+		//Button to go back to the ManagerMenu
 		JButton btnBack = new JButton("Back");
 		btnBack.addActionListener(new ActionListener() 
 		{
@@ -96,13 +105,18 @@ public class TaskCreationUI extends JFrame
 				ManagerMenu managerMenuNew;
 				try 
 				{
+					//Create a new ManagerMenu, passing the username to it
 					managerMenuNew = new ManagerMenu(username);
 					managerMenuNew.setVisible(true);
+					//Get rid of the current frame
 					dispose();
 				} 
 				catch (ParseException | SQLException e1) 
 				{
-					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(new JFrame(),
+						    "Could not open new window. Contact support",
+						    "Window navigation error",
+						    JOptionPane.ERROR_MESSAGE);
 					e1.printStackTrace();
 				}
 			}
@@ -110,51 +124,62 @@ public class TaskCreationUI extends JFrame
 		pnlTopButtons.add(btnBack);
 		
 		
-		
+		//Panel for holding the rest of the form
 		JPanel pnlMain = new JPanel();
 		contentPane.add(pnlMain);
 		pnlMain.setLayout(new BoxLayout(pnlMain, BoxLayout.Y_AXIS));
 		
+		//Title of the form to remind the user what this form does
 		JLabel lblTaskCreation = new JLabel("Create Task");
 		pnlMain.add(lblTaskCreation);
 		lblTaskCreation.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblTaskCreation.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTaskCreation.setFont(new Font("Tahoma", Font.PLAIN, 28));
 		
+		//Panel to hold all data input components, and their labels
 		JPanel pnlDataEntry = new JPanel();
 		pnlMain.add(pnlDataEntry);
 		pnlDataEntry.setLayout(new GridLayout(0, 2, 0, 18));
 		
+		//Label for task name entry field
 		JLabel lblTaskName = new JLabel("Task Name *");
 		lblTaskName.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblTaskName);
 		
+		//For entering the name of the task. Vital field, must be entered to create task
 		txtTaskName = new JTextField();
 		pnlDataEntry.add(txtTaskName);
 		txtTaskName.setColumns(10);
 		
+		//Label for task description field
 		JLabel lblDescription = new JLabel("Description");
 		lblDescription.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblDescription);
 		
+		//Text are for entering a possibly quite long description. Not a vital field, so can be left empty
 		JTextArea txtaDescription = new JTextArea();
 		pnlDataEntry.add(txtaDescription);
 		
+		//Label for task location field
 		JLabel lblLocation = new JLabel("Location *");
 		lblLocation.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblLocation);
 		
+		//For entering the location of the task. Vital field, must be entered to create task
 		txtLocation = new JTextField();
 		pnlDataEntry.add(txtLocation);
 		txtLocation.setColumns(10);
 		
+		//Label for the allocation date entry panel
 		JLabel lblAllocationDate = new JLabel("(First) Allocation Date");
 		lblAllocationDate.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblAllocationDate);
 		
+		//Panel to hold all components for entering a date. The date input is made up of three comboBoxes
 		JPanel pnlDateInput = new JPanel();
 		pnlDataEntry.add(pnlDateInput);
 		
+		//First comboBox for entering the day of the date. Since the default month is January, it initially has 31 days
 		JComboBox<String> cmbDateDay = new JComboBox<String>();
 		//Loop for adding all days of the month to the ComboBox. It's 31 because the default month is January
 		for (int i = 1; i <= 31; i++)
@@ -164,6 +189,7 @@ public class TaskCreationUI extends JFrame
 		}
 		pnlDateInput.add(cmbDateDay);
 		
+		//Simple label to separate the date input comboBoxes
 		JLabel lblDateSeperator1 = new JLabel("/");
 		pnlDateInput.add(lblDateSeperator1);
 		
@@ -185,10 +211,12 @@ public class TaskCreationUI extends JFrame
 		cmbDateMonth.addItem(new KeyValue("November", "11"));
 		cmbDateMonth.addItem(new KeyValue("December", "12"));
 		pnlDateInput.add(cmbDateMonth);
-				
+		
+		//Simple label to separate the date input comboBoxes
 		JLabel lblDateSeperator2 = new JLabel("/");
 		pnlDateInput.add(lblDateSeperator2);
 		
+		//ComboBox for entering the year
 		JComboBox<Integer> cmbDateYear = new JComboBox<Integer>();
 		//Populate the ComboBox with years up to 3000
 		for (int i = 2018; i <= 3000; i++)
@@ -197,6 +225,7 @@ public class TaskCreationUI extends JFrame
 		}
 		pnlDateInput.add(cmbDateYear);
 		
+		//Listener for if the month is changed
 		cmbDateMonth.addItemListener(new ItemListener()
 		{
 			//When the month is changed, repopulate the day ComboBox to have the correct number of days for that month
@@ -259,6 +288,7 @@ public class TaskCreationUI extends JFrame
 			}
 		});
 		
+		//Listener for if the year has been changed
 		cmbDateYear.addItemListener(new ItemListener()
 		{
 			//If the year ComboBox is changed, check to see if the selected month is February, and if it's a leap year
@@ -268,7 +298,7 @@ public class TaskCreationUI extends JFrame
 				String monthKey = month.getKey();								//The key (name) of the month
 				int year = (Integer) cmbDateYear.getSelectedItem();				//The selected year
 				
-				//If a new month has been selected, repopulate the days ComboBox
+				//If a new year has been selected, check to see if the days comboBox needs to be repopulated
 				if (evt.getStateChange() == ItemEvent.SELECTED)
 				{			
 					//If the new year is a leap year, and the selected month is February, put 29 days in the ComboBox
@@ -287,6 +317,7 @@ public class TaskCreationUI extends JFrame
 			}
 		});
 		
+		//Label for the category input
 		JLabel lblCategory = new JLabel("Category *");
 		lblCategory.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblCategory);
@@ -295,55 +326,67 @@ public class TaskCreationUI extends JFrame
 		ArrayList<String> categories = new ArrayList<String>();
 		//Call the getCategories method from the database and populate the ArrayList with it
 		categories = database.getCategories();
+		//ComboBox to store the categories
 		JComboBox<String> cmbCategory = new JComboBox<String>();
 		cmbCategory.addItem("Select a category");
 		//Loop through all returned categories
 		for (int i = 0; i < categories.size(); i++)
 		{
-			//Add the category to the database
+			//Add the category to the comboBox
 			cmbCategory.addItem(categories.get(i));
 		}
 		pnlDataEntry.add(cmbCategory);
 		
+		//Label for the priority input. Tells user which number indicates a higher priority
 		JLabel lblPriority = new JLabel("Priority (1 is highest. 5 is lowest)");
 		lblPriority.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblPriority);
 		
+		//Priority input
 		JComboBox<Integer> cmbPriority = new JComboBox<Integer>();
 		cmbPriority.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {1, 2, 3, 4, 5}));
 		cmbPriority.setSelectedIndex(2);
 		pnlDataEntry.add(cmbPriority);
 		
+		//Label for the time estimate input panel
 		JLabel lblTimeEstimate = new JLabel("Time Estimate *");
 		lblTimeEstimate.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblTimeEstimate);
 		
+		//Panel for holding the components for the input of a time estimation
 		JPanel timeEstimatePanel = new JPanel();
 		pnlDataEntry.add(timeEstimatePanel);
 		
+		//ComboBox for holding the number of hours it will take to complete a task
 		JComboBox<Integer> cmbHours = new JComboBox<Integer>();
 		cmbHours.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
 		14, 15}));
 		timeEstimatePanel.add(cmbHours);
 		
+		//Label to indicate the preceding comboBox is for the input of hours
 		JLabel lblHours = new JLabel("hours");
 		timeEstimatePanel.add(lblHours);
 		
+		//ComboBox for the input of how many minutes, on to of the hours, a task will take. Multiples of 5
 		JComboBox<Integer> cmbMinutes = new JComboBox<Integer>();
 		cmbMinutes.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50,
 		55}));
 		timeEstimatePanel.add(cmbMinutes);
 		
+		//Label to tell the user the preceding comboBox is for the input of minutes
 		JLabel lblMinutes = new JLabel("minutes");
 		timeEstimatePanel.add(lblMinutes);
 		
+		//Label for the days to be completed in panel
 		JLabel lblDaysToCompleteIn = new JLabel("Days to be completed in");
 		lblDaysToCompleteIn.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblDaysToCompleteIn);
 		
+		//Panel to hold the time given input components
 		JPanel pnlDaysToBeCompletedIn = new JPanel();
 		pnlDataEntry.add(pnlDaysToBeCompletedIn);
 		
+		//ComboBox for inputting how many days are given for the task to be completed
 		JComboBox<Integer> cmbDaysToBeCompletedIn = new JComboBox<Integer>();
 		for (int i = 1; i < 100; i++)
 		{
@@ -351,19 +394,25 @@ public class TaskCreationUI extends JFrame
 		}
 		pnlDaysToBeCompletedIn.add(cmbDaysToBeCompletedIn);
 		
+		//Label to tell the user the preceding comboBox is for the input of days
 		JLabel lblCompletedDays = new JLabel(" days");
 		pnlDaysToBeCompletedIn.add(lblCompletedDays);
-				
+		
+		//Label for the repeating panel
 		JLabel lblRepeating = new JLabel("Repeating?");
 		lblRepeating.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblRepeating);
 		
+		//Panel to hold the input and label for entering the number of days to pass before a task is repeated
 		JPanel repeatingPanel = new JPanel();
 		pnlDataEntry.add(repeatingPanel);
 		
+		/*The first label, so that when the user has entered a number of days, it forms a sentence, so it's easier for
+		the user to understand*/
 		JLabel lblRepeatEvery = new JLabel("Repeat every ");
 		repeatingPanel.add(lblRepeatEvery);
 		
+		//ComboBox for entering the number of days to pass before a task is repeated
 		JComboBox<Integer> cmbRepeatingDays = new JComboBox<Integer>();
 		repeatingPanel.add(cmbRepeatingDays);
 		//Add 365 days to the ComboBox
@@ -372,12 +421,25 @@ public class TaskCreationUI extends JFrame
 			cmbRepeatingDays.addItem(i);
 		}
 		
+		//Final label in the repeating panel. FInishes the sentence
 		JLabel lblDays = new JLabel(" days (0 if not repeating)");
 		repeatingPanel.add(lblDays);
 		
+		//Label for the caretaker sign off checkBox
+		JLabel lblCaretakerSignOff = new JLabel("Caretaker Sign Off? (Tick if yes)");
+		lblCaretakerSignOff.setHorizontalAlignment(SwingConstants.CENTER);
+		pnlDataEntry.add(lblCaretakerSignOff);
+		
+		//CheckBox for setting if a caretaker can sign off the task
+		JCheckBox chkBxCaretakerSignOff = new JCheckBox("");
+		chkBxCaretakerSignOff.setHorizontalAlignment(SwingConstants.CENTER);
+		pnlDataEntry.add(chkBxCaretakerSignOff);
+		
+		//Panel to hold the submission button
 		JPanel pnlSubmission = new JPanel();
 		contentPane.add(pnlSubmission);
 		
+		//Button for creating the task. Checks that all required fields are entered, and triggers the SQL to execute
 		JButton btnCreate = new JButton("Create");
 		btnCreate.addActionListener(new ActionListener() 
 		{
@@ -395,22 +457,17 @@ public class TaskCreationUI extends JFrame
 				//String value of the date
 				String strDateDue = cmbDateDay.getSelectedItem() + "/" + monthValue + "/" +
 				cmbDateYear.getSelectedItem();
-				String strCurrentDate = null;
-				//SQL versions of the dates
+				//SQL version of the date
 				java.sql.Date sqlDateDue = null;
-				java.sql.Date sqlCurrentDate = null;
 				
-				DateFormat dateFormat = new SimpleDateFormat("yy/MM/dd");
 				Date currentDate = new Date();
-				strCurrentDate = dateFormat.format(currentDate);
-				System.out.println(strCurrentDate);
 				
 				try 
 				{
 					//Format the date using convertStringToSQLDate in the database class
 					sqlDateDue = database.convertStringToSQLDate(strDateDue);
-					sqlCurrentDate = database.convertStringToSQLDate(strCurrentDate);
 				} 
+				//If there was an error, alert the user and recommend they contact support
 				catch (ParseException e1) 
 				{
 					JOptionPane.showMessageDialog(new JFrame(),
@@ -419,8 +476,6 @@ public class TaskCreationUI extends JFrame
 						    JOptionPane.ERROR_MESSAGE);
 					e1.printStackTrace();
 				}
-				
-				
 				
 				//If any of the required fields are not filled, alert the user and do not continue
 				if (txtTaskName.getText().equals("") || txtLocation.getText().equals("") ||
@@ -432,22 +487,32 @@ public class TaskCreationUI extends JFrame
 						    "Enter all info",
 						    JOptionPane.WARNING_MESSAGE);
 				}
+				//If the user has entered a date in the past for first allocation, prompt them to correct it
 				else if (sqlDateDue.before(currentDate))
 				{
-					//Dialog to tell the user to enter all required fields
+					//Dialog to tell the user to enter a date that isn't in the past
 					JOptionPane.showMessageDialog(new JFrame(),
-						    "Due date entered is in the past. Please enter a date not in the past",
+						    "Date entered is in the past. Please enter a date not in the past",
 						    "Date entry error",
 						    JOptionPane.WARNING_MESSAGE);
 				}
-				//If all required fields are entered, then continue
+				//If all checks are passed, then continue
 				else
 				{	
+					Boolean caretakerSignOff = false;			//For if the task can be signed off by a caretaker
+					//If the checkBox has been selected
+					if (chkBxCaretakerSignOff.isSelected())
+					{
+						//Set caretakerSignOff to true
+						caretakerSignOff = true;
+					}
+					
 					//Calculate the total minutes of the time entered
 					int timeEstimateInMinutes = (hours * 60) + minutes;
 					//SQL for creating a new database entry
 					String insertSQL = "INSERT INTO Task (TaskName, TaskDesc,"
-							+ " TaskCat, Priority, Repeating, TimeEstimate, Location, TimeGiven, FirstAllocation)"
+							+ " TaskCat, Priority, Repeating, TimeEstimate, Location, TimeGiven, CaretakerSignOff, "
+							+ "FirstAllocation)"
 							+ "VALUES ('" 
 							+ txtTaskName.getText() + "', '" 
 							+ txtaDescription.getText() + "', '"
@@ -456,7 +521,8 @@ public class TaskCreationUI extends JFrame
 							+ cmbRepeatingDays.getSelectedItem() + "', '"
 							+ timeEstimateInMinutes + "', '"
 							+ txtLocation.getText() + "', '"
-							+ cmbDaysToBeCompletedIn.getSelectedItem() + "', #"
+							+ cmbDaysToBeCompletedIn.getSelectedItem() + "', '"
+							+ caretakerSignOff + "', #"
 							+ sqlDateDue + "#);";
 					
 					/*Create the database field by calling createTask in the database class. Store whether it was a 
@@ -468,7 +534,7 @@ public class TaskCreationUI extends JFrame
 					{
 						JOptionPane.showMessageDialog(new JFrame(), "Task successfully created");
 						
-						//Reset al the input fields to blank or their default
+						//Reset all the input fields to blank or their default
 						txtTaskName.setText("");
 						txtaDescription.setText("");
 						cmbCategory.setSelectedItem("Select a category");
@@ -477,6 +543,7 @@ public class TaskCreationUI extends JFrame
 						cmbHours.setSelectedItem(0);
 						cmbMinutes.setSelectedItem(0);
 						txtLocation.setText("");
+						cmbDaysToBeCompletedIn.setSelectedItem(1);
 					}
 					//If data entry failed, tell the user and recommend they contact their database admin
 					else
@@ -491,5 +558,4 @@ public class TaskCreationUI extends JFrame
 		});
 		pnlSubmission.add(btnCreate);
 	}
-
 }
