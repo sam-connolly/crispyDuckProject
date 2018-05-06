@@ -94,6 +94,8 @@ public class EmployeeMenu extends JFrame{
 		allTasks = database.getTasks();
 		allUsers = database.getUsers();
 		
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		
 		frame = new JFrame();
 		frame.setBounds(100, 100, 1169, 686);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

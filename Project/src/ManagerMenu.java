@@ -23,6 +23,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.Color;
+import java.awt.Dialog;
 
 public class ManagerMenu extends JFrame{
 
@@ -32,9 +33,6 @@ public class ManagerMenu extends JFrame{
 	private JTable tblAllocated;
 	private JScrollPane pnlCompleted;
 	private JTable tblSignedOff;
-	private JTextField txtSearch;
-	private JTextField txtSearch_2;
-	private JTextField txtSearch_1;
 	private JComboBox<String> cmbFirstTable;
 	private JComboBox<String> cmbLastTable;
 	private JPanel panel;
@@ -89,15 +87,18 @@ public class ManagerMenu extends JFrame{
 	{		
 		allTasks = database.getTasks();
 		allUsers = database.getUsers();
+		
 	
 		frame = new JFrame();
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		
 		frame.setBounds(100, 100, 873, 573);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{20, 300, 300, 300, 20, 0};
-		gridBagLayout.rowHeights = new int[]{20, 0, 0, 351, 35, 10, 0};
+		gridBagLayout.rowHeights = new int[]{20, 0, 351, 35, 10, 0};
 		gridBagLayout.columnWeights = new double[]{0.0, 1.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 100.0, 1.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 100.0, 1.0, 0.0, Double.MIN_VALUE};
 		frame.getContentPane().setLayout(gridBagLayout);
 		
 		JButton btnAllocate = new JButton("Allocate Task");
@@ -156,7 +157,7 @@ public class ManagerMenu extends JFrame{
 		inProgressComboBox = allUsers.getUsersComboBox("in progress");
 		inProgressComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(inProgressComboBox.getSelectedItem() == "All Unallocated") {
+				if(inProgressComboBox.getSelectedItem() == "All Allocated") {
 					try {
 						tblAllocated.setModel(allTasks.getAllAllocated());
 					} catch (ParseException e) {
@@ -186,7 +187,7 @@ public class ManagerMenu extends JFrame{
 			public void actionPerformed(ActionEvent arg0) {
 				if(cmbLastTable.getSelectedItem() == "All Completed") {
 					try {
-						tblAllocated.setModel(allTasks.getAllCompleted());
+						tblCompleted.setModel(allTasks.getAllCompleted());
 					} catch (ParseException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -209,45 +210,12 @@ public class ManagerMenu extends JFrame{
 		gbc_cmbLastTable.gridy = 1;
 		frame.getContentPane().add(cmbLastTable, gbc_cmbLastTable);
 		
-		txtSearch = new JTextField();
-		txtSearch.setForeground(Color.LIGHT_GRAY);
-		txtSearch.setText("Search");
-		GridBagConstraints gbc_txtSearch = new GridBagConstraints();
-		gbc_txtSearch.insets = new Insets(0, 0, 5, 5);
-		gbc_txtSearch.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txtSearch.gridx = 1;
-		gbc_txtSearch.gridy = 2;
-		frame.getContentPane().add(txtSearch, gbc_txtSearch);
-		txtSearch.setColumns(10);
-		
-		txtSearch_2 = new JTextField();
-		txtSearch_2.setText("Search");
-		txtSearch_2.setForeground(Color.LIGHT_GRAY);
-		GridBagConstraints gbc_txtSearch_2 = new GridBagConstraints();
-		gbc_txtSearch_2.insets = new Insets(0, 0, 5, 5);
-		gbc_txtSearch_2.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txtSearch_2.gridx = 2;
-		gbc_txtSearch_2.gridy = 2;
-		frame.getContentPane().add(txtSearch_2, gbc_txtSearch_2);
-		txtSearch_2.setColumns(10);
-		
-		txtSearch_1 = new JTextField();
-		txtSearch_1.setText("Search");
-		txtSearch_1.setForeground(Color.LIGHT_GRAY);
-		GridBagConstraints gbc_txtSearch_1 = new GridBagConstraints();
-		gbc_txtSearch_1.insets = new Insets(0, 0, 5, 5);
-		gbc_txtSearch_1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txtSearch_1.gridx = 3;
-		gbc_txtSearch_1.gridy = 2;
-		frame.getContentPane().add(txtSearch_1, gbc_txtSearch_1);
-		txtSearch_1.setColumns(10);
-		
 		JScrollPane pnlUnallocated = new JScrollPane();
 		GridBagConstraints gbc_pnlUnallocated = new GridBagConstraints();
 		gbc_pnlUnallocated.insets = new Insets(0, 0, 5, 5);
 		gbc_pnlUnallocated.fill = GridBagConstraints.BOTH;
 		gbc_pnlUnallocated.gridx = 1;
-		gbc_pnlUnallocated.gridy = 3;
+		gbc_pnlUnallocated.gridy = 2;
 		frame.getContentPane().add(pnlUnallocated, gbc_pnlUnallocated);
 		
 		tblUnallocated = new JTable(allTasks.getAllUnallocated("All Unallocated"));
@@ -278,7 +246,7 @@ public class ManagerMenu extends JFrame{
 		gbc_pnlAllocated.insets = new Insets(0, 0, 5, 5);
 		gbc_pnlAllocated.fill = GridBagConstraints.BOTH;
 		gbc_pnlAllocated.gridx = 2;
-		gbc_pnlAllocated.gridy = 3;
+		gbc_pnlAllocated.gridy = 2;
 		frame.getContentPane().add(pnlAllocated, gbc_pnlAllocated);
 		
 		DefaultTableModel allocatedModel = allTasks.getAllAllocated();
@@ -309,7 +277,7 @@ public class ManagerMenu extends JFrame{
 		gbc_pnlCompleted.insets = new Insets(0, 0, 5, 5);
 		gbc_pnlCompleted.fill = GridBagConstraints.BOTH;
 		gbc_pnlCompleted.gridx = 3;
-		gbc_pnlCompleted.gridy = 3;
+		gbc_pnlCompleted.gridy = 2;
 		frame.getContentPane().add(pnlCompleted, gbc_pnlCompleted);
 		
 		DefaultTableModel model3 = new DefaultTableModel();
@@ -345,7 +313,7 @@ public class ManagerMenu extends JFrame{
 		gbc_panel.insets = new Insets(0, 0, 5, 5);
 		gbc_panel.fill = GridBagConstraints.BOTH;
 		gbc_panel.gridx = 1;
-		gbc_panel.gridy = 4;
+		gbc_panel.gridy = 3;
 		frame.getContentPane().add(panel, gbc_panel);
 		
 		JButton btnAddTask = new JButton("Add Task");
@@ -397,7 +365,7 @@ public class ManagerMenu extends JFrame{
 				}
 				
 				try {
-					AllocationMenu allocationMenu = new AllocationMenu();
+					AllocationMenu allocationMenu = new AllocationMenu(frame);
 					allocationMenu.setToAllocateModel(toAllocateModel);
 					allocationMenu.setVisible(true);
 				} catch (ParseException | SQLException e) {
@@ -429,6 +397,10 @@ public class ManagerMenu extends JFrame{
 		});
 		btnNewUser.setBounds(383, 0, 126, 23);
 		panel.add(btnNewUser);
+		
+		JButton btnNewButton = new JButton("Sign Off Tasks");
+		btnNewButton.setBounds(519, 0, 101, 23);
+		panel.add(btnNewButton);
 		
 		menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);

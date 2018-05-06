@@ -328,7 +328,7 @@ public class TaskList {
 		    }
 		};
 		Object[] row = new Object[6];
-		allAllocatedModel.addColumn("Task ID");
+		allAllocatedModel.addColumn("Job ID");
 		allAllocatedModel.addColumn("Task Name");
 		allAllocatedModel.addColumn("Allocated To");
 		allAllocatedModel.addColumn("Issued On");
@@ -337,7 +337,7 @@ public class TaskList {
 		
 		for (Task taskToCheck : taskList) {
 			if ( taskToCheck.getCaretaker() != "Not Assigned" && taskToCheck.getCompleted() == false) {
-				row[0] = taskToCheck.getTaskID();
+				row[0] = taskToCheck.getJobID();
 				row[1] = taskToCheck.getTaskName();
 				row[2] = taskToCheck.getCaretaker();
 				row[3] = taskToCheck.getDateIssued();
@@ -358,7 +358,7 @@ public class TaskList {
 		    }
 		};
 		Object[] row = new Object[5];
-		allCompletedModel.addColumn("Task ID");
+		allCompletedModel.addColumn("Job ID");
 		allCompletedModel.addColumn("Task Name");
 		allCompletedModel.addColumn("Allocated To");
 		allCompletedModel.addColumn("Signed Off");
@@ -366,7 +366,7 @@ public class TaskList {
 		
 		for (Task taskToCheck : taskList) {
 			if (taskToCheck.getCompleted()) {
-				row[0] = taskToCheck.getTaskID();
+				row[0] = taskToCheck.getJobID();
 				row[1] = taskToCheck.getTaskName();
 				row[2] = taskToCheck.getCaretaker();
 				if (taskToCheck.getSignedOff()){

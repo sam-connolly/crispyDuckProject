@@ -1,8 +1,10 @@
 import java.awt.BorderLayout;
+import java.awt.Dialog;
 import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.GridBagLayout;
@@ -18,6 +20,8 @@ import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.Font;
+import java.awt.Frame;
+
 import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -36,7 +40,7 @@ public class AllocationMenu extends JDialog {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		try {
 			AllocationMenu dialog = new AllocationMenu();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -44,14 +48,17 @@ public class AllocationMenu extends JDialog {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	/**
 	 * Create the dialog.
+	 * @param documentModal 
 	 * @throws SQLException 
 	 * @throws ParseException 
 	 */
-	public AllocationMenu() throws ParseException, SQLException {
+	public AllocationMenu(JFrame parentWindow) throws ParseException, SQLException {
+		super(parentWindow, "Allocation Menu", ModalityType.DOCUMENT_MODAL);
+		
 		allTasks = database.getTasks();
 		allUsers = database.getUsers();
 
