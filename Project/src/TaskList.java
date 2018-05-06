@@ -221,7 +221,7 @@ public class TaskList {
 		allocatedToCaretakerModel.addColumn("Priority");
 		allocatedToCaretakerModel.addColumn("Date Due");
 		for (Task taskToCheck : taskList ) {
-			if (taskToCheck.getCaretaker().equals(username)) { 
+			if (taskToCheck.getCaretaker().equals(username) && taskToCheck.getCompleted() == false) { 
 				row[0] = taskToCheck.getJobID();
 				row[1] = taskToCheck.getTaskName();
 				row[2] = taskToCheck.getLocation();
@@ -242,10 +242,11 @@ public class TaskList {
 		       return false;
 		    }
 		};
-		Object[] row = new Object[5];
+		Object[] row = new Object[6];
 		completedByCaretakerModel.addColumn("Job ID");
 		completedByCaretakerModel.addColumn("Task Name");
 		completedByCaretakerModel.addColumn("Location");
+		completedByCaretakerModel.addColumn("TimeTaken");
 		completedByCaretakerModel.addColumn("Signed Off");
 		completedByCaretakerModel.addColumn("Signed Off On");
 		for (Task taskToCheck : taskList ) {
@@ -253,8 +254,9 @@ public class TaskList {
 				row[0] = taskToCheck.getJobID();
 				row[1] = taskToCheck.getTaskName();
 				row[2] = taskToCheck.getLocation();
-				row[3] = taskToCheck.getSignedOff();
-				row[4] = taskToCheck.getSignedOffOn();
+				row[3] = taskToCheck.getFormattedTimeTaken();
+				row[4] = taskToCheck.getSignedOff();
+				row[5] = taskToCheck.getSignedOffOn();
 				
 				completedByCaretakerModel.addRow(row);
 			}
@@ -277,7 +279,8 @@ public class TaskList {
 		allUnallocatedModel.addColumn("Priority");
 		if( filter == "All Unallocated") {
 			for (Task taskToCheck : taskList) {
-				if ( taskToCheck.getCaretaker() == "Not Assigned" ) {
+				if ( taskToCheck.getCaretaker() == "Not Assigned" || (taskToCheck.getCaretaker() != "Not Assigned" 
+						&& taskToCheck.getRepeating() != 0)) {
 					row[0] = taskToCheck.getTaskID();
 					row[1] = taskToCheck.getTaskName();
 					row[2] = checkIfDueAllocation(taskToCheck);

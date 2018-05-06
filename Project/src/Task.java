@@ -168,6 +168,16 @@ public class Task {
 	  return issueDesc;
   }
   
+  public int getTimeTaken() {
+	  return timeTaken;
+  }
+  
+  public String getFormattedTimeTaken() { 
+	  int hours = timeTaken / 60;
+	  int minutes = timeTaken - (hours * 60);
+	  return (hours + " hours " + minutes + " minutes.");
+  }
+  
   public void setLastAllocated(String lastAllocated) {
 	  this.lastAllocated = lastAllocated;
   }
@@ -250,13 +260,12 @@ public class Task {
 	  dateIssued = null;
   }
   
-  public void completeTask(/* int timeTaken */) throws SQLException {
+  public void completeTask(int timeTaken) throws SQLException {
 	  Database database = new Database();
 	  completed = true;
 	  
-	  System.out.println("Complete task" + jobID);
-	  database.completeTask(jobID);
-	  // this.timeTaken = timeTaken;
+	  database.completeTask(jobID, timeTaken);
+	  this.timeTaken = timeTaken;
   }
   
   public void uncompleteTask() throws SQLException {

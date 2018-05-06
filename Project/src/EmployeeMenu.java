@@ -25,10 +25,12 @@ import java.sql.SQLException;
 import java.util.Vector;
 import java.awt.event.ActionEvent;
 import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.JMenu;
 import javax.swing.JComboBox;
 import java.awt.Color;
 import javax.swing.JLabel;
+import java.awt.Font;
 
 public class EmployeeMenu extends JFrame{
 
@@ -54,7 +56,12 @@ public class EmployeeMenu extends JFrame{
 	private TaskList allTasks;
 	private UserList allUsers;
 	private JPanel panel;
+	private JPanel panel_1;
 	private JLabel lblNewLabel;
+	private JTextField txtHours;
+	private JLabel lblNewLabel_1;
+	private JTextField txtMinutes;
+	private JLabel lblNewLabel_2;
 
 	/**
 	 * Launch the application.
@@ -92,9 +99,9 @@ public class EmployeeMenu extends JFrame{
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{10, 400, 0, 0, 0, 400, 10, 0};
-		gridBagLayout.rowHeights = new int[]{10, 6, 0, 0, 0, 0, 0};
+		gridBagLayout.rowHeights = new int[]{10, 5, 5, 473, 0, 0, 0};
 		gridBagLayout.columnWeights = new double[]{0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 1.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
 		frame.getContentPane().setLayout(gridBagLayout);
 		
 		inProgressSort = new JComboBox();
@@ -104,6 +111,18 @@ public class EmployeeMenu extends JFrame{
 		gbc_inProgressSort.gridx = 1;
 		gbc_inProgressSort.gridy = 1;
 		frame.getContentPane().add(inProgressSort, gbc_inProgressSort);
+		
+		panel_1 = new JPanel();
+		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
+		gbc_panel_1.gridwidth = 3;
+		gbc_panel_1.insets = new Insets(0, 0, 5, 5);
+		gbc_panel_1.gridx = 2;
+		gbc_panel_1.gridy = 1;
+		frame.getContentPane().add(panel_1, gbc_panel_1);
+		
+		lblNewLabel = new JLabel("Time taken to complete selected tasks");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+		panel_1.add(lblNewLabel);
 		
 		completedSort = new JComboBox();
 		GridBagConstraints gbc_completedSort = new GridBagConstraints();
@@ -132,18 +151,24 @@ public class EmployeeMenu extends JFrame{
 		gbc_panel.gridx = 2;
 		gbc_panel.gridy = 2;
 		frame.getContentPane().add(panel, gbc_panel);
-		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[]{0, 0, 0, 0};
-		gbl_panel.rowHeights = new int[]{0, 0, 0, 0};
-		gbl_panel.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
-		panel.setLayout(gbl_panel);
+		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		lblNewLabel = new JLabel("New label");
-		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-		gbc_lblNewLabel.gridx = 2;
-		gbc_lblNewLabel.gridy = 2;
-		panel.add(lblNewLabel, gbc_lblNewLabel);
+		txtHours = new JTextField();
+		txtHours.setText("0");
+		panel.add(txtHours);
+		txtHours.setColumns(3);
+		
+		lblNewLabel_1 = new JLabel("hours");
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		panel.add(lblNewLabel_1);
+		
+		txtMinutes = new JTextField();
+		txtMinutes.setText("0");
+		panel.add(txtMinutes);
+		txtMinutes.setColumns(3);
+		
+		lblNewLabel_2 = new JLabel("minutes");
+		panel.add(lblNewLabel_2);
 		
 		completedSearch = new JTextField();
 		completedSearch.setForeground(Color.LIGHT_GRAY);
@@ -174,34 +199,64 @@ public class EmployeeMenu extends JFrame{
 				DefaultTableModel selectedModel = (DefaultTableModel) tblInProgress.getModel();
 				DefaultTableModel completedModel = (DefaultTableModel) tblCompleted.getModel();
 				int indexes[] = tblInProgress.getSelectedRows();
-				Object[] row = new Object[5];
+				Object[] row = new Object[6];
 				int index = 0;
+				int hoursTaken;
+				int minutesTaken;
 				
-				for(int i : indexes) {
-					int jobID = Integer.parseInt( selectedModel.getValueAt(i, 0).toString() );
-					System.out.println(jobID);
-					Task taskToComplete = allTasks.getTaskWithJobID(jobID);
-					try {
-						taskToComplete.completeTask();
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+				if(txtHours.getText() == null) {
+					hoursTaken = 0;
+				}
+				else {
+					hoursTaken = Integer.parseInt(txtHours.getText()) * 60;
+				}
+				if(txtMinutes.getText() == null) {
+					minutesTaken = 0;
+				}
+				else {
+					minutesTaken = Integer.parseInt(txtMinutes.getText());
+				}
+				System.out.print(minutesTaken + hoursTaken);
+				if ((hoursTaken + minutesTaken) == 0 ) {
+					JOptionPane.showMessageDialog(new JFrame(),
+						    "Please input time taken to complete these tasks",
+						    "Invalid time taken",
+						    JOptionPane.ERROR_MESSAGE);
+				} 
+				else if (minutesTaken > 60) {
+					JOptionPane.showMessageDialog(new JFrame(),
+						    "Please input a sensible value for minutes taken",
+						    "Invalid time taken",
+						    JOptionPane.ERROR_MESSAGE);
+				}
+				else {
+					for(int i : indexes) {
+						int jobID = Integer.parseInt( selectedModel.getValueAt(i, 0).toString() );
+						System.out.println(jobID);
+						Task taskToComplete = allTasks.getTaskWithJobID(jobID);
+						try {
+							taskToComplete.completeTask(hoursTaken + minutesTaken);
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						row[0] = taskToComplete.getJobID();
+						row[1] = taskToComplete.getTaskName();
+						row[2] = taskToComplete.getLocation();
+						row[3] = taskToComplete.getFormattedTimeTaken();
+						row[4] = taskToComplete.getSignedOff();
+						row[5] = taskToComplete.getSignedOffOn();
+						
+						completedModel.addRow(row);
 					}
-					row[0] = taskToComplete.getJobID();
-					row[1] = taskToComplete.getTaskName();
-					row[2] = taskToComplete.getLocation();
-					row[3] = taskToComplete.getSignedOff();
-					row[4] = taskToComplete.getSignedOffOn();
 					
-					completedModel.addRow(row);
+					for (int i = 0; i < indexes.length; i++) {
+						index = indexes[i] - i;
+						selectedModel.removeRow(index);
+					}
+					tblCompleted.setModel(completedModel);
+					tblInProgress.setModel(selectedModel);
 				}
-				
-				for (int i = 0; i < indexes.length; i++) {
-					index = indexes[i] - i;
-					selectedModel.removeRow(index);
-				}
-				tblCompleted.setModel(completedModel);
-				tblInProgress.setModel(selectedModel);
 			}
 		});
 		GridBagConstraints gbc_completeButton = new GridBagConstraints();

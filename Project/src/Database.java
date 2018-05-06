@@ -25,11 +25,11 @@ public class Database {
 			System.err.println("yay");
 			return true;
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(new JFrame(),
+			/* JOptionPane.showMessageDialog(new JFrame(),
 				    "Could not establish databse connection. Contact database administrator",
 				    "Database error",
 				    JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace();
+			e.printStackTrace(); */
 			return false;
 		}
 	}	
@@ -605,7 +605,7 @@ public class Database {
 				String query = "SELECT JobID, TaskID, Caretaker, DateIssued, DateDue,"
 						+ " Completed, TimeTaken, Issue, IssueDesc, SignedOff, signedOffOn,"
 						+ " TaskName, TaskDesc, TaskCat, Priority, Repeating, TimeEstimate, Location, "
-						+ " FirstAllocation, LastAllocated, TimeGiven"
+						+ " FirstAllocation, LastAllocated, TimeGiven, CaretakerSignOff"
 						+ " FROM Task"
 						+ " LEFT JOIN TaskList ON Task.taskID = TaskList.taskID "
 						+ "WHERE Task.taskID = " + passedTaskID;
@@ -637,6 +637,7 @@ public class Database {
 					String location = rs.getString("location");
 					Date firstAllocation = rs.getDate("FirstAllocation");
 					Date lastAllocated = rs.getDate("LastAllocated");
+					boolean caretakerSignOff = rs.getBoolean("CaretakerSignOff");
 				
 				
 						
@@ -711,13 +712,13 @@ public class Database {
 		}
 	}
 	
-	public void completeTask(int jobID) throws SQLException {
+	public void completeTask(int jobID, int timeTaken) throws SQLException {
 		try {
-			PreparedStatement sqlInsert = conn.prepareStatement("UPDATE TaskList SET Completed = ? WHERE jobID = ?");
+			PreparedStatement sqlInsert = conn.prepareStatement("UPDATE TaskList SET Completed = ?, TimeTaken = ? WHERE jobID = ?");
 			
-			System.out.println("Complete task DB" + jobID);
 			sqlInsert.setBoolean(1, true);
-			sqlInsert.setInt(2, jobID);
+			sqlInsert.setInt(2, timeTaken);
+			sqlInsert.setInt(3, jobID);
 			
 			sqlInsert.executeUpdate();
 		}
