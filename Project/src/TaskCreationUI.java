@@ -31,7 +31,7 @@ public class TaskCreationUI extends JFrame
 			{
 				try 
 				{
-					TaskCreationUI frame = new TaskCreationUI(args[1]);
+					TaskCreationUI frame = new TaskCreationUI(/*args[1]*/);
 					// When the window is closed, it should actually close, not hide
 					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					frame.setVisible(true);
@@ -68,9 +68,9 @@ public class TaskCreationUI extends JFrame
 	}
 
 	 // Create the frame.
-	public TaskCreationUI(String username) 
+	public TaskCreationUI(/*String username*/) 
 	{
-		this.username=username;
+		//this.username=username;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 605, 619);
 		contentPane = new JPanel();
@@ -336,8 +336,25 @@ public class TaskCreationUI extends JFrame
 		
 		JLabel lblMinutes = new JLabel("minutes");
 		timeEstimatePanel.add(lblMinutes);
+		
+		JLabel lblDaysToCompleteIn = new JLabel("Days to be completed in");
+		lblDaysToCompleteIn.setHorizontalAlignment(SwingConstants.CENTER);
+		pnlDataEntry.add(lblDaysToCompleteIn);
+		
+		JPanel pnlDaysToBeCompletedIn = new JPanel();
+		pnlDataEntry.add(pnlDaysToBeCompletedIn);
+		
+		JComboBox<Integer> cmbDaysToBeCompletedIn = new JComboBox<Integer>();
+		for (int i = 1; i < 100; i++)
+		{
+			cmbDaysToBeCompletedIn.addItem(i);
+		}
+		pnlDaysToBeCompletedIn.add(cmbDaysToBeCompletedIn);
+		
+		JLabel lblCompletedDays = new JLabel(" days");
+		pnlDaysToBeCompletedIn.add(lblCompletedDays);
 				
-		JLabel lblRepeating = new JLabel("");
+		JLabel lblRepeating = new JLabel("Repeating?");
 		lblRepeating.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblRepeating);
 		
@@ -430,7 +447,7 @@ public class TaskCreationUI extends JFrame
 					int timeEstimateInMinutes = (hours * 60) + minutes;
 					//SQL for creating a new database entry
 					String insertSQL = "INSERT INTO Task (TaskName, TaskDesc,"
-							+ " TaskCat, Priority, Repeating, TimeEstimate, Location, FirstAllocation)"
+							+ " TaskCat, Priority, Repeating, TimeEstimate, Location, TimeGiven, FirstAllocation)"
 							+ "VALUES ('" 
 							+ txtTaskName.getText() + "', '" 
 							+ txtaDescription.getText() + "', '"
@@ -438,7 +455,8 @@ public class TaskCreationUI extends JFrame
 							+ cmbPriority.getSelectedItem() + "', '"
 							+ cmbRepeatingDays.getSelectedItem() + "', '"
 							+ timeEstimateInMinutes + "', '"
-							+ txtLocation.getText() + "', #"
+							+ txtLocation.getText() + "', '"
+							+ cmbDaysToBeCompletedIn.getSelectedItem() + "', #"
 							+ sqlDateDue + "#);";
 					
 					/*Create the database field by calling createTask in the database class. Store whether it was a 
