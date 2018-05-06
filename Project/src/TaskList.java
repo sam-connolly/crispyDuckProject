@@ -336,7 +336,7 @@ public class TaskList {
 		allAllocatedModel.addColumn("Priority");
 		
 		for (Task taskToCheck : taskList) {
-			if ( taskToCheck.getCaretaker() != "Not Assigned" ) {
+			if ( taskToCheck.getCaretaker() != "Not Assigned" && taskToCheck.getCompleted() == false) {
 				row[0] = taskToCheck.getTaskID();
 				row[1] = taskToCheck.getTaskName();
 				row[2] = taskToCheck.getCaretaker();

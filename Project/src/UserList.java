@@ -119,8 +119,15 @@ public class UserList {
 		return null;
 	}
 	
-	public JComboBox getUsersComboBox() {
+	public JComboBox getUsersComboBox(String type) {
 		JComboBox userCombo = new JComboBox();
+		if (type == "in progress") {
+			userCombo.addItem("All Allocated");
+		}
+		
+		if (type == "completed") {
+			userCombo.addItem("All Completed");
+		}
 		for(User userToAdd : allUsers) {
 			if(userToAdd.getAdmin() == false) { 
 				userCombo.addItem(userToAdd.getUsername());

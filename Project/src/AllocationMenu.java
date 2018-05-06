@@ -66,7 +66,7 @@ public class AllocationMenu extends JDialog {
 		gbl_contentPanel.rowWeights = new double[]{1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
 		
 		JLabel lblSelectedName = new JLabel();
-		JComboBox userCombo = allUsers.getUsersComboBox();
+		JComboBox userCombo = allUsers.getUsersComboBox("allocation");
 		
 		contentPanel.setLayout(gbl_contentPanel);
 		{

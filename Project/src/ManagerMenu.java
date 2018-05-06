@@ -48,6 +48,7 @@ public class ManagerMenu extends JFrame{
 	private JTable tblCompleted;
 	private JButton btnNewUser;
 	private JButton btnLogout;
+	private JComboBox inProgressComboBox;
 
 	/**
 	 * Launch the application.
@@ -83,6 +84,7 @@ public class ManagerMenu extends JFrame{
 	 * @throws SQLException 
 	 * @throws ParseException 
 	 */
+	@SuppressWarnings("unchecked")
 	private void initialize() throws ParseException, SQLException 
 	{		
 		allTasks = database.getTasks();
@@ -151,9 +153,55 @@ public class ManagerMenu extends JFrame{
 		gbc_cmbFirstTable.gridy = 1;
 		frame.getContentPane().add(cmbFirstTable, gbc_cmbFirstTable);
 		
-		cmbLastTable = new JComboBox<String>();
-		cmbLastTable.setModel(new DefaultComboBoxModel<String>(new String[] {"All Completed", "Completed Today",
-				"Completed This Week", "Completed This Month", "Completed This Year"}));
+		inProgressComboBox = allUsers.getUsersComboBox("in progress");
+		inProgressComboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(inProgressComboBox.getSelectedItem() == "All Unallocated") {
+					try {
+						tblAllocated.setModel(allTasks.getAllAllocated());
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+				else  {
+					tblAllocated.setModel(allTasks.getAllocatedToCaretaker(inProgressComboBox.getSelectedItem().toString()));
+					btnAllocate.setEnabled(true);
+				}
+			}
+		});
+		GridBagConstraints gbc_inProgressComboBox = new GridBagConstraints();
+		gbc_inProgressComboBox.insets = new Insets(0, 0, 5, 5);
+		gbc_inProgressComboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_inProgressComboBox.gridx = 2;
+		gbc_inProgressComboBox.gridy = 1;
+		frame.getContentPane().add(inProgressComboBox, gbc_inProgressComboBox);
+		
+		cmbLastTable = allUsers.getUsersComboBox("completed");
+		cmbLastTable.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(cmbLastTable.getSelectedItem() == "All Completed") {
+					try {
+						tblAllocated.setModel(allTasks.getAllCompleted());
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+				else  {
+					tblAllocated.setModel(allTasks.getCompletedByCaretaker(cmbLastTable.getSelectedItem().toString()));
+					btnAllocate.setEnabled(true);
+				}
+			}
+		});
 		GridBagConstraints gbc_cmbLastTable = new GridBagConstraints();
 		gbc_cmbLastTable.insets = new Insets(0, 0, 5, 5);
 		gbc_cmbLastTable.fill = GridBagConstraints.HORIZONTAL;
