@@ -496,9 +496,11 @@ public class TaskCreationUI extends JFrame
 				//If all checks are passed, then continue
 				else
 				{	
-					Boolean caretakerSignOff = false;
+					Boolean caretakerSignOff = false;			//For if the task can be signed off by a caretaker
+					//If the checkBox has been selected
 					if (chkBxCaretakerSignOff.isSelected())
 					{
+						//Set caretakerSignOff to true
 						caretakerSignOff = true;
 					}
 					//Calculate the total minutes of the time entered
