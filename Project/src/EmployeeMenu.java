@@ -236,13 +236,6 @@ public class EmployeeMenu extends JFrame{
 		
 		completedScrollPane.setViewportView(tblCompleted);
 		
-		issueButon = new JButton("Issue");
-		GridBagConstraints gbc_issueButon = new GridBagConstraints();
-		gbc_issueButon.insets = new Insets(0, 0, 5, 5);
-		gbc_issueButon.gridx = 3;
-		gbc_issueButon.gridy = 4;
-		frame.getContentPane().add(issueButon, gbc_issueButon);
-		
 		menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 		
