@@ -555,7 +555,7 @@ public class Database {
 				String caretaker= rs.getString("Caretaker");	
 				boolean completed = rs.getBoolean("Completed");
 				Date dateIssued= rs.getDate("DateIssued");
-				String dateDue = rs.getString("DateDue");
+				Date dateDue = rs.getDate("DateDue");
 				int timeTaken = rs.getInt("TimeTaken");
 				boolean issue = rs.getBoolean("Issue");
 				String issueDesc = rs.getString("IssueDesc");
@@ -622,7 +622,7 @@ public class Database {
 					String caretaker= rs.getString("Caretaker");	
 					boolean completed = rs.getBoolean("Completed");
 					Date dateIssued= rs.getDate("DateIssued");
-					String dateDue = rs.getString("DateDue");
+					Date dateDue = rs.getDate("DateDue");
 					int timeTaken = rs.getInt("TimeTaken");
 					boolean issue = rs.getBoolean("Issue");
 					String issueDesc = rs.getString("IssueDesc");
