@@ -326,12 +326,13 @@ public class TaskCreationUI extends JFrame
 		ArrayList<String> categories = new ArrayList<String>();
 		//Call the getCategories method from the database and populate the ArrayList with it
 		categories = database.getCategories();
+		//ComboBox to store the categories
 		JComboBox<String> cmbCategory = new JComboBox<String>();
 		cmbCategory.addItem("Select a category");
 		//Loop through all returned categories
 		for (int i = 0; i < categories.size(); i++)
 		{
-			//Add the category to the database
+			//Add the category to the comboBox
 			cmbCategory.addItem(categories.get(i));
 		}
 		pnlDataEntry.add(cmbCategory);
@@ -381,7 +382,7 @@ public class TaskCreationUI extends JFrame
 		lblDaysToCompleteIn.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblDaysToCompleteIn);
 		
-		//Panel to hold the time given input compnents
+		//Panel to hold the time given input components
 		JPanel pnlDaysToBeCompletedIn = new JPanel();
 		pnlDataEntry.add(pnlDaysToBeCompletedIn);
 		
@@ -424,10 +425,12 @@ public class TaskCreationUI extends JFrame
 		JLabel lblDays = new JLabel(" days (0 if not repeating)");
 		repeatingPanel.add(lblDays);
 		
+		//Label for the caretaker sign off checkBox
 		JLabel lblCaretakerSignOff = new JLabel("Caretaker Sign Off? (Tick if yes)");
 		lblCaretakerSignOff.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(lblCaretakerSignOff);
 		
+		//CheckBox for setting if a caretaker can sign off the task
 		JCheckBox chkBxCaretakerSignOff = new JCheckBox("");
 		chkBxCaretakerSignOff.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlDataEntry.add(chkBxCaretakerSignOff);
@@ -496,11 +499,14 @@ public class TaskCreationUI extends JFrame
 				//If all checks are passed, then continue
 				else
 				{	
-					Boolean caretakerSignOff = false;
+					Boolean caretakerSignOff = false;			//For if the task can be signed off by a caretaker
+					//If the checkBox has been selected
 					if (chkBxCaretakerSignOff.isSelected())
 					{
+						//Set caretakerSignOff to true
 						caretakerSignOff = true;
 					}
+					
 					//Calculate the total minutes of the time entered
 					int timeEstimateInMinutes = (hours * 60) + minutes;
 					//SQL for creating a new database entry
