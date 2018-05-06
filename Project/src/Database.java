@@ -25,11 +25,11 @@ public class Database {
 			System.err.println("yay");
 			return true;
 		} catch (SQLException e) {
-			/* JOptionPane.showMessageDialog(new JFrame(),
+			JOptionPane.showMessageDialog(new JFrame(),
 				    "Could not establish databse connection. Contact database administrator",
 				    "Database error",
 				    JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace(); */
+			e.printStackTrace(); 
 			return false;
 		}
 	}	
@@ -538,7 +538,7 @@ public class Database {
 			String query = "SELECT JobID, TaskID, Caretaker, DateIssued, DateDue,"
 					+ " Completed, TimeTaken, Issue, IssueDesc, SignedOff, signedOffOn, "
 					+ " TaskName, TaskDesc, TaskCat, Priority, Repeating, TimeEstimate, Location, "
-					+ " FirstAllocation, LastAllocated, TimeGiven"
+					+ " FirstAllocation, LastAllocated, TimeGiven, CaretakerSignOff"
 					+ " FROM Task"
 					+ " LEFT JOIN TaskList ON Task.taskID = TaskList.taskID";
 			ResultSet rs = stmt.executeQuery(query);
@@ -570,7 +570,7 @@ public class Database {
 				String location = rs.getString("location");
 				Date firstAllocation = rs.getDate("FirstAllocation");
 				Date lastAllocated = rs.getDate("LastAllocated");
-				//boolean caretakerSignOff = rs.getBoolean("CaretakerSignOff");
+				boolean caretakerSignOff = rs.getBoolean("CaretakerSignOff");
 
 				// create new ActiveTask to be added on every loop
 				Task taskToAdd;		
@@ -578,7 +578,7 @@ public class Database {
 							.priority(priority).repeating(repeating).timeEstimate(timeEstimate).location(location)
 							.caretaker(caretaker).completed(completed).dateIssued(dateIssued).dateDue(dateDue)
 							.timeEstimate(timeEstimate).timeTaken(timeTaken).issue(issue).issueDesc(issueDesc).signedOff(signedOff)
-							.lastAllocated(lastAllocated).firstAllocation(firstAllocation).signedOffOn(signedOffOn)/*.caretakerSignOff(caretakerSignOff)*/
+							.lastAllocated(lastAllocated).firstAllocation(firstAllocation).signedOffOn(signedOffOn).caretakerSignOff(caretakerSignOff)
 							.build();
 				
 				// add new task to the list

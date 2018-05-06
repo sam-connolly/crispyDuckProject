@@ -102,8 +102,8 @@ public class LoginUI extends JFrame {
 				//If login failed
 				else {
 					//Error message informing user of incorrect login
-				//	JOptionPane.showMessageDialog(null, "Username and password do not match.", 
-						//	"Login Failed", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Username and password do not match.", 
+							"Login Failed", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		});

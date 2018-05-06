@@ -132,6 +132,15 @@ public class Task {
 	  return signedOff;
   }
   
+  public String getSignedOffFormatted() {
+	  if (signedOff == true) {
+		  return "Yes";
+	  }
+	  else {
+		  return "No";
+	  }
+  }
+  
   public String getSignedOffOn() { 
 	  return signedOffOn;
   }
@@ -265,6 +274,12 @@ public class Task {
 	  completed = true;
 	  
 	  database.completeTask(jobID, timeTaken);
+	  if (caretakerSignOff == true) { 
+		  signedOff = true;
+		  SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		  Date currentDate = new Date();
+		  signedOffOn = dateFormat.format(currentDate);
+	  }
 	  this.timeTaken = timeTaken;
   }
   
