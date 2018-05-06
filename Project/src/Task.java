@@ -1,5 +1,5 @@
 import java.util.ArrayList;
-
+import java.util.Calendar;
 import java.util.concurrent.*;
 import java.util.Date;
 import java.util.Random;
@@ -222,6 +222,15 @@ public class Task {
 	  // set dateIssued and last allocated to today
 	  dateIssued = dateFormat.format(currentDate);
 	  lastAllocated = dateFormat.format(currentDate);
+
+	  // assign a dueDate
+	  SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	  Calendar c = Calendar.getInstance();
+	  c.setTime(new Date()); 
+	  c.add(Calendar.DATE, timeGiven);
+  	  dateDue = sdf.format(c.getTime());
+
+
 	  db.updateLastAllocated(taskID, lastAllocated);
 	  allTasks.updateLastAllocation(taskID, lastAllocated);
 	  
@@ -292,6 +301,7 @@ public class Task {
     private String issueDesc; 
     private boolean signedOff;
     private String signedOffOn;
+    
     // private String lastCompleted
     
     /*public TaskBuilder(int taskID) {
@@ -364,7 +374,7 @@ public class Task {
       return this;
     }
     
-    public TaskBuilder dateDue(String val) {
+    public TaskBuilder dateDue(Date val) {
     	DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
     	  if (val != null) {
     		  dateDue = dateFormat.format(val);
