@@ -105,6 +105,7 @@ public class NewUserUI extends JFrame {
 				username = txtUsername.getText();
 				password = txtPassword.getPassword();
 				passwordString = new String (password);
+				passwordString.trim();
 				roleString = cmbRole.getSelectedItem().toString();
 				if (roleString.equals("Admin")) {
 					admin=true;
@@ -114,7 +115,7 @@ public class NewUserUI extends JFrame {
 				}
 				forename = txtForename.getText();
 				surname = txtSurname.getText();
-				if (username==null||password==null||forename==null||surname==null) {
+				if (username.equals("")||passwordString.equals("")||forename.equals("")||surname.equals("")) {
 					JOptionPane.showMessageDialog(null, "One or more fields is empty,"
 							+ " ensure valid data is entered in all fields.", 
 							"Invalid Input", JOptionPane.INFORMATION_MESSAGE);

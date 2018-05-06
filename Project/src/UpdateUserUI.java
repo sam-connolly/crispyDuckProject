@@ -98,17 +98,24 @@ public class UpdateUserUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String forename = txtForename.getText();
 				String surname = txtSurname.getText();
-			    try {
-					boolean updateUser = database.updateUser(username,
-							forename, surname);
-					if (updateUser) {
-						JOptionPane.showMessageDialog(null, "User updated.", 
-								"Update Success", JOptionPane.INFORMATION_MESSAGE);
-					}
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}		
+				if (forename.equals("")||surname.equals("")) {
+					JOptionPane.showMessageDialog(null, "One or more fields is empty,"
+							+ " ensure valid data is entered in all fields.", 
+							"Invalid Input", JOptionPane.INFORMATION_MESSAGE);
+				}
+				else {
+					try {
+						boolean updateUser = database.updateUser(username,
+								forename, surname);
+						if (updateUser) {
+							JOptionPane.showMessageDialog(null, "User updated.", 
+									"Update Success", JOptionPane.INFORMATION_MESSAGE);
+						}
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}		
+				}  
 			}
 		});
 	}
