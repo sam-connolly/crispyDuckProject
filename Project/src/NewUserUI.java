@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -113,14 +114,24 @@ public class NewUserUI extends JFrame {
 				}
 				forename = txtForename.getText();
 				surname = txtSurname.getText();
-			    try {
-					boolean addUser = database.addUser(username, passwordString,
-							admin, forename, surname);
-					boolean addPreferences = database.addUserPreferences(username);
-					System.out.println(addUser + " " + addPreferences);
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				if (username==null||password==null||forename==null||surname==null) {
+					JOptionPane.showMessageDialog(null, "One or more fields is empty,"
+							+ " ensure valid data is entered in all fields.", 
+							"Invalid Input", JOptionPane.INFORMATION_MESSAGE);
+				}
+				else {
+				    try {
+						boolean addUser = database.addUser(username, passwordString,
+								admin, forename, surname);
+						boolean addPreferences = database.addUserPreferences(username);
+						if (addUser) {
+							JOptionPane.showMessageDialog(null, username + " added to database", 
+									"Success", JOptionPane.INFORMATION_MESSAGE);
+						}
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
