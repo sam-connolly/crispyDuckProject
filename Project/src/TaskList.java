@@ -215,14 +215,14 @@ public class TaskList {
 		    }
 		};
 		Object[] row = new Object[5];
-		allocatedToCaretakerModel.addColumn("Task ID");
+		allocatedToCaretakerModel.addColumn("Job ID");
 		allocatedToCaretakerModel.addColumn("Task Name");
 		allocatedToCaretakerModel.addColumn("Location");
 		allocatedToCaretakerModel.addColumn("Priority");
 		allocatedToCaretakerModel.addColumn("Date Due");
 		for (Task taskToCheck : taskList ) {
 			if (taskToCheck.getCaretaker().equals(username)) { 
-				row[0] = taskToCheck.getTaskID();
+				row[0] = taskToCheck.getJobID();
 				row[1] = taskToCheck.getTaskName();
 				row[2] = taskToCheck.getLocation();
 				row[3] = taskToCheck.getPriority();

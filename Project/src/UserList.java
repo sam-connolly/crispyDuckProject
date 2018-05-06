@@ -122,7 +122,9 @@ public class UserList {
 	public JComboBox getUsersComboBox() {
 		JComboBox userCombo = new JComboBox();
 		for(User userToAdd : allUsers) {
-			userCombo.addItem(userToAdd.getUsername());
+			if(userToAdd.getAdmin() == false) { 
+				userCombo.addItem(userToAdd.getUsername());
+			}
 		}
 		return userCombo;
 	}

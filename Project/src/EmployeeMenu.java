@@ -14,6 +14,8 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JTextField;
 import java.awt.FlowLayout;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
+
 import java.awt.GridLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -26,6 +28,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JComboBox;
 import java.awt.Color;
+import javax.swing.JLabel;
 
 public class EmployeeMenu extends JFrame{
 
@@ -50,6 +53,8 @@ public class EmployeeMenu extends JFrame{
 	private Database database = new Database();
 	private TaskList allTasks;
 	private UserList allUsers;
+	private JPanel panel;
+	private JLabel lblNewLabel;
 
 	/**
 	 * Launch the application.
@@ -88,8 +93,8 @@ public class EmployeeMenu extends JFrame{
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{10, 400, 0, 0, 0, 400, 10, 0};
 		gridBagLayout.rowHeights = new int[]{10, 6, 0, 0, 0, 0, 0};
-		gridBagLayout.columnWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.columnWeights = new double[]{0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 1.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
 		frame.getContentPane().setLayout(gridBagLayout);
 		
 		inProgressSort = new JComboBox();
@@ -118,6 +123,27 @@ public class EmployeeMenu extends JFrame{
 		gbc_inProgressSearch.gridy = 2;
 		frame.getContentPane().add(inProgressSearch, gbc_inProgressSearch);
 		inProgressSearch.setColumns(10);
+		
+		panel = new JPanel();
+		GridBagConstraints gbc_panel = new GridBagConstraints();
+		gbc_panel.gridwidth = 3;
+		gbc_panel.insets = new Insets(0, 0, 5, 5);
+		gbc_panel.fill = GridBagConstraints.BOTH;
+		gbc_panel.gridx = 2;
+		gbc_panel.gridy = 2;
+		frame.getContentPane().add(panel, gbc_panel);
+		GridBagLayout gbl_panel = new GridBagLayout();
+		gbl_panel.columnWidths = new int[]{0, 0, 0, 0};
+		gbl_panel.rowHeights = new int[]{0, 0, 0, 0};
+		gbl_panel.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+		panel.setLayout(gbl_panel);
+		
+		lblNewLabel = new JLabel("New label");
+		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
+		gbc_lblNewLabel.gridx = 2;
+		gbc_lblNewLabel.gridy = 2;
+		panel.add(lblNewLabel, gbc_lblNewLabel);
 		
 		completedSearch = new JTextField();
 		completedSearch.setForeground(Color.LIGHT_GRAY);
@@ -149,6 +175,7 @@ public class EmployeeMenu extends JFrame{
 				DefaultTableModel completedModel = (DefaultTableModel) tblCompleted.getModel();
 				int indexes[] = tblInProgress.getSelectedRows();
 				Object[] row = new Object[5];
+				int index = 0;
 				
 				for(int i : indexes) {
 					int jobID = Integer.parseInt( selectedModel.getValueAt(i, 0).toString() );
@@ -167,13 +194,14 @@ public class EmployeeMenu extends JFrame{
 					row[4] = taskToComplete.getSignedOffOn();
 					
 					completedModel.addRow(row);
-					tblCompleted.setModel(completedModel);
-		
 				}
-				for(int i : indexes) {
-					selectedModel.removeRow(i - 1);
+				
+				for (int i = 0; i < indexes.length; i++) {
+					index = indexes[i] - i;
+					selectedModel.removeRow(index);
 				}
-				tblInProgress.setModel(selectedModel);	
+				tblCompleted.setModel(completedModel);
+				tblInProgress.setModel(selectedModel);
 			}
 		});
 		GridBagConstraints gbc_completeButton = new GridBagConstraints();
@@ -189,6 +217,7 @@ public class EmployeeMenu extends JFrame{
 				DefaultTableModel inProgressModel = (DefaultTableModel) tblInProgress.getModel();
 				int indexes[] = tblCompleted.getSelectedRows();
 				Object[] row = new Object[5];
+				int index = 0;
 				
 				for(int i : indexes) {
 					int jobID = Integer.parseInt( selectedModel.getValueAt(i, 0).toString() );
@@ -209,12 +238,15 @@ public class EmployeeMenu extends JFrame{
 					row[4] = taskToUncomplete.getDateDue();
 					
 					inProgressModel.addRow(row);
-					tblInProgress.setModel(inProgressModel);
-					
-					selectedModel.removeRow(i);
-					tblCompleted.setModel(selectedModel);
-					
 				}
+				
+				
+				for (int i = 0; i < indexes.length; i++) {
+					index = indexes[i] - i;
+					selectedModel.removeRow(index);
+				}
+				tblInProgress.setModel(inProgressModel);
+				tblCompleted.setModel(selectedModel);
 			}
 		});
 
