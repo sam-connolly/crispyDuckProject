@@ -107,7 +107,6 @@ public class TaskCreationUI extends JFrame
 				{
 					//Create a new ManagerMenu, passing the username to it
 					managerMenuNew = new ManagerMenu(username);
-					managerMenuNew.setVisible(true);
 					//Get rid of the current frame
 					dispose();
 				} 

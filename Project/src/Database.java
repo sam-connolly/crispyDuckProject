@@ -25,10 +25,10 @@ public class Database {
 			System.err.println("yay");
 			return true;
 		} catch (SQLException e) {
-			/*JOptionPane.showMessageDialog(new JFrame(),
+			JOptionPane.showMessageDialog(new JFrame(),
 				    "Could not establish databse connection. Contact database administrator",
 				    "Database error",
-				    JOptionPane.ERROR_MESSAGE);*/
+				    JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace(); 
 			return false;
 		}
@@ -731,11 +731,29 @@ public class Database {
 	
 	public void uncompleteTask(int jobID) throws SQLException {
 		try {
-			PreparedStatement sqlInsert = conn.prepareStatement("UPDATE TaskList SET Completed = ?, SignedOff = ? WHERE jobID = ?");
+			PreparedStatement sqlInsert = conn.prepareStatement("UPDATE TaskList SET Completed = ?, SignedOff = ?, SignedOffOn = ? WHERE jobID = ?");
 			
 			System.out.println("Complete task DB" + jobID);
 			sqlInsert.setBoolean(1, false);
 			sqlInsert.setBoolean(2, false);
+			sqlInsert.setDate(3, null);
+			sqlInsert.setInt(4, jobID);
+			
+			sqlInsert.executeUpdate();
+		}
+		catch (SQLException sqlex) {
+			System.err.println("SQL Exception");
+			sqlex.printStackTrace();
+		}
+	}
+	
+	public void signOffTask(int jobID, String signedOffOn) throws SQLException, ParseException {
+		try {
+			PreparedStatement sqlInsert = conn.prepareStatement("UPDATE TaskList SET SignedOff = ?, SignedOffOn = ? WHERE jobID = ?");
+			
+			System.out.println("Complete task DB" + jobID);
+			sqlInsert.setBoolean(1, true);
+			sqlInsert.setDate(2, convertStringToSQLDate(signedOffOn));
 			sqlInsert.setInt(3, jobID);
 			
 			sqlInsert.executeUpdate();

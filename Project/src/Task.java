@@ -158,6 +158,22 @@ public class Task {
 	  return lastAllocated;
   }
   
+  public String getNextAllocation() throws ParseException {
+	  SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	  Calendar c = Calendar.getInstance();
+	  if (lastAllocated != null) {
+		  Date lastAllocatedDate = sdf.parse(lastAllocated);
+		  c.setTime(lastAllocatedDate); 
+		  c.add(Calendar.DATE, repeating);
+	  	  return sdf.format(c.getTime());
+	  }
+	  else { 
+		  c.setTime(new Date()); 
+		  c.add(Calendar.DATE, timeGiven);
+	  	  return sdf.format(c.getTime());
+	  }
+  }
+  
   public String getFirstAllocation() {
 	  return firstAllocation;
   }
@@ -293,11 +309,14 @@ public class Task {
 	  database.uncompleteTask(jobID);
   }
   
-  public void signOffTask() {
+  public void signOffTask() throws SQLException, ParseException {
+	  Database database = new Database();
 	  signedOff = true;
 	  SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 	  Date currentDate = new Date();
 	  signedOffOn = dateFormat.format(currentDate);
+	  
+	  database.signOffTask(jobID, signedOffOn);
   }
   
   public static class TaskBuilder {

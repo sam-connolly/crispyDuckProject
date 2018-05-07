@@ -201,7 +201,6 @@ public class AllocationMenu extends JDialog {
 								taskToAllocate.assignToCaretaker(tblToAllocate.getValueAt(i, 3).toString(), allTasks);
 								parentWindow.dispose();
 								ManagerMenu managerMenu = new ManagerMenu(username);
-								managerMenu.setVisible(true);
 								dispose();
 							} catch (SQLException e) {
 								// TODO Auto-generated catch block

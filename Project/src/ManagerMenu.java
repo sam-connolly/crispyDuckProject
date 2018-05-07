@@ -90,8 +90,8 @@ public class ManagerMenu extends JFrame{
 		
 	
 		frame = new JFrame();
-		frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		frame.setBounds(100, 100, 873, 573);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -399,7 +399,34 @@ public class ManagerMenu extends JFrame{
 		panel.add(btnNewUser);
 		
 		JButton btnNewButton = new JButton("Sign Off Tasks");
-		btnNewButton.setBounds(519, 0, 101, 23);
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				DefaultTableModel selectedModel = (DefaultTableModel) tblCompleted.getModel();
+				int indexes[] = tblCompleted.getSelectedRows();
+				Object[] row = new Object[5];
+				
+				for(int i : indexes) {
+					int jobID = Integer.parseInt( selectedModel.getValueAt(i, 0).toString() );
+					System.out.println(jobID);
+					Task taskToSignOff = allTasks.getTaskWithJobID(jobID);
+					if (taskToSignOff.getSignedOff() == false) {
+						try {
+							taskToSignOff.signOffTask();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						selectedModel.setValueAt("Yes", i, 3);
+						selectedModel.setValueAt(taskToSignOff.getSignedOffOn(), i, 4);
+					}
+				}
+				tblCompleted.setModel(selectedModel);
+			}
+		});
+		btnNewButton.setBounds(519, 0, 126, 23);
 		panel.add(btnNewButton);
 		
 		menuBar = new JMenuBar();
@@ -412,6 +439,6 @@ public class ManagerMenu extends JFrame{
 			}
 		});
 		menuBar.add(btnLogout);
-		this.frame.setVisible(true);
+		frame.setVisible(true);
 	}
 }

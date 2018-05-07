@@ -272,48 +272,101 @@ public class TaskList {
 		       return false;
 		    }
 		};
-		Object[] row = new Object[4];
+		Object[] row = new Object[6];
+		ArrayList<Integer> displayedTasks = new ArrayList<Integer>();
+		boolean displayTask = true;
+		
 		allUnallocatedModel.addColumn("Task ID");
 		allUnallocatedModel.addColumn("Task Name");
 		allUnallocatedModel.addColumn("Due Allocation");
 		allUnallocatedModel.addColumn("Priority");
+		allUnallocatedModel.addColumn("Last Allocated");
+		allUnallocatedModel.addColumn("Next Allocation");
 		if( filter == "All Unallocated") {
 			for (Task taskToCheck : taskList) {
-				if ( taskToCheck.getCaretaker() == "Not Assigned" || (taskToCheck.getCaretaker() != "Not Assigned" 
-						&& taskToCheck.getRepeating() != 0)) {
+				for(int taskID : displayedTasks) {
+					System.out.println(taskID);
+					if (taskID == taskToCheck.getTaskID()) {
+						System.out.println("Who's got a match!");
+						displayTask = false;
+					}
+				}
+				if (taskToCheck.getRepeating() == 0 && taskToCheck.getLastAllocated() != null) {
+					displayTask = false;
+				}
+				
+				if (displayTask == true) {
+					displayedTasks.add(taskToCheck.getTaskID());
+					
 					row[0] = taskToCheck.getTaskID();
 					row[1] = taskToCheck.getTaskName();
 					row[2] = checkIfDueAllocation(taskToCheck);
 					row[3] = taskToCheck.getPriority();
+					row[4] = taskToCheck.getLastAllocated();
+					row[5] = taskToCheck.getNextAllocation();
 					
 					allUnallocatedModel.addRow(row);
 				}
+				displayTask = true;
 			}
 		}
 		
 		if( filter == "Due Allocation") {
 			for (Task taskToCheck : taskList) {
-				if ( checkIfDueAllocation(taskToCheck) == "DUE ALLOCATION" && taskToCheck.getCaretaker() == "Not Assigned") {
+				for(int taskID : displayedTasks) {
+					System.out.println(taskID);
+					if (taskID == taskToCheck.getTaskID()) {
+						System.out.println("Who's got a match!");
+						displayTask = false;
+					}
+				}
+				if (!(checkIfDueAllocation(taskToCheck) == "DUE ALLOCATION" && taskToCheck.getCaretaker() == "Not Assigned")) {
+					displayTask = false;
+				}
+				
+				if (displayTask == true) {
+					displayedTasks.add(taskToCheck.getTaskID());
+					
 					row[0] = taskToCheck.getTaskID();
 					row[1] = taskToCheck.getTaskName();
 					row[2] = "DUE ALLOCATION";
 					row[3] = taskToCheck.getPriority();
+					row[4] = taskToCheck.getLastAllocated();
+					row[5] = taskToCheck.getNextAllocation();
 					
 					allUnallocatedModel.addRow(row);
 				}
+				displayTask = true;
 			}
 		}
 		
 		if( filter == "Not Due Allocation") {
 			for (Task taskToCheck : taskList) {
-				if ( checkIfDueAllocation(taskToCheck) == "NOT DUE"  && taskToCheck.getCaretaker() == "Not Assigned") {
+				for(int taskID : displayedTasks) {
+					System.out.println(taskID);
+					if (taskID == taskToCheck.getTaskID()) {
+						System.out.println("Who's got a match!");
+						displayTask = false;
+					}
+				}
+				if ((checkIfDueAllocation(taskToCheck) != "NOT DUE") || 
+						(taskToCheck.getRepeating() == 0 && taskToCheck.getLastAllocated() != null)) {
+					displayTask = false;
+				}
+				
+				if (displayTask) {
+					displayedTasks.add(taskToCheck.getTaskID());
+					
 					row[0] = taskToCheck.getTaskID();
 					row[1] = taskToCheck.getTaskName();
 					row[2] = "NOT DUE";
 					row[3] = taskToCheck.getPriority();
+					row[4] = taskToCheck.getLastAllocated();
+					row[5] = taskToCheck.getNextAllocation();
 					
 					allUnallocatedModel.addRow(row);
 				}
+				displayTask = true;
 			}
 		}
 		return allUnallocatedModel;
