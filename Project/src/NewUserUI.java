@@ -120,6 +120,11 @@ public class NewUserUI extends JFrame {
 							+ " ensure valid data is entered in all fields.", 
 							"Invalid Input", JOptionPane.INFORMATION_MESSAGE);
 				}
+				else if (database.testUsername(username)) {
+					JOptionPane.showMessageDialog(null, "Username already taken"
+							+ " please try again with different username.", 
+							"Invalid Username", JOptionPane.INFORMATION_MESSAGE);
+				}
 				else {
 				    try {
 						boolean addUser = database.addUser(username, passwordString,

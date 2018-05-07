@@ -118,6 +118,7 @@ public class Database {
 		return validLogin;
 	}
 	
+	//Used to check if user has Admin role
 	public boolean checkRole(String user) {
 		boolean isAdmin = false;
 		try {
@@ -136,6 +137,23 @@ public class Database {
 		}
 		System.out.println("Admin Check: " + isAdmin);
 		return isAdmin;
+	}
+	
+	//Used to check if user exists in system
+	public boolean testUsername(String user){
+		try {
+			PreparedStatement stmt = conn.prepareStatement("Select * FROM User WHERE Username = '"+ user +"'");
+			ResultSet rs = stmt.executeQuery();
+			boolean moreRecords = rs.next();
+			if(!moreRecords) {
+				System.out.println("Result set contained no records");
+				return false;
+			}
+		}
+		catch(Exception e) {	
+			// TODO: handle exception
+		}
+		return true;
 	}
 	
 	public boolean addUser(String username, String password, Boolean admin, 
