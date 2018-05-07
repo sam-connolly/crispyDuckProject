@@ -219,6 +219,7 @@ public class ManagerMenu extends JFrame{
 		frame.getContentPane().add(pnlUnallocated, gbc_pnlUnallocated);
 		
 		tblUnallocated = new JTable(allTasks.getAllUnallocated("All Unallocated"));
+		tblUnallocated.setAutoCreateRowSorter(true);
 		pnlUnallocated.setViewportView(tblUnallocated);
 		
 		tblUnallocated.addMouseListener(new MouseAdapter()
@@ -251,6 +252,7 @@ public class ManagerMenu extends JFrame{
 		
 		DefaultTableModel allocatedModel = allTasks.getAllAllocated();
 		tblAllocated = new JTable(allocatedModel);
+		tblAllocated.setAutoCreateRowSorter(true);
 		pnlAllocated.setViewportView(tblAllocated);
 		
 		tblAllocated.addMouseListener(new MouseAdapter()
@@ -285,6 +287,7 @@ public class ManagerMenu extends JFrame{
 		
 		DefaultTableModel completedModel = allTasks.getAllCompleted();
 		tblCompleted = new JTable(completedModel);
+		tblCompleted.setAutoCreateRowSorter(true);
 		pnlCompleted.setViewportView(tblCompleted);
 		
 		tblCompleted.addMouseListener(new MouseAdapter()

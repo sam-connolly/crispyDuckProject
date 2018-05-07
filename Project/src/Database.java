@@ -25,11 +25,11 @@ public class Database {
 			System.err.println("yay");
 			return true;
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(new JFrame(),
+			/*JOptionPane.showMessageDialog(new JFrame(),
 				    "Could not establish databse connection. Contact database administrator",
 				    "Database error",
 				    JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace(); 
+			e.printStackTrace(); */
 			return false;
 		}
 	}	
@@ -507,7 +507,7 @@ public class Database {
 		    	// assign data to variables
 		    	int careCat = rs.getInt("CareCat");
 		    	String catName = rs.getString("CatName");
-		    	int efficiency = rs.getInt("Efficiency");
+		    	float efficiency = rs.getFloat("Efficiency");
 		    	int preferenceLevel = rs.getInt("PreferenceLevel");
 		    	int numberCompleted = rs.getInt("NumberCompleted");
 		    	
@@ -719,6 +719,25 @@ public class Database {
 			sqlInsert.setBoolean(1, true);
 			sqlInsert.setInt(2, timeTaken);
 			sqlInsert.setInt(3, jobID);
+			
+			sqlInsert.executeUpdate();
+		}
+		catch (SQLException sqlex) {
+			System.err.println("SQL Exception");
+			sqlex.printStackTrace();
+		}
+	}
+	
+	public void updateEfficiency(String taskCat, String caretaker, float efficiency, int numberCompleted) throws SQLException {
+		try {
+			PreparedStatement sqlInsert = conn.prepareStatement("UPDATE CaretakerCategory SET Efficiency = ?, NumberCompleted = ? WHERE Caretaker = ? AND CatName = ?");
+			
+			String formattedEfficiency = String.format("%.2f", efficiency);
+			
+			sqlInsert.setString(1, formattedEfficiency);
+			sqlInsert.setInt(2, numberCompleted);
+			sqlInsert.setString(3, caretaker);
+			sqlInsert.setString(4, taskCat);
 			
 			sqlInsert.executeUpdate();
 		}

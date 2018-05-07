@@ -1,3 +1,4 @@
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.table.DefaultTableModel;
@@ -78,6 +79,17 @@ public class User {
 		} // for 
 		
 		return preferenceLevel;
+	} // function
+	
+	public void updateEfficiency(String taskCat, float efficiencyForTask) throws SQLException {
+		for (TaskCategory checkTask : preferences) {
+			if (checkTask.getTaskCategory().equals(taskCat)) {
+				checkTask.updateEfficiency(efficiencyForTask);
+				
+				Database db = new Database();
+				db.updateEfficiency(taskCat, username, checkTask.getEfficiency(), checkTask.getNumberCompleted());
+			} // if
+		} // for 
 	} // function
 	
 	public DefaultTableModel getPreferenceModel(DefaultTableModel prefModel, TaskList allTasks, String username) {
