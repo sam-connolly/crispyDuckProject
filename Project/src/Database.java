@@ -22,7 +22,7 @@ public class Database {
 	public boolean connect() {
 		try {
 			conn = DriverManager.getConnection(url);
-			System.err.println("yay");
+			System.err.println("Connected");
 			return true;
 		} catch (SQLException e) {
 			/*JOptionPane.showMessageDialog(new JFrame(),
