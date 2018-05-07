@@ -56,7 +56,7 @@ public class AllocationMenu extends JDialog {
 	 * @throws SQLException 
 	 * @throws ParseException 
 	 */
-	public AllocationMenu(JFrame parentWindow) throws ParseException, SQLException {
+	public AllocationMenu(JFrame parentWindow, String username) throws ParseException, SQLException {
 		super(parentWindow, "Allocation Menu", ModalityType.DOCUMENT_MODAL);
 		
 		allTasks = database.getTasks();
@@ -199,6 +199,9 @@ public class AllocationMenu extends JDialog {
 							Task taskToAllocate = allTasks.getFirstTaskWithTaskID(taskID);
 							try {
 								taskToAllocate.assignToCaretaker(tblToAllocate.getValueAt(i, 3).toString(), allTasks);
+								parentWindow.dispose();
+								ManagerMenu managerMenu = new ManagerMenu(username);
+								managerMenu.setVisible(true);
 								dispose();
 							} catch (SQLException e) {
 								// TODO Auto-generated catch block

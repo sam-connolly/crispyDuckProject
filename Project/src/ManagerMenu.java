@@ -198,7 +198,7 @@ public class ManagerMenu extends JFrame{
 				}
 				
 				else  {
-					tblAllocated.setModel(allTasks.getCompletedByCaretaker(cmbLastTable.getSelectedItem().toString()));
+					tblCompleted.setModel(allTasks.getCompletedByCaretaker(cmbLastTable.getSelectedItem().toString()));
 					btnAllocate.setEnabled(true);
 				}
 			}
@@ -365,7 +365,7 @@ public class ManagerMenu extends JFrame{
 				}
 				
 				try {
-					AllocationMenu allocationMenu = new AllocationMenu(frame);
+					AllocationMenu allocationMenu = new AllocationMenu(frame, username);
 					allocationMenu.setToAllocateModel(toAllocateModel);
 					allocationMenu.setVisible(true);
 				} catch (ParseException | SQLException e) {
