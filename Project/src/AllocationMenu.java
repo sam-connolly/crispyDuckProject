@@ -199,9 +199,6 @@ public class AllocationMenu extends JDialog {
 							Task taskToAllocate = allTasks.getFirstTaskWithTaskID(taskID);
 							try {
 								taskToAllocate.assignToCaretaker(tblToAllocate.getValueAt(i, 3).toString(), allTasks);
-								parentWindow.dispose();
-								ManagerMenu managerMenu = new ManagerMenu(username);
-								dispose();
 							} catch (SQLException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -210,7 +207,14 @@ public class AllocationMenu extends JDialog {
 								e.printStackTrace();
 							}
 						}
-
+						parentWindow.dispose();
+						try {
+							ManagerMenu managerMenu = new ManagerMenu(username);
+						} catch (ParseException | SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						dispose();
 					}
 				});
 				okButton.setActionCommand("OK");

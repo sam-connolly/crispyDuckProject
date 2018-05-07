@@ -302,6 +302,12 @@ public class Task {
 		  signedOffOn = dateFormat.format(currentDate);
 	  }
 	  this.timeTaken = timeTaken;
+	  
+	  float efficiencyForTask = (float) timeEstimate / (float) timeTaken;
+	  Database db = new Database();
+	  UserList allUsers = db.getUsers();
+	  
+	  allUsers.getUserCaretaker(caretaker).updateEfficiency(taskCat, efficiencyForTask);
   }
   
   public void uncompleteTask() throws SQLException {

@@ -5,11 +5,11 @@
  */
 public class TaskCategory {
 	private String taskCategory;
-	private int efficiency;
+	private float efficiency;
 	private int preferenceLevel;
 	private int numberCompleted;
 	
-	public TaskCategory(String taskCategory, int efficiency, int preferenceLevel, int numberCompleted) {
+	public TaskCategory(String taskCategory, float efficiency, int preferenceLevel, int numberCompleted) {
 		this.taskCategory = taskCategory;
 		this.efficiency = efficiency;
 		this.preferenceLevel = preferenceLevel;
@@ -20,8 +20,13 @@ public class TaskCategory {
 		return taskCategory;
 	}
 	
-	public int getEfficiency() {
+	public float getEfficiency() {
 		return efficiency;
+	}
+	
+	public void updateEfficiency(float newRating) {
+		numberCompleted++;
+		efficiency = ( efficiency + newRating ) / (float) numberCompleted;
 	}
 	
 	public int getPreferenceLevel() {

@@ -21,6 +21,8 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.Vector;
 import java.awt.event.ActionEvent;
@@ -31,6 +33,8 @@ import javax.swing.JComboBox;
 import java.awt.Color;
 import javax.swing.JLabel;
 import java.awt.Font;
+import javax.swing.JTextPane;
+import javax.swing.JTextArea;
 
 public class EmployeeMenu extends JFrame{
 
@@ -45,10 +49,6 @@ public class EmployeeMenu extends JFrame{
 	private JMenuBar menuBar;
 	private JButton btnLogout;
 	private JButton btnAccount;
-	private JComboBox inProgressSort;
-	private JComboBox completedSort;
-	private JTextField inProgressSearch;
-	private JTextField completedSearch;
 	
 	private String username;
 	
@@ -62,6 +62,10 @@ public class EmployeeMenu extends JFrame{
 	private JLabel lblNewLabel_1;
 	private JTextField txtMinutes;
 	private JLabel lblNewLabel_2;
+	private JScrollPane descriptionScrollPane;
+	private JTextArea taskDescription;
+	private JLabel lblToDo;
+	private JLabel lblCompleted;
 
 	/**
 	 * Launch the application.
@@ -100,19 +104,19 @@ public class EmployeeMenu extends JFrame{
 		frame.setBounds(100, 100, 1169, 686);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{10, 400, 0, 0, 0, 400, 10, 0};
-		gridBagLayout.rowHeights = new int[]{10, 5, 5, 473, 0, 0, 0};
+		gridBagLayout.columnWidths = new int[]{10, 476, 0, 358, 0, 400, 10, 0};
+		gridBagLayout.rowHeights = new int[]{10, 5, 5, 501, 60, 0, 0};
 		gridBagLayout.columnWeights = new double[]{0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
 		frame.getContentPane().setLayout(gridBagLayout);
 		
-		inProgressSort = new JComboBox();
-		GridBagConstraints gbc_inProgressSort = new GridBagConstraints();
-		gbc_inProgressSort.insets = new Insets(0, 0, 5, 5);
-		gbc_inProgressSort.fill = GridBagConstraints.HORIZONTAL;
-		gbc_inProgressSort.gridx = 1;
-		gbc_inProgressSort.gridy = 1;
-		frame.getContentPane().add(inProgressSort, gbc_inProgressSort);
+		lblToDo = new JLabel("To Do");
+		lblToDo.setFont(new Font("Tahoma", Font.BOLD, 14));
+		GridBagConstraints gbc_lblToDo = new GridBagConstraints();
+		gbc_lblToDo.insets = new Insets(0, 0, 5, 5);
+		gbc_lblToDo.gridx = 1;
+		gbc_lblToDo.gridy = 1;
+		frame.getContentPane().add(lblToDo, gbc_lblToDo);
 		
 		panel_1 = new JPanel();
 		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
@@ -126,24 +130,13 @@ public class EmployeeMenu extends JFrame{
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
 		panel_1.add(lblNewLabel);
 		
-		completedSort = new JComboBox();
-		GridBagConstraints gbc_completedSort = new GridBagConstraints();
-		gbc_completedSort.insets = new Insets(0, 0, 5, 5);
-		gbc_completedSort.fill = GridBagConstraints.HORIZONTAL;
-		gbc_completedSort.gridx = 5;
-		gbc_completedSort.gridy = 1;
-		frame.getContentPane().add(completedSort, gbc_completedSort);
-		
-		inProgressSearch = new JTextField();
-		inProgressSearch.setForeground(Color.LIGHT_GRAY);
-		inProgressSearch.setText("Search");
-		GridBagConstraints gbc_inProgressSearch = new GridBagConstraints();
-		gbc_inProgressSearch.insets = new Insets(0, 0, 5, 5);
-		gbc_inProgressSearch.fill = GridBagConstraints.HORIZONTAL;
-		gbc_inProgressSearch.gridx = 1;
-		gbc_inProgressSearch.gridy = 2;
-		frame.getContentPane().add(inProgressSearch, gbc_inProgressSearch);
-		inProgressSearch.setColumns(10);
+		lblCompleted = new JLabel("Completed");
+		lblCompleted.setFont(new Font("Tahoma", Font.BOLD, 14));
+		GridBagConstraints gbc_lblCompleted = new GridBagConstraints();
+		gbc_lblCompleted.insets = new Insets(0, 0, 5, 5);
+		gbc_lblCompleted.gridx = 5;
+		gbc_lblCompleted.gridy = 1;
+		frame.getContentPane().add(lblCompleted, gbc_lblCompleted);
 		
 		panel = new JPanel();
 		GridBagConstraints gbc_panel = new GridBagConstraints();
@@ -172,26 +165,32 @@ public class EmployeeMenu extends JFrame{
 		lblNewLabel_2 = new JLabel("minutes");
 		panel.add(lblNewLabel_2);
 		
-		completedSearch = new JTextField();
-		completedSearch.setForeground(Color.LIGHT_GRAY);
-		completedSearch.setText("Search");
-		GridBagConstraints gbc_completedSearch = new GridBagConstraints();
-		gbc_completedSearch.insets = new Insets(0, 0, 5, 5);
-		gbc_completedSearch.fill = GridBagConstraints.HORIZONTAL;
-		gbc_completedSearch.gridx = 5;
-		gbc_completedSearch.gridy = 2;
-		frame.getContentPane().add(completedSearch, gbc_completedSearch);
-		completedSearch.setColumns(10);
-		
 		inProgressScrollPane = new JScrollPane();
 		GridBagConstraints gbc_inProgressScrollPane = new GridBagConstraints();
+		gbc_inProgressScrollPane.gridheight = 2;
 		gbc_inProgressScrollPane.insets = new Insets(0, 0, 5, 5);
 		gbc_inProgressScrollPane.fill = GridBagConstraints.BOTH;
 		gbc_inProgressScrollPane.gridx = 1;
-		gbc_inProgressScrollPane.gridy = 3;
+		gbc_inProgressScrollPane.gridy = 2;
 		frame.getContentPane().add(inProgressScrollPane, gbc_inProgressScrollPane);
 		
 		tblInProgress = new JTable(allTasks.getAllocatedToCaretaker(username));
+		tblInProgress.setAutoCreateRowSorter(true);
+		
+		tblInProgress.addMouseListener(new MouseAdapter()
+		{
+			public void mouseClicked(MouseEvent e) 
+			{
+				if (e.getClickCount() == 1)
+				{
+					JTable target = (JTable)e.getSource();
+					int row = target.getSelectedRow();
+					int jobID = (Integer) tblInProgress.getValueAt(row, 0);
+					
+					taskDescription.setText(allTasks.getTaskWithJobID(jobID).getTaskDesc());
+				}
+			}
+		});
 		
 		inProgressScrollPane.setViewportView(tblInProgress);
 		
@@ -315,15 +314,30 @@ public class EmployeeMenu extends JFrame{
 		
 		completedScrollPane = new JScrollPane();
 		GridBagConstraints gbc_completedScrollPane = new GridBagConstraints();
+		gbc_completedScrollPane.gridheight = 3;
 		gbc_completedScrollPane.insets = new Insets(0, 0, 5, 5);
 		gbc_completedScrollPane.fill = GridBagConstraints.BOTH;
 		gbc_completedScrollPane.gridx = 5;
-		gbc_completedScrollPane.gridy = 3;
+		gbc_completedScrollPane.gridy = 2;
 		frame.getContentPane().add(completedScrollPane, gbc_completedScrollPane);
 		
 		tblCompleted = new JTable(allTasks.getCompletedByCaretaker(username));
+		tblCompleted.setAutoCreateRowSorter(true);
 		
 		completedScrollPane.setViewportView(tblCompleted);
+		
+		descriptionScrollPane = new JScrollPane();
+		GridBagConstraints gbc_descriptionScrollPane = new GridBagConstraints();
+		gbc_descriptionScrollPane.insets = new Insets(0, 0, 5, 5);
+		gbc_descriptionScrollPane.fill = GridBagConstraints.BOTH;
+		gbc_descriptionScrollPane.gridx = 1;
+		gbc_descriptionScrollPane.gridy = 4;
+		frame.getContentPane().add(descriptionScrollPane, gbc_descriptionScrollPane);
+		
+		taskDescription = new JTextArea();
+		taskDescription.setWrapStyleWord(true);
+		taskDescription.setLineWrap(true);
+		descriptionScrollPane.setViewportView(taskDescription);
 		
 		menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
@@ -331,7 +345,9 @@ public class EmployeeMenu extends JFrame{
 		 btnLogout = new JButton("Logout");
 		    btnLogout.addActionListener(new ActionListener() {
 		      public void actionPerformed(ActionEvent e) {
-		        frame.dispose();
+		    	  LoginUI login = new LoginUI();
+					login.setVisible(true);
+					frame.dispose();
 		      }
 		    });
 		menuBar.add(btnLogout);
