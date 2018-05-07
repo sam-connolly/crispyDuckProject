@@ -593,6 +593,72 @@ public class Database {
 		} // catch
 	} // function
 	
+	public Task getJob(int passedJobID)
+	{
+			// Query database for a specific task, matching the passed taskID
+			Statement stmt;
+			Task job = null;
+			try 
+			{
+				stmt = conn.createStatement();
+			
+				String query = "SELECT JobID, TaskID, Caretaker, DateIssued, DateDue,"
+						+ " Completed, TimeTaken, Issue, IssueDesc, SignedOff, signedOffOn,"
+						+ " TaskName, TaskDesc, TaskCat, Priority, Repeating, TimeEstimate, Location, "
+						+ " FirstAllocation, LastAllocated, TimeGiven, CaretakerSignOff"
+						+ " FROM Task"
+						+ " JOIN TaskList ON Task.taskID = TaskList.taskID "
+						+ "WHERE TaskList.JobID = " + passedJobID;
+				
+				//Execute the query
+				ResultSet rs = stmt.executeQuery(query);
+				
+				// iterate over data. There should only ever be 1 return
+				while (rs.next())
+				{
+					// assign data to variables
+					int jobID = rs.getInt("jobID");
+					int taskID = rs.getInt("TaskID");
+					String caretaker= rs.getString("Caretaker");	
+					boolean completed = rs.getBoolean("Completed");
+					Date dateIssued= rs.getDate("DateIssued");
+					Date dateDue = rs.getDate("DateDue");
+					int timeTaken = rs.getInt("TimeTaken");
+					boolean issue = rs.getBoolean("Issue");
+					String issueDesc = rs.getString("IssueDesc");
+					boolean signedOff = rs.getBoolean("SignedOff");
+					Date signedOffOn = rs.getDate("SignedOffOn");
+					String taskName = rs.getString("TaskName");
+					String taskDesc = rs.getString("TaskDesc");
+					String taskCat = rs.getString("TaskCat");
+					String priority = rs.getString("Priority");
+					int repeating = rs.getInt("Repeating");
+					int timeEstimate = rs.getInt("TimeEstimate");
+					String location = rs.getString("location");
+					Date firstAllocation = rs.getDate("FirstAllocation");
+					Date lastAllocated = rs.getDate("LastAllocated");
+					boolean caretakerSignOff = rs.getBoolean("CaretakerSignOff");
+				
+				
+						
+					job = new Task.TaskBuilder().jobID(jobID).taskID(taskID).taskName(taskName).taskDesc(taskDesc)
+						.taskCat(taskCat).priority(priority).repeating(repeating).timeEstimate(timeEstimate)
+						.location(location).caretaker(caretaker).completed(completed).dateIssued(dateIssued)
+						.dateDue(dateDue).timeEstimate(timeEstimate).timeTaken(timeTaken).issue(issue)
+						.issueDesc(issueDesc).signedOff(signedOff).lastAllocated(lastAllocated)
+						.firstAllocation(firstAllocation).signedOffOn(signedOffOn).build();
+			
+				}
+			}
+			catch (SQLException e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		return job;
+	}
+	
 	public Task getTask(int passedTaskID)
 	{
 			// Query database for a specific task, matching the passed taskID
