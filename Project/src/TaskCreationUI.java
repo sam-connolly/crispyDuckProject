@@ -8,7 +8,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class TaskCreationUI extends JFrame 
 {
@@ -457,7 +459,21 @@ public class TaskCreationUI extends JFrame
 				//SQL version of the date
 				java.sql.Date sqlDateDue = null;
 				
-				Date currentDate = new Date();		//The current date, for comparing
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");	//Format for the current date
+				Date currentDate = new Date();								//The current date, for comparing
+				try 
+				{
+					//Parse the current date to the correct format for comparison
+					currentDate = dateFormat.parse(dateFormat.format(new Date()));
+				} 
+				catch (ParseException e2) 
+				{
+					JOptionPane.showMessageDialog(new JFrame(),
+						    "Could not format current date. Task may not be created. Contact support",
+						    "Date conversion error",
+						    JOptionPane.ERROR_MESSAGE);
+					e2.printStackTrace();
+				}		
 				
 				try 
 				{
