@@ -24,6 +24,8 @@ import javax.swing.JMenuItem;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.Color;
 import java.awt.Dialog;
+import javax.swing.JLabel;
+import java.awt.Font;
 
 public class ManagerMenu extends JFrame{
 
@@ -47,6 +49,9 @@ public class ManagerMenu extends JFrame{
 	private JButton btnNewUser;
 	private JButton btnLogout;
 	private JComboBox inProgressComboBox;
+	private JLabel lblUnallocated;
+	private JLabel lblInProgress;
+	private JLabel lblCompleted;
 
 	/**
 	 * Launch the application.
@@ -96,7 +101,7 @@ public class ManagerMenu extends JFrame{
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{20, 300, 300, 300, 20, 0};
-		gridBagLayout.rowHeights = new int[]{20, 0, 351, 35, 10, 0};
+		gridBagLayout.rowHeights = new int[]{0, 0, 351, 35, 10, 0};
 		gridBagLayout.columnWeights = new double[]{0.0, 1.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 100.0, 1.0, 0.0, Double.MIN_VALUE};
 		frame.getContentPane().setLayout(gridBagLayout);
@@ -145,6 +150,30 @@ public class ManagerMenu extends JFrame{
 				}
 			}
 		});
+		
+		lblUnallocated = new JLabel("Unallocated");
+		lblUnallocated.setFont(new Font("Tahoma", Font.BOLD, 14));
+		GridBagConstraints gbc_lblUnallocated = new GridBagConstraints();
+		gbc_lblUnallocated.insets = new Insets(0, 0, 5, 5);
+		gbc_lblUnallocated.gridx = 1;
+		gbc_lblUnallocated.gridy = 0;
+		frame.getContentPane().add(lblUnallocated, gbc_lblUnallocated);
+		
+		lblInProgress = new JLabel("In Progress");
+		lblInProgress.setFont(new Font("Tahoma", Font.BOLD, 14));
+		GridBagConstraints gbc_lblInProgress = new GridBagConstraints();
+		gbc_lblInProgress.insets = new Insets(0, 0, 5, 5);
+		gbc_lblInProgress.gridx = 2;
+		gbc_lblInProgress.gridy = 0;
+		frame.getContentPane().add(lblInProgress, gbc_lblInProgress);
+		
+		lblCompleted = new JLabel("Completed");
+		lblCompleted.setFont(new Font("Tahoma", Font.BOLD, 14));
+		GridBagConstraints gbc_lblCompleted = new GridBagConstraints();
+		gbc_lblCompleted.insets = new Insets(0, 0, 5, 5);
+		gbc_lblCompleted.gridx = 3;
+		gbc_lblCompleted.gridy = 0;
+		frame.getContentPane().add(lblCompleted, gbc_lblCompleted);
 
 		cmbFirstTable.setModel(new DefaultComboBoxModel(new String[] {"All Unallocated", "Due Allocation", "Not Due Allocation"}));
 		GridBagConstraints gbc_cmbFirstTable = new GridBagConstraints();

@@ -64,6 +64,8 @@ public class EmployeeMenu extends JFrame{
 	private JLabel lblNewLabel_2;
 	private JScrollPane descriptionScrollPane;
 	private JTextArea taskDescription;
+	private JLabel lblToDo;
+	private JLabel lblCompleted;
 
 	/**
 	 * Launch the application.
@@ -102,11 +104,19 @@ public class EmployeeMenu extends JFrame{
 		frame.setBounds(100, 100, 1169, 686);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{10, 400, 0, 0, 0, 400, 10, 0};
+		gridBagLayout.columnWidths = new int[]{10, 476, 0, 358, 0, 400, 10, 0};
 		gridBagLayout.rowHeights = new int[]{10, 5, 5, 501, 60, 0, 0};
 		gridBagLayout.columnWeights = new double[]{0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
 		frame.getContentPane().setLayout(gridBagLayout);
+		
+		lblToDo = new JLabel("To Do");
+		lblToDo.setFont(new Font("Tahoma", Font.BOLD, 14));
+		GridBagConstraints gbc_lblToDo = new GridBagConstraints();
+		gbc_lblToDo.insets = new Insets(0, 0, 5, 5);
+		gbc_lblToDo.gridx = 1;
+		gbc_lblToDo.gridy = 1;
+		frame.getContentPane().add(lblToDo, gbc_lblToDo);
 		
 		panel_1 = new JPanel();
 		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
@@ -119,6 +129,14 @@ public class EmployeeMenu extends JFrame{
 		lblNewLabel = new JLabel("Time taken to complete selected tasks");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
 		panel_1.add(lblNewLabel);
+		
+		lblCompleted = new JLabel("Completed");
+		lblCompleted.setFont(new Font("Tahoma", Font.BOLD, 14));
+		GridBagConstraints gbc_lblCompleted = new GridBagConstraints();
+		gbc_lblCompleted.insets = new Insets(0, 0, 5, 5);
+		gbc_lblCompleted.gridx = 5;
+		gbc_lblCompleted.gridy = 1;
+		frame.getContentPane().add(lblCompleted, gbc_lblCompleted);
 		
 		panel = new JPanel();
 		GridBagConstraints gbc_panel = new GridBagConstraints();
@@ -149,11 +167,11 @@ public class EmployeeMenu extends JFrame{
 		
 		inProgressScrollPane = new JScrollPane();
 		GridBagConstraints gbc_inProgressScrollPane = new GridBagConstraints();
-		gbc_inProgressScrollPane.gridheight = 3;
+		gbc_inProgressScrollPane.gridheight = 2;
 		gbc_inProgressScrollPane.insets = new Insets(0, 0, 5, 5);
 		gbc_inProgressScrollPane.fill = GridBagConstraints.BOTH;
 		gbc_inProgressScrollPane.gridx = 1;
-		gbc_inProgressScrollPane.gridy = 1;
+		gbc_inProgressScrollPane.gridy = 2;
 		frame.getContentPane().add(inProgressScrollPane, gbc_inProgressScrollPane);
 		
 		tblInProgress = new JTable(allTasks.getAllocatedToCaretaker(username));
@@ -296,11 +314,11 @@ public class EmployeeMenu extends JFrame{
 		
 		completedScrollPane = new JScrollPane();
 		GridBagConstraints gbc_completedScrollPane = new GridBagConstraints();
-		gbc_completedScrollPane.gridheight = 4;
+		gbc_completedScrollPane.gridheight = 3;
 		gbc_completedScrollPane.insets = new Insets(0, 0, 5, 5);
 		gbc_completedScrollPane.fill = GridBagConstraints.BOTH;
 		gbc_completedScrollPane.gridx = 5;
-		gbc_completedScrollPane.gridy = 1;
+		gbc_completedScrollPane.gridy = 2;
 		frame.getContentPane().add(completedScrollPane, gbc_completedScrollPane);
 		
 		tblCompleted = new JTable(allTasks.getCompletedByCaretaker(username));
