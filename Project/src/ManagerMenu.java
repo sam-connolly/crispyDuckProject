@@ -232,8 +232,7 @@ public class ManagerMenu extends JFrame{
 						int row = target.getSelectedRow();
 						int taskID = (Integer) tblUnallocated.getValueAt(row, 0);
 						
-						EditTaskUI editTask = new EditTaskUI(taskID, username);
-						editTask.setTaskID(taskID);
+						EditTaskUI editTask = new EditTaskUI(taskID, username, "Task", -1);
 						editTask.setVisible(true);
 						setVisible(false);
 						frame.dispose();
@@ -263,10 +262,11 @@ public class ManagerMenu extends JFrame{
 				{
 					JTable target = (JTable)e.getSource();
 					int row = target.getSelectedRow();
-					int taskID = (Integer) tblAllocated.getValueAt(row, 0);
+					int jobID = (Integer) tblAllocated.getValueAt(row, 0);
 					
-					EditTaskUI editTask = new EditTaskUI(taskID, username);
-					editTask.setTaskID(taskID);
+					Task job = database.getJob(jobID);
+					int taskID = job.getTaskID();
+					EditTaskUI editTask = new EditTaskUI(taskID, username, "Job", jobID);
 					editTask.setVisible(true);
 					setVisible(false);
 					frame.dispose();
@@ -298,12 +298,12 @@ public class ManagerMenu extends JFrame{
 				{
 					JTable target = (JTable)e.getSource();
 					int row = target.getSelectedRow();
-					int taskID = (Integer) tblCompleted.getValueAt(row, 0);
+					int jobID = (Integer) tblCompleted.getValueAt(row, 0);
 					
-					EditTaskUI editTask = new EditTaskUI(taskID, username);
-					editTask.setTaskID(taskID);
+					Task job = database.getJob(jobID);
+					int taskID = job.getTaskID();
+					EditTaskUI editTask = new EditTaskUI(taskID, username, "Job", jobID);
 					editTask.setVisible(true);
-					setVisible(false);
 					frame.dispose();
 				}
 			}
@@ -438,6 +438,8 @@ public class ManagerMenu extends JFrame{
 		btnLogout = new JButton("Logout");
 		btnLogout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				LoginUI login = new LoginUI();
+				login.setVisible(true);
 				frame.dispose();
 			}
 		});

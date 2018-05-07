@@ -193,6 +193,11 @@ public class Task {
 	  return issueDesc;
   }
   
+  public boolean getCaretakerSignOff()
+  {
+	  return caretakerSignOff;
+  }
+  
   public int getTimeTaken() {
 	  return timeTaken;
   }

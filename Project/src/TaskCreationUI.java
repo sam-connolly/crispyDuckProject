@@ -8,9 +8,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 public class TaskCreationUI extends JFrame 
 {
@@ -77,7 +75,7 @@ public class TaskCreationUI extends JFrame
 	public TaskCreationUI(String username) 
 	{
 		//Username of the currently logged in user
-		this.username=username;
+		this.username = username;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 606, 758);
 		contentPane = new JPanel();
@@ -121,7 +119,6 @@ public class TaskCreationUI extends JFrame
 			}
 		});
 		pnlTopButtons.add(btnBack);
-		
 		
 		//Panel for holding the rest of the form
 		JPanel pnlMain = new JPanel();
@@ -192,7 +189,7 @@ public class TaskCreationUI extends JFrame
 		JLabel lblDateSeperator1 = new JLabel("/");
 		pnlDateInput.add(lblDateSeperator1);
 		
-		/*KeyValue is a class that stores two pieces of data, a key and value. This is used in ComboBoxes to store
+		/* KeyValue is a class that stores two pieces of data, a key and value. This is used in ComboBoxes to store
 		 * information that does not need to be shown in the ComboBox. In this case, the user sees only the name of the
 		 * month, when there is also it's numerical value saved as well
 		 */
@@ -387,6 +384,7 @@ public class TaskCreationUI extends JFrame
 		
 		//ComboBox for inputting how many days are given for the task to be completed
 		JComboBox<Integer> cmbDaysToBeCompletedIn = new JComboBox<Integer>();
+		//Add 100 days to the comboBox
 		for (int i = 1; i < 100; i++)
 		{
 			cmbDaysToBeCompletedIn.addItem(i);
@@ -459,7 +457,7 @@ public class TaskCreationUI extends JFrame
 				//SQL version of the date
 				java.sql.Date sqlDateDue = null;
 				
-				Date currentDate = new Date();
+				Date currentDate = new Date();		//The current date, for comparing
 				
 				try 
 				{
