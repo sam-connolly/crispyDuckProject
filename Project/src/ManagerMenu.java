@@ -433,6 +433,8 @@ public class ManagerMenu extends JFrame{
 		btnLogout = new JButton("Logout");
 		btnLogout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				LoginUI login = new LoginUI();
+				login.setVisible(true);
 				frame.dispose();
 			}
 		});
