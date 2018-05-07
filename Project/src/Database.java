@@ -156,6 +156,7 @@ public class Database {
 		return true;
 	}
 	
+	// Used to add user to database, called from UpdateUserAdminUI
 	public boolean addUser(String username, String password, Boolean admin, 
 			String forename, String surname) throws SQLException{
 		PreparedStatement sqlInsert = null;
@@ -183,6 +184,7 @@ public class Database {
 		}
 	}
 	
+	//Used to add default preferences to CaretakerCategory, called from addUser()
 	public boolean addUserPreferences(String username) throws SQLException{
 		boolean success = true;
 		String catName = null;
@@ -201,6 +203,7 @@ public class Database {
 			else if (i==4) {catName="Interior Repair";}
 			else if (i==5) {catName="Light Labour";}
 			else if (i==6) {catName="Restocking";}
+			else if (i==7) {catName="Misc";}
 			sqlInsert.setString(1, catName);
 			sqlInsert.setString(2, username);
 			sqlInsert.setInt(3, 5);
