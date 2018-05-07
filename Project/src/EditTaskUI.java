@@ -1,4 +1,3 @@
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -9,12 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
-import java.util.Date;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -35,7 +31,7 @@ public class EditTaskUI extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtTaskName;
 	private JTextField txtLocation;
-	private int taskID = -1;
+
 	
 	Database database = new Database();
 	
@@ -83,11 +79,38 @@ public class EditTaskUI extends JFrame {
 		//Return the formatted day
 		return formattedDay;
 	}
+	
+	/**
+	 * Closes the current frame, creates a new ManagerMenu and opens it
+	 * 
+	 * @param username	The username of the currently logged in user
+	 */
+	public void openManagerMenu(String username)
+	{
+		ManagerMenu managerMenuNew;
+		try 
+		{
+			//Create a new ManagerMenu, passing the username to it
+			managerMenuNew = new ManagerMenu(username);
+			dispose();
+		} 
+		catch (ParseException | SQLException e1) 
+		{
+			//Alert the user that an error has occurred
+			JOptionPane.showMessageDialog(new JFrame(),
+				    "Could not open new window. Contact support",
+				    "Window navigation error",
+				    JOptionPane.ERROR_MESSAGE);
+			e1.printStackTrace();
+		}
+	}
 
 	/**
 	 * Create the frame.
 	 * @param taskID	The ID of the task being edited
 	 * @param username	The username of the currently logged in user
+	 * @param taskOrJob Whether the user clicked on a task, or a job
+	 * @param jobID		The ID of the job being edited
 	 */
 	public EditTaskUI(int taskID, String username, String taskOrJob, int jobID) 
 	{
@@ -102,7 +125,7 @@ public class EditTaskUI extends JFrame {
 		}
 		else
 		{
-			Task task = null;
+			Task task = null;		//New task object to hold the details of the current task
 			
 			//If the selected row is a job, get the info for the matching job
 			if (taskOrJob == "Job")
@@ -140,21 +163,8 @@ public class EditTaskUI extends JFrame {
 				//When this window is closed, dispose of it and open the ManagerMenu UI
 				public void actionPerformed(ActionEvent e) 
 				{
-					ManagerMenu managerMenuNew;
-					try 
-					{
-						//Create a new ManagerMenu, passing the username to it
-						managerMenuNew = new ManagerMenu(username);
-						dispose();
-					} 
-					catch (ParseException | SQLException e1) 
-					{
-						JOptionPane.showMessageDialog(new JFrame(),
-							    "Could not open new window. Contact support",
-							    "Window navigation error",
-							    JOptionPane.ERROR_MESSAGE);
-						e1.printStackTrace();
-					}
+					//Close this window and open a new manager menu
+					openManagerMenu(username);
 				}
 			});
 			pnlTopButtons.add(btnBack);
@@ -212,7 +222,7 @@ public class EditTaskUI extends JFrame {
 			txtLocation.setColumns(10);
 			
 			//Label for the due date entry panel
-			JLabel lblDateDue = new JLabel("DateDue");
+			JLabel lblDateDue = new JLabel("Date Due");
 			lblDateDue.setHorizontalAlignment(SwingConstants.CENTER);
 			
 			//String to store the date for sub-stringing purposes
@@ -221,7 +231,6 @@ public class EditTaskUI extends JFrame {
 			//Panel to hold all components for entering a date. The date input is made up of three comboBoxes
 			JPanel pnlDateInput = new JPanel();
 			
-			System.out.println("Due Date: " +strFullDate);
 			String strDateYear = "";			//The year part of the date string
 			String strDateMonthNum = "";		//The month part of the date string
 			String strDateDays = "";			//The day part of the date string
@@ -230,11 +239,8 @@ public class EditTaskUI extends JFrame {
 			if (strFullDate != null)
 			{
 				strDateYear = strFullDate.substring(6,10);
-				System.out.println("Year substring: " + strDateYear);
 				strDateMonthNum = strFullDate.substring(3,5);
-				System.out.println("Month substring: " + strDateMonthNum);
 				strDateDays = strFullDate.substring(0,2);
-				System.out.println("Day substring: " + strDateDays);
 			}
 			
 			/*First comboBox for entering the day of the date. Since the default month is January, it initially has 31
@@ -424,8 +430,9 @@ public class EditTaskUI extends JFrame {
 					}
 				}
 			});
-				
-			if (strFullDate != null)
+			
+			//If the user is editing a job, add the date input and label components to the form
+			if (taskOrJob.equals("Job"))
 			{
 				pnlDataEntry.add(lblDateDue);
 				pnlDataEntry.add(pnlDateInput);
@@ -472,7 +479,7 @@ public class EditTaskUI extends JFrame {
 			//Priority input
 			JComboBox<Integer> cmbPriority = new JComboBox<Integer>();
 			cmbPriority.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {1, 2, 3, 4, 5}));
-			cmbPriority.setSelectedItem(task.getPriority());
+			cmbPriority.setSelectedItem(Integer.parseInt(task.getPriority()));
 			pnlDataEntry.add(cmbPriority);
 			
 			//Label for the time estimate input panel
@@ -523,6 +530,7 @@ public class EditTaskUI extends JFrame {
 				
 			//ComboBox for inputting how many days are given for the task to be completed
 			JComboBox<Integer> cmbDaysToBeCompletedIn = new JComboBox<Integer>();
+			//Add 100 days to the comboBox
 			for (int i = 1; i < 100; i++)
 			{
 				cmbDaysToBeCompletedIn.addItem(i);
@@ -607,6 +615,7 @@ public class EditTaskUI extends JFrame {
 			//CheckBox for setting if a caretaker can sign off the task
 			JCheckBox chkBxCaretakerSignOff = new JCheckBox("");
 			chkBxCaretakerSignOff.setHorizontalAlignment(SwingConstants.CENTER);
+			System.out.println("CaretakerSignOff: " + task.getCaretakerSignOff());
 			if (task.getCaretakerSignOff())
 			{
 				chkBxCaretakerSignOff.setSelected(true);
@@ -692,21 +701,27 @@ public class EditTaskUI extends JFrame {
 								"' WHERE taskID = " + taskID;
 	
 						
-						Boolean updatedTask = database.executeSQL(updateSQL);
+						Boolean updatedTask = database.executeSQL(updateSQL);	//Boolean for if the task part updated
 						
+						//If the update was successful
 						if (updatedTask)
 						{
+							//Tell the user
 							JOptionPane.showMessageDialog(new JFrame(), "Task successfully edited");
+							//Close this window and open a new manager menu
+							openManagerMenu(username);
 						}
+						//If not
 						else
 						{
+							//Alert the user that the task wasn't edited
 							JOptionPane.showMessageDialog(new JFrame(),
 								    "Could not edit task. Contact database administrator",
 								    "Database error",
 								    JOptionPane.ERROR_MESSAGE);
 						}
 						
-						
+						//If the suer is editing a job
 						if (taskOrJob == "Job")
 						{
 							//SQL for updating the job in the TaskList table
@@ -723,6 +738,8 @@ public class EditTaskUI extends JFrame {
 							if (updatedJob)
 							{
 								JOptionPane.showMessageDialog(new JFrame(), "Job successfully edited");
+								//Close this window and open a new manager menu
+								openManagerMenu(username);
 							}
 							//If not, alert them that the job was not edited
 							else
@@ -738,10 +755,5 @@ public class EditTaskUI extends JFrame {
 			});
 			pnlSubmission.add(btnCreate);
 		}
-	}
-	
-	public void setTaskID(int taskID)
-	{
-		this.taskID = taskID;
 	}
 }

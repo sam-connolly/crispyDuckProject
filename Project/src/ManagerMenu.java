@@ -232,7 +232,6 @@ public class ManagerMenu extends JFrame{
 						int taskID = (Integer) tblUnallocated.getValueAt(row, 0);
 						
 						EditTaskUI editTask = new EditTaskUI(taskID, username, "Task", -1);
-						editTask.setTaskID(taskID);
 						editTask.setVisible(true);
 						setVisible(false);
 						frame.dispose();
@@ -263,8 +262,9 @@ public class ManagerMenu extends JFrame{
 					int row = target.getSelectedRow();
 					int jobID = (Integer) tblAllocated.getValueAt(row, 0);
 					
-					EditTaskUI editTask = new EditTaskUI(-1, username, "Job", jobID);
-					editTask.setTaskID(jobID);
+					Task job = database.getJob(jobID);
+					int taskID = job.getTaskID();
+					EditTaskUI editTask = new EditTaskUI(taskID, username, "Job", jobID);
 					editTask.setVisible(true);
 					setVisible(false);
 					frame.dispose();
@@ -297,7 +297,9 @@ public class ManagerMenu extends JFrame{
 					int row = target.getSelectedRow();
 					int jobID = (Integer) tblCompleted.getValueAt(row, 0);
 					
-					EditTaskUI editTask = new EditTaskUI(-1, username, "Job", jobID);
+					Task job = database.getJob(jobID);
+					int taskID = job.getTaskID();
+					EditTaskUI editTask = new EditTaskUI(taskID, username, "Job", jobID);
 					editTask.setVisible(true);
 					frame.dispose();
 				}
