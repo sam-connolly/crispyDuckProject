@@ -642,11 +642,12 @@ public class Database {
 				
 						
 					job = new Task.TaskBuilder().jobID(jobID).taskID(taskID).taskName(taskName).taskDesc(taskDesc)
-						.taskCat(taskCat).priority(priority).repeating(repeating).timeEstimate(timeEstimate)
-						.location(location).caretaker(caretaker).completed(completed).dateIssued(dateIssued)
-						.dateDue(dateDue).timeEstimate(timeEstimate).timeTaken(timeTaken).issue(issue)
-						.issueDesc(issueDesc).signedOff(signedOff).lastAllocated(lastAllocated)
-						.firstAllocation(firstAllocation).signedOffOn(signedOffOn).build();
+							.taskCat(taskCat).priority(priority).repeating(repeating).timeEstimate(timeEstimate)
+							.location(location).caretaker(caretaker).completed(completed).dateIssued(dateIssued)
+							.dateDue(dateDue).timeEstimate(timeEstimate).timeTaken(timeTaken).issue(issue)
+							.issueDesc(issueDesc).signedOff(signedOff).lastAllocated(lastAllocated)
+							.firstAllocation(firstAllocation).signedOffOn(signedOffOn)
+							.caretakerSignOff(caretakerSignOff).build();
 			
 				}
 			}
@@ -707,11 +708,13 @@ public class Database {
 				
 				
 						
-				task = new Task.TaskBuilder().jobID(jobID).taskID(taskID).taskName(taskName).taskDesc(taskDesc).taskCat(taskCat)
-						.priority(priority).repeating(repeating).timeEstimate(timeEstimate).location(location)
-						.caretaker(caretaker).completed(completed).dateIssued(dateIssued).dateDue(dateDue)
-						.timeEstimate(timeEstimate).timeTaken(timeTaken).issue(issue).issueDesc(issueDesc).signedOff(signedOff)
-						.lastAllocated(lastAllocated).firstAllocation(firstAllocation).signedOffOn(signedOffOn).build();
+				task = new Task.TaskBuilder().jobID(jobID).taskID(taskID).taskName(taskName).taskDesc(taskDesc)
+						.taskCat(taskCat).priority(priority).repeating(repeating).timeEstimate(timeEstimate)
+						.location(location).caretaker(caretaker).completed(completed).dateIssued(dateIssued)
+						.dateDue(dateDue).timeEstimate(timeEstimate).timeTaken(timeTaken).issue(issue)
+						.issueDesc(issueDesc).signedOff(signedOff).lastAllocated(lastAllocated)
+						.firstAllocation(firstAllocation).signedOffOn(signedOffOn)
+						.caretakerSignOff(caretakerSignOff).build();
 			
 				}
 			}
