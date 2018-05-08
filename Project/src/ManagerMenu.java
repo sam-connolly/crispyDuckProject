@@ -31,6 +31,14 @@ import java.awt.Dialog;
 import javax.swing.JLabel;
 import java.awt.Font;
 
+
+/**
+* UI showing the manager all tasks in tables for unallocated, in progress, and completed tasks
+* From this screen, the manager can create new tasks, manually allocate them, and edit user details
+*
+* @authors Max Walsh 1501501, Sam Connolly 16006528
+* @version 07/05/18
+*/
 public class ManagerMenu extends JFrame{
 
 	private JFrame frame;
