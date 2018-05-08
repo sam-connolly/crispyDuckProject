@@ -34,6 +34,12 @@ public class Database {
 		}
 	}	
 	
+	
+	/**
+	 * Gets password for display in textbox, accessed via UpdateUserAdminUI
+	 * @param username
+	 * @return password
+	 */
 	public String getPassword(String username) {
 		String password=null;
 		try {
@@ -50,9 +56,15 @@ public class Database {
 		catch(Exception e) {	
 			// TODO: handle exception
 		}
+		// Return password
 		return password;
 	}
 	
+	/**
+	 * Gets forename for display in textbox, accessed via UpdateUserAdminUI
+	 * @param username
+	 * @return forename
+	 */
 	public String getForename(String username) {
 		String fName=null;
 		try {
@@ -73,6 +85,11 @@ public class Database {
 		return fName;
 	}
 	
+	/**
+	 * Gets surname for display in textbox, accessed via UpdateUserAdminUI
+	 * @param username
+	 * @return surname
+	 */
 	public String getSurname(String username) {
 		String sName=null;
 		try {
@@ -92,6 +109,11 @@ public class Database {
 		return sName;
 	}
 	
+	/**
+	 * Checks if user login is correct, accessed from LoginUI
+	 * @param username, password
+	 * @return boolean to show if login is valid
+	 */
 	public boolean validateLogin(String user,  String password) {
 		boolean validLogin = false;
 		try {
@@ -118,7 +140,11 @@ public class Database {
 		return validLogin;
 	}
 	
-	//Used to check if user has Admin role
+	/**
+	 * Used to check if user has admin role, accessed from LoginUI
+	 * @param user
+	 * @return boolean to show if user is admin
+	 */
 	public boolean checkRole(String user) {
 		boolean isAdmin = false;
 		try {
@@ -139,7 +165,11 @@ public class Database {
 		return isAdmin;
 	}
 	
-	//Used to check if user exists in system
+	/**
+	 * Used to check if username exists in databsae, accessed from NewUserUI
+	 * @param user
+	 * @return boolean to show if username exists in the database 
+	 */
 	public boolean testUsername(String user){
 		try {
 			PreparedStatement stmt = conn.prepareStatement("Select * FROM User WHERE Username = '"+ user +"'");
@@ -156,7 +186,12 @@ public class Database {
 		return true;
 	}
 	
-	// Used to add user to database, called from UpdateUserAdminUI
+	/**
+	 * Used to add user to database, called from UpdateUserAdminUI
+	 * @param username, password, admin, forename, surname
+	 * @return boolean to indicate successful update
+	 * @throws SQLException
+	 */
 	public boolean addUser(String username, String password, Boolean admin, 
 			String forename, String surname) throws SQLException{
 		PreparedStatement sqlInsert = null;
@@ -184,11 +219,17 @@ public class Database {
 		}
 	}
 	
-	//Used to add default preferences to CaretakerCategory, called from addUser()
+	/**
+	 * Used to add default preferences to CaretakerCategory, called from addUser()
+	 * @param username
+	 * @return boolean to indicate successful update
+	 * @throws SQLException
+	 */
 	public boolean addUserPreferences(String username) throws SQLException{
 		boolean success = true;
 		String catName = null;
 		PreparedStatement sqlInsert = null;
+		//Loop to add each category
 		for (int i = 1;  i <= 7;  i ++) {
 			try {
 				sqlInsert = conn.prepareStatement("INSERT INTO CaretakerCategory (CatName, Caretaker,  PreferenceLevel) VALUES (?,?,?) ");
@@ -216,7 +257,13 @@ public class Database {
 		return success;
 	}
 	
-	
+	/**
+	 * Used to delete preferences from CaretakerCategory, when deleting a user
+	 * called from deleteUser()
+	 * @param username
+	 * @return boolean to indicate successful delete
+	 * @throws SQLException
+	 */
 	public boolean deleteUserPreferences(String username) throws SQLException{
 		PreparedStatement sqlDelete = null;
 		try {
@@ -237,6 +284,12 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * Used to delete user from User table, called from updateUserAdminUI
+	 * @param username
+	 * @return boolean to indicate successful delete
+	 * @throws SQLException
+	 */
 	public boolean deleteUser(String username) throws SQLException{
 		boolean deletePreference = deleteUserPreferences(username);
 		if (!deletePreference) {
@@ -261,6 +314,12 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * Used to update user details in User table, called from updateUserUI
+	 * @param username, fName, sName
+	 * @return boolean to indicate successful update
+	 * @throws SQLException
+	 */
 	public boolean updateUser(String username, String fName, String sName) throws SQLException{
 		PreparedStatement sqlUpdate = null;
 		try {
@@ -283,6 +342,13 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * Used to update user preference level in CaretakerCategory table,
+	 * called from updateUserAdminUI
+	 * @param username, cat, preference
+	 * @return boolean to indicate successful update
+	 * @throws SQLException
+	 */
 	public boolean updateUserPreference(String username, String cat, int preference) throws SQLException{ 
 		PreparedStatement sqlUpdate = null;
 		try {
@@ -305,6 +371,12 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * Used to update user details in User table, called from updateUserAdminUI
+	 * @param username, password, admin, fName, sName
+	 * @return boolean to indicate successful update
+	 * @throws SQLException
+	 */
 	public boolean updateUserAdmin(String username, String password, boolean admin, String fName, String sName) throws SQLException{
 		PreparedStatement sqlUpdate = null;
 		try {
@@ -329,6 +401,12 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * Used to update pasword in User table, called from ChangePassword
+	 * @param username, password
+	 * @return boolean to indicate successful update
+	 * @throws SQLException
+	 */
 	public boolean updatePassword(String username, String password) throws SQLException{
 		PreparedStatement sqlUpdate = null;
 		try {
@@ -350,6 +428,13 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * Used to get user preference for specified category for display in combo box,
+	 * called from UpdateUserAdminUI
+	 * @param username, cat
+	 * @return PreferenceLevel from CaretakerCategory
+	 * @throws SQLException
+	 */
 	public int getPreferenceLevel(String username, String cat) throws SQLException{
 		int preferenceLevel=0;
 		System.out.println(username);
@@ -371,6 +456,13 @@ public class Database {
 		return preferenceLevel;
 	}
 
+	/**
+	 * Used to get user efficiency for specified category for display in combo box,
+	 * called from UpdateUserAdminUI
+	 * @param username, cat
+	 * @return Efficiency from CaretakerCategory
+	 * @throws SQLException
+	 */
 	public float getEfficiency(String username, String cat) throws SQLException{
 		float efficiency=0;
 		System.out.println(username);
@@ -392,6 +484,11 @@ public class Database {
 		return efficiency;
 	}
 	
+	/**
+	 * Used to get category names from database to populate combobox,
+	 * called from UpdateUserAdminUI
+	 * @return ArrayList containing category names
+	 */
 	public ArrayList<String> getCategories()
 	{
 		try {
@@ -412,7 +509,11 @@ public class Database {
 			return null;
 		}
 	}
-	
+	/**
+	 * Used to get usernames from database to populate combobox,
+	 * called from UpdateUserAdminUI
+	 * @return ArrayList containing usernames
+	 */
 	public ArrayList<String> getUsernames()
 	{
 		try {
