@@ -12,13 +12,19 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+/**
+* UI form allowing the user to create a new task, and save it to the database.
+*
+* @author	Sam Connolly 16006528
+* @version	07/05/18
+*/
 public class TaskCreationUI extends JFrame 
 {
 
 	private JPanel contentPane;
 	private JTextField txtTaskName;
 	private JTextField txtLocation;
-	private String username;
+	private String username;		//Username of the currently logged in user
 	
 	/*Create a new database object for interacting with the database. No need to get rid of it at the end as Java does
 	 *this automatically*/
