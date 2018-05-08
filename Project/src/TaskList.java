@@ -249,7 +249,12 @@ public class TaskList {
 				row[1] = taskToCheck.getTaskName();
 				row[2] = taskToCheck.getLocation();
 				row[3] = taskToCheck.getFormattedTimeTaken();
-				row[4] = taskToCheck.getSignedOff();
+				if (taskToCheck.getSignedOff()) {
+				    row[4] = "Yes";	
+				}
+				else {
+				    row[4] = "No";
+				}
 				row[5] = taskToCheck.getSignedOffOn();
 				
 				completedByCaretakerModel.addRow(row);
