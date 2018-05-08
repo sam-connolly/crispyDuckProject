@@ -8,7 +8,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class TaskCreationUI extends JFrame 
 {
@@ -154,7 +156,11 @@ public class TaskCreationUI extends JFrame
 		
 		//Text are for entering a possibly quite long description. Not a vital field, so can be left empty
 		JTextArea txtaDescription = new JTextArea();
-		pnlDataEntry.add(txtaDescription);
+		txtaDescription.setLineWrap(true);
+		JScrollPane areaScrollPane = new JScrollPane(txtaDescription);
+		areaScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		areaScrollPane.setPreferredSize(new Dimension(250, 250));
+		pnlDataEntry.add(areaScrollPane);
 		
 		//Label for task location field
 		JLabel lblLocation = new JLabel("Location *");
@@ -457,7 +463,21 @@ public class TaskCreationUI extends JFrame
 				//SQL version of the date
 				java.sql.Date sqlDateDue = null;
 				
-				Date currentDate = new Date();		//The current date, for comparing
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");	//Format for the current date
+				Date currentDate = new Date();								//The current date, for comparing
+				try 
+				{
+					//Parse the current date to the correct format for comparison
+					currentDate = dateFormat.parse(dateFormat.format(new Date()));
+				} 
+				catch (ParseException e2) 
+				{
+					JOptionPane.showMessageDialog(new JFrame(),
+						    "Could not format current date. Task may not be created. Contact support",
+						    "Date conversion error",
+						    JOptionPane.ERROR_MESSAGE);
+					e2.printStackTrace();
+				}		
 				
 				try 
 				{
@@ -473,6 +493,15 @@ public class TaskCreationUI extends JFrame
 						    JOptionPane.ERROR_MESSAGE);
 					e1.printStackTrace();
 				}
+				
+				String nameText = txtTaskName.getText();				//String for the entered name
+				String descriptionText = txtaDescription.getText();		//String for the entered description
+				String locationText = txtLocation.getText();			//String for the entered location
+				
+				//Replace any single quotes in the strings with two single quotes, escaping them for the SQL
+				nameText = nameText.replaceAll("'", "''");
+				descriptionText = descriptionText.replaceAll("'", "''");
+				locationText = locationText.replaceAll("'", "''");
 				
 				//If any of the required fields are not filled, alert the user and do not continue
 				if (txtTaskName.getText().equals("") || txtLocation.getText().equals("") ||
@@ -504,6 +533,9 @@ public class TaskCreationUI extends JFrame
 						caretakerSignOff = true;
 					}
 					
+					
+					
+					
 					//Calculate the total minutes of the time entered
 					int timeEstimateInMinutes = (hours * 60) + minutes;
 					//SQL for creating a new database entry
@@ -511,13 +543,13 @@ public class TaskCreationUI extends JFrame
 							+ " TaskCat, Priority, Repeating, TimeEstimate, Location, TimeGiven, CaretakerSignOff, "
 							+ "FirstAllocation)"
 							+ "VALUES ('" 
-							+ txtTaskName.getText() + "', '" 
-							+ txtaDescription.getText() + "', '"
+							+ nameText + "', '" 
+							+ descriptionText + "', '"
 							+ cmbCategory.getSelectedItem() + "', '"
 							+ cmbPriority.getSelectedItem() + "', '"
 							+ cmbRepeatingDays.getSelectedItem() + "', '"
 							+ timeEstimateInMinutes + "', '"
-							+ txtLocation.getText() + "', '"
+							+ locationText + "', '"
 							+ cmbDaysToBeCompletedIn.getSelectedItem() + "', '"
 							+ caretakerSignOff + "', #"
 							+ sqlDateDue + "#);";

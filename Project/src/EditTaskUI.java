@@ -21,6 +21,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -205,9 +206,12 @@ public class EditTaskUI extends JFrame {
 			
 			//Text are for entering a possibly quite long description. Not a vital field, so can be left empty
 			JTextArea txtaDescription = new JTextArea();
-			//Set the text to the current description of the job
+			txtaDescription.setLineWrap(true);
+			JScrollPane areaScrollPane = new JScrollPane(txtaDescription);
 			txtaDescription.setText(task.getTaskDesc());
-			pnlDataEntry.add(txtaDescription);
+			areaScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+			areaScrollPane.setPreferredSize(new Dimension(250, 250));
+			pnlDataEntry.add(areaScrollPane);
 			
 			//Label for task location field
 			JLabel lblLocation = new JLabel("Location *");
@@ -583,7 +587,10 @@ public class EditTaskUI extends JFrame {
 	 		
 			//ComboBox for selecting a caretaker to complete the task
 			JComboBox<String> cmbCaretakers = new JComboBox<String>();
-			cmbCaretakers.addItem("Unallocated");
+			if (taskOrJob == "Task")
+			{
+				cmbCaretakers.addItem("Unallocated");
+			}
 			cmbCaretakers.setSelectedItem("Unallocated");
 			
 	 		//ArrayList to store users returned from the database
@@ -635,6 +642,15 @@ public class EditTaskUI extends JFrame {
 				{
 					int hours = (Integer) cmbHours.getSelectedItem();		//The inputted hours
 					int minutes = (Integer) cmbMinutes.getSelectedItem();	//The inputted minutes
+					
+					String nameText = txtTaskName.getText();				//String for the entered name
+					String descriptionText = txtaDescription.getText();		//String for the entered description
+					String locationText = txtLocation.getText();			//String for the entered location
+					
+					//Replace any single quotes in the strings with two single quotes, escaping them for the SQL
+					nameText = nameText.replaceAll("'", "''");
+					descriptionText = descriptionText.replaceAll("'", "''");
+					locationText = locationText.replaceAll("'", "''");
 					
 					//If any of the required fields are not filled, alert the user and do not continue
 					if (txtTaskName.getText().equals("") || txtLocation.getText().equals("") ||
@@ -689,13 +705,13 @@ public class EditTaskUI extends JFrame {
 						int timeEstimateInMinutes = (hours * 60) + minutes;
 						//SQL for updating the task
 						String updateSQL = "UPDATE Task SET "
-								+ "TaskName = '" + txtTaskName.getText() + 
-								"', TaskDesc = '" + txtaDescription.getText() + 
+								+ "TaskName = '" + nameText + 
+								"', TaskDesc = '" + descriptionText + 
 								"', TaskCat = '" + cmbCategory.getSelectedItem() + 
 								"', Priority = '" + cmbPriority.getSelectedItem() +
 								"', Repeating = '" + cmbRepeatingDays.getSelectedItem() + 
 								"', TimeEstimate = '" + timeEstimateInMinutes +
-								"', Location = '" + txtLocation.getText() +
+								"', Location = '" + locationText +
 								"', TimeGiven = '" + cmbDaysToBeCompletedIn.getSelectedItem() + 
 								"', CaretakerSignOff = '" + caretakerSignOff +
 								"' WHERE taskID = " + taskID;
@@ -708,8 +724,6 @@ public class EditTaskUI extends JFrame {
 						{
 							//Tell the user
 							JOptionPane.showMessageDialog(new JFrame(), "Task successfully edited");
-							//Close this window and open a new manager menu
-							openManagerMenu(username);
 						}
 						//If not
 						else
@@ -738,8 +752,7 @@ public class EditTaskUI extends JFrame {
 							if (updatedJob)
 							{
 								JOptionPane.showMessageDialog(new JFrame(), "Job successfully edited");
-								//Close this window and open a new manager menu
-								openManagerMenu(username);
+
 							}
 							//If not, alert them that the job was not edited
 							else
@@ -750,6 +763,8 @@ public class EditTaskUI extends JFrame {
 									    JOptionPane.ERROR_MESSAGE);
 							}
 						}
+						//Close this window and open a new manager menu
+						openManagerMenu(username);
 					}
 				}
 			});
