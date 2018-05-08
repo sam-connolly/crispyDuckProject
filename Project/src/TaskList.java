@@ -441,18 +441,8 @@ public class TaskList {
 	 */
 	public void printDetails() throws ParseException {
 		for (Task currentTask : taskList) {
-			System.out.println(currentTask.getTaskID());
-			System.out.println(currentTask.getTaskName());
-			System.out.println(currentTask.getCaretaker());
-			System.out.println(currentTask.getDateIssued());
-			System.out.println(currentTask.getTaskCat());
-			System.out.println(currentTask.getLastAllocated());
-			System.out.println(currentTask.getPriority());
-			System.out.println(currentTask.getLocation());
-			System.out.println(currentTask.getRepeating());
-			System.out.println(currentTask.getTimeEstimateString());
-			System.out.println(currentTask.getFirstAllocation());
-			
+			System.out.println(currentTask.getTimeGiven());
+			System.out.println(currentTask.getDateDue());
 			System.out.println();
 		}
 	}

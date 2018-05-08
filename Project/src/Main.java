@@ -15,8 +15,7 @@ public class Main {
 	allTasks = database.getTasks();
 	allUsers = database.getUsers();
 
-	allTasks.testAllocate(allUsers, allTasks);
-	allTasks.checkSignedOffDate();
+
 	allTasks.printDetails();
 	
 	}

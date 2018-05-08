@@ -24,6 +24,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Vector;
 import java.awt.event.ActionEvent;
 import javax.swing.JMenuBar;
@@ -202,17 +203,23 @@ public class EmployeeMenu extends JFrame{
 				int indexes[] = tblInProgress.getSelectedRows();
 				Object[] row = new Object[6];
 				int index = 0;
-				int hoursTaken;
-				int minutesTaken;
+				int hoursTaken = 0;
+				int minutesTaken = 0;
 				
-				if(txtHours.getText() == null) {
-					hoursTaken = 0;
+				if(txtHours.getText().toString() == "" || txtHours.getText().toString() == null) {
+					JOptionPane.showMessageDialog(new JFrame(),
+					    "Please input time taken to complete these tasks",
+					    "Invalid time taken",
+					    JOptionPane.ERROR_MESSAGE);
 				}
 				else {
 					hoursTaken = Integer.parseInt(txtHours.getText()) * 60;
 				}
-				if(txtMinutes.getText() == null) {
-					minutesTaken = 0;
+				if(txtMinutes.getText().toString() == ""  || txtHours.getText().toString() == null) {
+					JOptionPane.showMessageDialog(new JFrame(),
+					    "Please input time taken to complete these tasks",
+					    "Invalid time taken",
+					    JOptionPane.ERROR_MESSAGE);
 				}
 				else {
 					minutesTaken = Integer.parseInt(txtMinutes.getText());
@@ -238,6 +245,9 @@ public class EmployeeMenu extends JFrame{
 						try {
 							taskToComplete.completeTask(hoursTaken + minutesTaken);
 						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (ParseException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}

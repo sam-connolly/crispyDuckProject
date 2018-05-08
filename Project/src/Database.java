@@ -571,6 +571,7 @@ public class Database {
 				Date firstAllocation = rs.getDate("FirstAllocation");
 				Date lastAllocated = rs.getDate("LastAllocated");
 				boolean caretakerSignOff = rs.getBoolean("CaretakerSignOff");
+				int timeGiven = rs.getInt("TimeGiven");
 
 				// create new ActiveTask to be added on every loop
 				Task taskToAdd;		
@@ -578,7 +579,7 @@ public class Database {
 							.priority(priority).repeating(repeating).timeEstimate(timeEstimate).location(location)
 							.caretaker(caretaker).completed(completed).dateIssued(dateIssued).dateDue(dateDue)
 							.timeEstimate(timeEstimate).timeTaken(timeTaken).issue(issue).issueDesc(issueDesc).signedOff(signedOff)
-							.lastAllocated(lastAllocated).firstAllocation(firstAllocation).signedOffOn(signedOffOn).caretakerSignOff(caretakerSignOff)
+							.lastAllocated(lastAllocated).firstAllocation(firstAllocation).signedOffOn(signedOffOn).caretakerSignOff(caretakerSignOff).timeGiven(timeGiven)
 							.build();
 				
 				// add new task to the list
@@ -705,8 +706,6 @@ public class Database {
 					Date firstAllocation = rs.getDate("FirstAllocation");
 					Date lastAllocated = rs.getDate("LastAllocated");
 					boolean caretakerSignOff = rs.getBoolean("CaretakerSignOff");
-				
-				
 						
 				task = new Task.TaskBuilder().jobID(jobID).taskID(taskID).taskName(taskName).taskDesc(taskDesc)
 						.taskCat(taskCat).priority(priority).repeating(repeating).timeEstimate(timeEstimate)

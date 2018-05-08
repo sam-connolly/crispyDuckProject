@@ -29,6 +29,11 @@ public class TaskCategory {
 		efficiency = ( efficiency + newRating ) / (float) numberCompleted;
 	}
 	
+	public void undoUpdateEfficiency(float ratingUndo) {
+		efficiency = ( efficiency * (float) numberCompleted ) - ratingUndo;
+		numberCompleted--;
+	}
+	
 	public int getPreferenceLevel() {
 		return preferenceLevel;
 	}

@@ -65,6 +65,7 @@ public class Task {
     firstAllocation = builder.firstAllocation;
     lastAllocated = builder.lastAllocated;
     caretakerSignOff = builder.caretakerSignOff;
+    timeGiven = builder.timeGiven;
   }
 
   //getters
@@ -128,6 +129,10 @@ public class Task {
 	  }
   }
   
+  public int getTimeGiven() { 
+	  return timeGiven;
+  }
+  
   public boolean getSignedOff() {
 	  return signedOff;
   }
@@ -168,9 +173,7 @@ public class Task {
 	  	  return sdf.format(c.getTime());
 	  }
 	  else { 
-		  c.setTime(new Date()); 
-		  c.add(Calendar.DATE, timeGiven);
-	  	  return sdf.format(c.getTime());
+	  	  return firstAllocation;
 	  }
   }
   
@@ -269,6 +272,7 @@ public class Task {
 	  c.setTime(new Date()); 
 	  c.add(Calendar.DATE, timeGiven);
   	  dateDue = sdf.format(c.getTime());
+  	  System.out.print(dateDue);
 
 
 	  db.updateLastAllocated(taskID, lastAllocated);
@@ -290,7 +294,7 @@ public class Task {
 	  dateIssued = null;
   }
   
-  public void completeTask(int timeTaken) throws SQLException {
+  public void completeTask(int timeTaken) throws SQLException, ParseException {
 	  Database database = new Database();
 	  completed = true;
 	  
@@ -300,19 +304,23 @@ public class Task {
 		  SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		  Date currentDate = new Date();
 		  signedOffOn = dateFormat.format(currentDate);
+		  signOffTask();
 	  }
 	  this.timeTaken = timeTaken;
 	  
 	  float efficiencyForTask = (float) timeEstimate / (float) timeTaken;
-	  Database db = new Database();
-	  UserList allUsers = db.getUsers();
+	  UserList allUsers = database.getUsers();
 	  
 	  allUsers.getUserCaretaker(caretaker).updateEfficiency(taskCat, efficiencyForTask);
   }
   
   public void uncompleteTask() throws SQLException {
 	  Database database = new Database();
+	  UserList allUsers = database.getUsers();
 	  completed = false;
+	  
+	  float efficiencyForTask = (float) timeEstimate / (float) timeTaken;
+	  allUsers.getUserCaretaker(caretaker).undoUpdateEfficiency(taskCat, efficiencyForTask);
 	  timeTaken = 0;
 	  signedOff = false;
 	  signedOffOn = null;
@@ -344,6 +352,7 @@ public class Task {
     private String firstAllocation;
     private String lastAllocated;
     private boolean caretakerSignOff;
+    private int timeGiven;
     
     // optional
     private String caretaker;
@@ -496,6 +505,12 @@ public class Task {
 	  }
       return this;
     }
+    
+    public TaskBuilder timeGiven(int val) {
+    	timeGiven = val;
+    	return this;
+    }
+    
     public Task build() { 
       if (taskID == 0) {
         throw new IllegalStateException("");
