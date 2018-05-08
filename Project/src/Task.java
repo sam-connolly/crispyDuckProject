@@ -68,38 +68,84 @@ public class Task {
   }
 
   // getters / setters
+
+  /**
+  * Getter for the jobID
+  *
+  * @return	The jobID
+  */
   public int getJobID() {
 	  return jobID;
   }
   
+  /**
+  * Getter for the taskID
+  *
+  * @return	The taskID
+  */
   public int getTaskID() {
     return taskID;
   }
   
+  /**
+  * Getter for the task name
+  *
+  * @return	The name of the task
+  */
   public String getTaskName() {
     return taskName;
   }
   
+  /**
+  * Getter for the task description
+  *
+  * @return	The description of the task
+  */
   public String getTaskDesc() {
     return taskDesc;
   }
   
+  /**
+  * Getter for the category of the task
+  *
+  * @return	The category of the task
+  */
   public String getTaskCat() {
     return taskCat;
   }
   
+  /**
+  * Getter for the priority of the task
+  *
+  * @return	The priority of the task
+  */
   public String getPriority() {
     return priority;
   }
   
+  /**
+  * Getter for the location of the task
+  *
+  * @return	The location of the task
+  */
   public String getLocation() {
     return location;
   }
   
+  /**
+  * Getter for the number of days to pass before the task repeats
+  *
+  * @return	The number of days to pass before the task repeats
+  */
   public int getRepeating() {
     return repeating;
   }
   
+  /**
+  * Getter for the estimated time ot complete the task
+  *
+  * @return	The estimated time to complete the task, in minutes
+  */
   public Integer getTimeEstimateInt()
   {
 	  return timeEstimate;
@@ -132,10 +178,20 @@ public class Task {
 	  }
   }
   
+  /**
+  * Getter for the number of days for a task to be completed in
+  *
+  * @return	The number of days a task must be completed in
+  */
   public int getTimeGiven() { 
 	  return timeGiven;
   }
   
+  /**
+  * Getter for if the task has been signed off
+  *
+  * @return	Whether the task has been signed off
+  */
   public boolean getSignedOff() {
 	  return signedOff;
   }
@@ -153,19 +209,39 @@ public class Task {
 	  }
   }
   
+  /**
+  * Getter for the date the job was signed off on
+  *
+  * @return	The date the job was signed off on
+  */
   public String getSignedOffOn() { 
 	  return signedOffOn;
   }
   
+  /**
+  * Getter for the date the job was issued
+  *
+  * @return	The date the job was issued
+  */
   public String getDateIssued() {
 	  return dateIssued;
   }
   
+  /**
+  * Getter for the due date of the job
+  *
+  * @return	The due date of the job
+  */
   public String getDateDue()
   {
 	  return dateDue;
   }
   
+  /**
+  * Getter for the date of last allocation
+  *
+  * @return	The date of last allocation
+  */
   public String getLastAllocated() {
 	  return lastAllocated;
   }
@@ -193,35 +269,69 @@ public class Task {
 	  }
   }
   
+  /**
+  * Getter for the date of first allocation
+  *
+  * @return	The date of first allocation
+  */
   public String getFirstAllocation() {
 	  return firstAllocation;
   }
   
+  /**
+  * Getter for if the job has been completed
+  *
+  * @return	Whether the job has been completed
+  */
   public Boolean getCompleted()
   {
 	  return completed;
   }
   
+  /**
+  * Getter for if there's an issue with the job
+  *
+  * @return	TWhether there's an issue with the job
+  */
   public Boolean getIssue()
   {
 	  return issue;
   }
   
+  /**
+  * Getter for the description of the issue
+  *
+  * @return	The description of the issue
+  */
   public String getIssueDesc()
   {
 	  return issueDesc;
   }
   
+  /**
+  * Getter for if the caretaker can sign off on the job
+  *
+  * @return	Whether a caretaker can sign off the job
+  */
   public boolean getCaretakerSignOff()
   {
 	  return caretakerSignOff;
   }
   
+  /**
+  * Getter for the time taken to complete the job
+  *
+  * @return	The time taken ot complete the job
+  */
   public int getTimeTaken() {
 	  return timeTaken;
   }
   
-  // get time taken in string format
+  /**
+  * Getter for the formatted string version of the time taken
+  *
+  * @return	The formatted string version of the time taken
+  */
   public String getFormattedTimeTaken() { 
 	  int hours = timeTaken / 60;
 	  int minutes = timeTaken - (hours * 60);
