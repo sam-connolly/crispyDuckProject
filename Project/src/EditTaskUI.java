@@ -27,6 +27,14 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+/**
+* UI form so the user can edit a task that's already in the database. Shows
+* current details of the selected task/job, allowing the user to edit them, and
+* update the databse with the new values.
+*
+* @author 	Sam Connolly 16006528
+* @version	07/05/18
+*/
 public class EditTaskUI extends JFrame {
 
 	private JPanel contentPane;
