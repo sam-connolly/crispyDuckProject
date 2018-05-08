@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.Font;
@@ -26,6 +27,9 @@ import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+/**
+ * Menu used to allocate tasks. Tasks selected for allocation are displayed in this window. Information on users is also displayed.
+ */
 public class AllocationMenu extends JDialog {
 	
 	private TaskList allTasks = new TaskList();
@@ -37,18 +41,6 @@ public class AllocationMenu extends JDialog {
 	private JTable userInfoTable;
 	
 
-	/**
-	 * Launch the application.
-	 */
-	/*public static void main(String[] args) {
-		try {
-			AllocationMenu dialog = new AllocationMenu();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}*/
 
 	/**
 	 * Create the dialog.
@@ -59,6 +51,7 @@ public class AllocationMenu extends JDialog {
 	public AllocationMenu(JFrame parentWindow, String username) throws ParseException, SQLException {
 		super(parentWindow, "Allocation Menu", ModalityType.DOCUMENT_MODAL);
 		
+		// get list of users and tasks
 		allTasks = database.getTasks();
 		allUsers = database.getUsers();
 
@@ -73,6 +66,7 @@ public class AllocationMenu extends JDialog {
 		gbl_contentPanel.rowWeights = new double[]{1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
 		
 		JLabel lblSelectedName = new JLabel();
+		// combo box with dynamic list of users
 		JComboBox userCombo = allUsers.getUsersComboBox("allocation");
 		
 		contentPanel.setLayout(gbl_contentPanel);
@@ -93,6 +87,7 @@ public class AllocationMenu extends JDialog {
 			}
 		}
 		{
+			// area to view tasks to allocate
 			JScrollPane scrollPane = new JScrollPane();
 			GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 			gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
@@ -101,6 +96,7 @@ public class AllocationMenu extends JDialog {
 			gbc_scrollPane.gridy = 1;
 			contentPanel.add(scrollPane, gbc_scrollPane);
 			{
+				// table for tasks to allocate
 				tblToAllocate = new JTable();
 				scrollPane.setViewportView(tblToAllocate);
 			}
@@ -118,17 +114,28 @@ public class AllocationMenu extends JDialog {
 				panel.add(lblNewLabel);
 			}
 			{
+				// add a listener to the user combo box which changes the
+				// contents of the bottom table to the selected user
 				userCombo.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						try {
-							userInfoTable.setModel(allUsers.getUserInfoModel(userCombo.getSelectedItem().toString(), allTasks));
-							String fullName = allUsers.getUserCaretaker(userCombo.getSelectedItem().toString()).getFullName();
+							// set the user info table model to the one for the combo
+							// box selected user
+							userInfoTable.setModel(allUsers.getUserInfoModel
+									(userCombo.getSelectedItem().toString(), allTasks));
+							String fullName = allUsers.getUserCaretaker
+									(userCombo.getSelectedItem().toString()).getFullName();
 							lblSelectedName.setText(fullName);
+						// alert user if there was an error
 						} catch (ParseException e) {
-							// TODO Auto-generated catch block
+							JOptionPane.showMessageDialog(new JFrame(),
+								    "Could not retrieve user information",
+								    "Parse Exception", JOptionPane.ERROR_MESSAGE);
 							e.printStackTrace();
 						} catch (SQLException e) {
-							// TODO Auto-generated catch block
+							JOptionPane.showMessageDialog(new JFrame(),
+								    "Could not retrieve user information",
+								    "SQL Exception", JOptionPane.ERROR_MESSAGE);
 							e.printStackTrace();
 						}
 					}
@@ -136,13 +143,17 @@ public class AllocationMenu extends JDialog {
 				panel.add(userCombo);
 			}
 			{
+				
 				JButton btnOk = new JButton("OK");
+				// set the caretaker to the chosen one for selected 
+				// tasks in top table
 				btnOk.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						int indexes[] = tblToAllocate.getSelectedRows();
 						
 						for(int i : indexes) {
-							tblToAllocate.setValueAt(userCombo.getSelectedItem().toString(), i, 3);
+							tblToAllocate.setValueAt(userCombo.getSelectedItem()
+									.toString(), i, 3);
 						}
 					}
 				});
@@ -179,8 +190,10 @@ public class AllocationMenu extends JDialog {
 				gbc_scrollPane.gridy = 1;
 				panel.add(scrollPane, gbc_scrollPane);
 				{
-					userInfoTable = new JTable(allUsers.getUserInfoModel(userCombo.getSelectedItem().toString(), allTasks));
-					String fullName = allUsers.getUserCaretaker(userCombo.getSelectedItem().toString()).getFullName();
+					userInfoTable = new JTable(allUsers.getUserInfoModel
+							(userCombo.getSelectedItem().toString(), allTasks));
+					String fullName = allUsers.getUserCaretaker
+							(userCombo.getSelectedItem().toString()).getFullName();
 					lblSelectedName.setText(fullName);
 					scrollPane.setViewportView(userInfoTable);
 				}
@@ -193,25 +206,42 @@ public class AllocationMenu extends JDialog {
 			{
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
+					// pressing ok button closes the manager menu and opens a new one
+					// so that the tables will be updated. Allocates all 
+					// tasks that were imported
 					public void actionPerformed(ActionEvent arg0) {
 						for(int i = 0; i < tblToAllocate.getRowCount(); i++) {
-							int taskID = Integer.parseInt( tblToAllocate.getValueAt(i, 0).toString() );
+							int taskID = Integer.parseInt( tblToAllocate.getValueAt(i, 0)
+									.toString() );
 							Task taskToAllocate = allTasks.getFirstTaskWithTaskID(taskID);
 							try {
-								taskToAllocate.assignToCaretaker(tblToAllocate.getValueAt(i, 3).toString(), allTasks);
+								taskToAllocate.assignToCaretaker
+								(tblToAllocate.getValueAt(i, 3).toString(), allTasks);
 							} catch (SQLException e) {
-								// TODO Auto-generated catch block
+								JOptionPane.showMessageDialog(new JFrame(),
+									    "Could not allocate tasks",
+									    "SQLException",
+									    JOptionPane.ERROR_MESSAGE);
 								e.printStackTrace();
 							} catch (ParseException e) {
-								// TODO Auto-generated catch block
+								JOptionPane.showMessageDialog(new JFrame(),
+									    "Could not allocate tasks",
+									    "ParseException",
+									    JOptionPane.ERROR_MESSAGE);
 								e.printStackTrace();
 							}
 						}
+						// dispose old manager menu
 						parentWindow.dispose();
+						// try
 						try {
+							// try opening a new one
 							ManagerMenu managerMenu = new ManagerMenu(username);
 						} catch (ParseException | SQLException e) {
-							// TODO Auto-generated catch block
+							JOptionPane.showMessageDialog(new JFrame(),
+								    "Error refreshing Manager Menu, recommend restarting the program",
+								    "ParseException",
+								    JOptionPane.ERROR_MESSAGE);
 							e.printStackTrace();
 						}
 						dispose();
@@ -223,6 +253,7 @@ public class AllocationMenu extends JDialog {
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
+				// dispose with no changes if cancel is pressed
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						dispose();
@@ -234,6 +265,11 @@ public class AllocationMenu extends JDialog {
 		}
 	}
 	
+	/**
+	 * function to set the model of the table 
+	 * which holds tasks to be allocated
+	 * @param toAllocateModel a model containing rows of tasks to be allocated
+	 */
 	public void setToAllocateModel(DefaultTableModel toAllocateModel) {
 		tblToAllocate.setModel(toAllocateModel);
 	}

@@ -103,6 +103,14 @@ public class User {
 		} // for 
 	} // function
 	
+	/**
+	 * get a table model containing information on this users efficiency and 
+	 * preferences for certain categories of tasks
+	 * @param prefModel the model to add to
+	 * @param allTasks a list of all tasks
+	 * @param username the user to get preference information for
+	 * @return a table model contaning a caretakers preferences 
+	 */
 	public DefaultTableModel getPreferenceModel(DefaultTableModel prefModel, TaskList allTasks, String username) {
 		Object[] row = new Object[5];
 		for (TaskCategory catForRow : preferences) {
@@ -117,6 +125,7 @@ public class User {
 		return prefModel;
 	}
 	
+	// getters and setters
 	public String getUsername() {
 		return username;
 	}
@@ -156,17 +165,5 @@ public class User {
 	public void setSurname(String sName) {
 		this.sName = sName; 
 	}
-	
-	public String toString() {
-		String isAdmin;
-		if (admin) {
-			isAdmin = "is a manager";
-		}
-		else { 
-			isAdmin = "is a caretaker";
-		}
-		String returnString = ("Username: " + username + ". " + fName + " " + sName + " " + isAdmin);
-		
-		return returnString;
-	}
+
 }

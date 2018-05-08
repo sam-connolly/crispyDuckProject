@@ -28,27 +28,6 @@ public class TaskList {
 	 */
 	public void addTask(Task taskToAdd) 
 	{
-		/*DateFormat dateFormat = new SimpleDateFormat("yy/MM/dd");
-		Date currentDate = new Date();
-		Date dateDue = null;
-		try 
-		{
-			dateDue = dateFormat.parse(taskToAdd.getDateDue());
-		} 
-		catch (ParseException e) 
-		{
-			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(new JFrame(),
-				    "Could not format date for comparison. Priority may neot have been updated",
-				    "Date Format Error",
-				    JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace();
-		}
-		
-		if(dateDue.before(currentDate) && dateDue != null)
-		{
-			taskToAdd.setHighestPriority();
-		}*/
 		taskList.add(taskToAdd);
 	}
 	
@@ -199,6 +178,11 @@ public class TaskList {
 		  return convertedDate;
 	}
 	
+	/** 
+	 * set when it was last allocated
+	 * @param taskID the ID of the task to update
+	 * @param lastAllocation when it was lasta allocated
+	 */
 	public void updateLastAllocation(int taskID, String lastAllocation) { 
 		for (Task taskToUpdate : taskList) {
 			if(taskToUpdate.getTaskID() == taskID) {
@@ -207,6 +191,11 @@ public class TaskList {
 		}
 	}
 	
+	/**
+	 * get a table model containing all tasks allocated to a caretaker
+	 * @param username caretaker you want tasks for
+	 * @return table model with all tasks allocated to caretaker
+	 */
 	public DefaultTableModel getAllocatedToCaretaker(String username) {
 		DefaultTableModel allocatedToCaretakerModel = new DefaultTableModel() {
 		    @Override
@@ -235,6 +224,11 @@ public class TaskList {
 		return allocatedToCaretakerModel;
 	}
 	
+	/**
+	 * get a table model containing all tasks completed by a caretaker
+	 * @param username caretaker you want tasks completed by
+	 * @return table model with all tasks completed by the caretaker
+	 */
 	public DefaultTableModel getCompletedByCaretaker(String username) {
 		DefaultTableModel completedByCaretakerModel = new DefaultTableModel() {
 		    @Override
@@ -265,6 +259,15 @@ public class TaskList {
 		return completedByCaretakerModel;
 	}
 	
+	/**
+	 * get a table model of unallocated tasks, either all unallocated,
+	 * ones which are due allocation or only ones which aren't, based on 
+	 * a filter you pass as an argument
+	 * @param filter what model to get
+	 * @return a table model with unallocated tasks
+	 * @throws ParseException
+	 * @throws SQLException
+	 */
 	public DefaultTableModel getAllUnallocated(String filter) throws ParseException, SQLException {
 		DefaultTableModel allUnallocatedModel = new DefaultTableModel() {
 		    @Override
@@ -372,7 +375,13 @@ public class TaskList {
 		return allUnallocatedModel;
 	}
 
-	
+	/**
+	 * get a model of all allocated tasks regardless of who they are
+	 * allocated to
+	 * @return returns a table model with all allocated tasks
+	 * @throws ParseException
+	 * @throws SQLException
+	 */
 	public DefaultTableModel getAllAllocated() throws ParseException, SQLException {
 		DefaultTableModel allAllocatedModel = new DefaultTableModel() {
 		    @Override
@@ -403,6 +412,13 @@ public class TaskList {
 		return allAllocatedModel;
 	}
 	
+	/** 
+	 * get a table model containing all completed tasks regardless
+	 * of who they were completed by 
+	 * @return table model containing all completed tasks
+	 * @throws ParseException
+	 * @throws SQLException
+	 */
 	public DefaultTableModel getAllCompleted() throws ParseException, SQLException {
 		DefaultTableModel allCompletedModel = new DefaultTableModel() {
 		    @Override
@@ -436,17 +452,11 @@ public class TaskList {
 		return allCompletedModel;
 	}
 	
-	/*
-	 * function I have made for testing purposes
+
+	/**
+	 * get the size of the task list
+	 * @return size of the task list
 	 */
-	public void printDetails() throws ParseException {
-		for (Task currentTask : taskList) {
-			System.out.println(currentTask.getTimeGiven());
-			System.out.println(currentTask.getDateDue());
-			System.out.println();
-		}
-	}
-	
 	public int getSize() {
 		return taskList.size();
 	}

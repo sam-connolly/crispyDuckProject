@@ -6,6 +6,11 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.JComboBox;
 import javax.swing.table.DefaultTableModel;
 
+/**
+ * collection of all users
+ * @author Jesse
+ *
+ */
 public class UserList {
 	private ArrayList<User> allUsers;
 	
@@ -105,10 +110,17 @@ public class UserList {
 		return assignmentRating;
 	}
 	
+	//getters and setters
+	
 	public User getUser(int index) {
 		return allUsers.get(index);
 	}
 	
+	/**
+	 * return a user based on username
+	 * @param username the user you want
+	 * @return a user
+	 */
 	public User getUserCaretaker(String username) {
 		for (User userChecking : allUsers) {
 			if (userChecking.getUsername().equals(username)) {
@@ -119,6 +131,12 @@ public class UserList {
 		return null;
 	}
 	
+	/**
+	 * create and return a combo box containing all caretakers
+	 * @param type type of combo box (may be for allocated table or completed table in
+	 * manager menu)
+	 * @return completed combo box
+	 */
 	public JComboBox getUsersComboBox(String type) {
 		JComboBox userCombo = new JComboBox();
 		if (type == "in progress") {
@@ -136,6 +154,16 @@ public class UserList {
 		return userCombo;
 	}
 	
+	/**
+	 * get a table model containing information on a caretakers
+	 * preferences and efficiency for a certain category of tasks
+	 * 
+	 * @param username the username of the caretaker
+	 * @param allTasks list of all tasks
+	 * @return a table model containing the users preferences
+	 * @throws ParseException
+	 * @throws SQLException
+	 */
 	public DefaultTableModel getUserInfoModel(String username, TaskList allTasks) throws ParseException, SQLException {
 		DefaultTableModel userInfoModel = new DefaultTableModel() {
 		    @Override
@@ -143,15 +171,19 @@ public class UserList {
 		       return false;
 		    }
 		};
+		
+		// table columns
 		userInfoModel.addColumn("Task Category");
 		userInfoModel.addColumn("Preference Level");
 		userInfoModel.addColumn("Efficiency");
 		userInfoModel.addColumn("Number Assigned");
 		userInfoModel.addColumn("Number completed");
 		
+		// for all users
 		for (User userToCheck : allUsers) {
+			// find the user we want
 			if ( userToCheck.getUsername().equals(username)) {
-				System.out.print("YOOO");
+				// get a table model of preferences for this user
 				userInfoModel = userToCheck.getPreferenceModel(userInfoModel, allTasks, username);
 			}
 		}

@@ -1,3 +1,6 @@
+/**
+ * Interface screen for manager with tools to create and allocate tasks and manage users
+ */
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -21,6 +24,7 @@ import java.util.ArrayList;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.Color;
 import java.awt.Dialog;
@@ -106,20 +110,32 @@ public class ManagerMenu extends JFrame{
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 100.0, 1.0, 0.0, Double.MIN_VALUE};
 		frame.getContentPane().setLayout(gridBagLayout);
 		
+		// button which opens allocation windonw
 		JButton btnAllocate = new JButton("Allocate Task");
 		
-		DefaultTableModel model = new DefaultTableModel();
+		// DefaultTableModel model = new DefaultTableModel();
+		
+		// sort for first table
 		cmbFirstTable = new JComboBox<String>();
 		cmbFirstTable.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				// gets the value of the selected combo box item and calls
+				// getAllUnallocated() on task list with the relevant sort string
+				// to return a table model to update the unallocated table with
 				if(cmbFirstTable.getSelectedItem() == "All Unallocated") {
 					try {
 						tblUnallocated.setModel(allTasks.getAllUnallocated("All Unallocated"));
 					} catch (ParseException e) {
-						// TODO Auto-generated catch block
+						JOptionPane.showMessageDialog(new JFrame(),
+							    "Could not sort",
+							    "ParseException",
+							    JOptionPane.ERROR_MESSAGE);
 						e.printStackTrace();
 					} catch (SQLException e) {
-						// TODO Auto-generated catch block
+						JOptionPane.showMessageDialog(new JFrame(),
+							    "Could not sort",
+							    "SQL Exception",
+							    JOptionPane.ERROR_MESSAGE);
 						e.printStackTrace();
 					}
 				}
@@ -129,10 +145,16 @@ public class ManagerMenu extends JFrame{
 						tblUnallocated.setModel(allTasks.getAllUnallocated("Due Allocation"));
 						btnAllocate.setEnabled(true);
 					} catch (ParseException e) {
-						// TODO Auto-generated catch block
+						JOptionPane.showMessageDialog(new JFrame(),
+							    "Could not sort",
+							    "ParseException",
+							    JOptionPane.ERROR_MESSAGE);
 						e.printStackTrace();
 					} catch (SQLException e) {
-						// TODO Auto-generated catch block
+						JOptionPane.showMessageDialog(new JFrame(),
+							    "Could not sort",
+							    "SQL Exception",
+							    JOptionPane.ERROR_MESSAGE);
 						e.printStackTrace();
 					}
 				}
@@ -141,10 +163,16 @@ public class ManagerMenu extends JFrame{
 					try {
 						tblUnallocated.setModel(allTasks.getAllUnallocated("Not Due Allocation"));
 					} catch (ParseException e) {
-						// TODO Auto-generated catch block
+						JOptionPane.showMessageDialog(new JFrame(),
+							    "Could not sort",
+							    "SQL Exception",
+							    JOptionPane.ERROR_MESSAGE);
 						e.printStackTrace();
 					} catch (SQLException e) {
-						// TODO Auto-generated catch block
+						JOptionPane.showMessageDialog(new JFrame(),
+							    "Could not sort",
+							    "SQL Exception",
+							    JOptionPane.ERROR_MESSAGE);
 						e.printStackTrace();
 					}
 				}
@@ -183,22 +211,33 @@ public class ManagerMenu extends JFrame{
 		gbc_cmbFirstTable.gridy = 1;
 		frame.getContentPane().add(cmbFirstTable, gbc_cmbFirstTable);
 		
+		// sort for in progress table
 		inProgressComboBox = allUsers.getUsersComboBox("in progress");
 		inProgressComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				// if all allocated selected
 				if(inProgressComboBox.getSelectedItem() == "All Allocated") {
 					try {
+						// set the in progress table to show all allocated tasks
 						tblAllocated.setModel(allTasks.getAllAllocated());
 					} catch (ParseException e) {
-						// TODO Auto-generated catch block
+						JOptionPane.showMessageDialog(new JFrame(),
+							    "Could not sort",
+							    "Parse Exception",
+							    JOptionPane.ERROR_MESSAGE);
 						e.printStackTrace();
 					} catch (SQLException e) {
-						// TODO Auto-generated catch block
+						JOptionPane.showMessageDialog(new JFrame(),
+							    "Could not sort",
+							    "SQL Exception",
+							    JOptionPane.ERROR_MESSAGE);
 						e.printStackTrace();
 					}
 				}
 				
+				// if not
 				else  {
+					// display for the selected caretaker
 					tblAllocated.setModel(allTasks.getAllocatedToCaretaker(inProgressComboBox.getSelectedItem().toString()));
 					btnAllocate.setEnabled(true);
 				}
@@ -211,21 +250,30 @@ public class ManagerMenu extends JFrame{
 		gbc_inProgressComboBox.gridy = 1;
 		frame.getContentPane().add(inProgressComboBox, gbc_inProgressComboBox);
 		
+		// sort for completed table 
 		cmbLastTable = allUsers.getUsersComboBox("completed");
 		cmbLastTable.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				// if combo box set to all completed
 				if(cmbLastTable.getSelectedItem() == "All Completed") {
 					try {
+						// set the completed table to show all completed tasks
 						tblCompleted.setModel(allTasks.getAllCompleted());
 					} catch (ParseException e) {
-						// TODO Auto-generated catch block
+						JOptionPane.showMessageDialog(new JFrame(),
+							    "Could not sort",
+							    "SQL Exception",
+							    JOptionPane.ERROR_MESSAGE);
 						e.printStackTrace();
 					} catch (SQLException e) {
-						// TODO Auto-generated catch block
+						JOptionPane.showMessageDialog(new JFrame(),
+							    "Could not sort",
+							    "SQL Exception",
+							    JOptionPane.ERROR_MESSAGE);
 						e.printStackTrace();
 					}
 				}
-				
+				// if not show completed by selected caretaker
 				else  {
 					tblCompleted.setModel(allTasks.getCompletedByCaretaker(cmbLastTable.getSelectedItem().toString()));
 					btnAllocate.setEnabled(true);
@@ -362,8 +410,11 @@ public class ManagerMenu extends JFrame{
 		});
 		panel.add(btnAddTask);
 		
+		// clicking allocate task button brings up a dialog which allows the manager to assign tasks
+		// to selected caretakers
 		btnAllocate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				// create new to allocate model
 				DefaultTableModel toAllocateModel = new DefaultTableModel() {
 				    @Override
 				    public boolean isCellEditable(int row, int column) {
@@ -374,13 +425,16 @@ public class ManagerMenu extends JFrame{
 				TableModel selectedModel = tblUnallocated.getModel();
 				Object row[] = new Object[4];
 				
+				// add columns
 				toAllocateModel.addColumn("Task ID"); 
 				toAllocateModel.addColumn("Task Name"); 
 				toAllocateModel.addColumn("Task Category");
 				toAllocateModel.addColumn("Caretaker"); 
 				
+				// get rows selected in the unallocated table
 				int indexes[] = tblUnallocated.getSelectedRows();
 				
+				// add these to the allocation table model
 				for(int i : indexes) {
 					System.out.println(selectedModel.getValueAt(i, 2));
 					if(selectedModel.getValueAt(i, 2).equals("DUE ALLOCATION")) {
@@ -397,11 +451,16 @@ public class ManagerMenu extends JFrame{
 				}
 				
 				try {
+					// try open an allocation menu
 					AllocationMenu allocationMenu = new AllocationMenu(frame, username);
+					// set the allocation table model
 					allocationMenu.setToAllocateModel(toAllocateModel);
 					allocationMenu.setVisible(true);
 				} catch (ParseException | SQLException e) {
-					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(new JFrame(),
+						    "Could not open allocation menu",
+						    "Parse Exception",
+						    JOptionPane.ERROR_MESSAGE);
 					e.printStackTrace();
 				}
 				
@@ -430,27 +489,40 @@ public class ManagerMenu extends JFrame{
 		btnNewUser.setBounds(383, 0, 126, 23);
 		panel.add(btnNewUser);
 		
+		// button to sign off tasks
 		JButton btnNewButton = new JButton("Sign Off Tasks");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				// get selected tasks in completed table
 				DefaultTableModel selectedModel = (DefaultTableModel) tblCompleted.getModel();
 				int indexes[] = tblCompleted.getSelectedRows();
 				Object[] row = new Object[5];
 				
+				// for each task
 				for(int i : indexes) {
+					// get the job id
 					int jobID = Integer.parseInt( selectedModel.getValueAt(i, 0).toString() );
 					System.out.println(jobID);
+					// get matching task
 					Task taskToSignOff = allTasks.getTaskWithJobID(jobID);
 					if (taskToSignOff.getSignedOff() == false) {
 						try {
+							// try sign the task off
 							taskToSignOff.signOffTask();
 						} catch (SQLException e) {
-							// TODO Auto-generated catch block
+							JOptionPane.showMessageDialog(new JFrame(),
+								    "Could not sign off",
+								    "SQL Exception",
+								    JOptionPane.ERROR_MESSAGE);
 							e.printStackTrace();
 						} catch (ParseException e) {
-							// TODO Auto-generated catch block
+							JOptionPane.showMessageDialog(new JFrame(),
+								    "Could not sign off",
+								    "Parse Exception",
+								    JOptionPane.ERROR_MESSAGE);
 							e.printStackTrace();
 						}
+						// update completed table 
 						selectedModel.setValueAt("Yes", i, 3);
 						selectedModel.setValueAt(taskToSignOff.getSignedOffOn(), i, 4);
 					}

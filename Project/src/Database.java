@@ -25,11 +25,11 @@ public class Database {
 			System.err.println("Connected");
 			return true;
 		} catch (SQLException e) {
-			/*JOptionPane.showMessageDialog(new JFrame(),
+			JOptionPane.showMessageDialog(new JFrame(),
 				    "Could not establish databse connection. Contact database administrator",
 				    "Database error",
 				    JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace(); */
+			e.printStackTrace(); 
 			return false;
 		}
 	}	

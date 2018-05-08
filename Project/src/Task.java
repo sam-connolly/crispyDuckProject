@@ -40,7 +40,6 @@ public class Task {
   private String issueDesc; 
   private boolean signedOff;
   private String signedOffOn;
-  // private String lastCompleted;
   
   // constructor takes a builder as parameter
   private Task(TaskBuilder builder) {
@@ -68,7 +67,7 @@ public class Task {
     timeGiven = builder.timeGiven;
   }
 
-  //getters
+  // getters / setters
   public int getJobID() {
 	  return jobID;
   }
@@ -106,6 +105,10 @@ public class Task {
 	  return timeEstimate;
   }
   
+  /**
+   * get time estimate in string form
+   * @return time estimate formatted
+   */
   public String getTimeEstimateString() { 
 	   return timeEstimate/24/60 + " days, " + timeEstimate/60%24 + " hours, " + timeEstimate%60 + " minutes.";
 	 }
@@ -137,6 +140,10 @@ public class Task {
 	  return signedOff;
   }
   
+  /**
+   * formatted sign off
+   * @return returns signed off as Yes or No
+   */
   public String getSignedOffFormatted() {
 	  if (signedOff == true) {
 		  return "Yes";
@@ -163,16 +170,25 @@ public class Task {
 	  return lastAllocated;
   }
   
+  /**
+   * get the next date that this task should be allocated
+   * @return next date for allocation
+   * @throws ParseException
+   */
   public String getNextAllocation() throws ParseException {
 	  SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	  Calendar c = Calendar.getInstance();
+	  // if the task has been allocated
 	  if (lastAllocated != null) {
+		  // add the repeating value on to the last allocation date
 		  Date lastAllocatedDate = sdf.parse(lastAllocated);
 		  c.setTime(lastAllocatedDate); 
 		  c.add(Calendar.DATE, repeating);
+		  // return the next allocation date
 	  	  return sdf.format(c.getTime());
 	  }
 	  else { 
+		  // else the next allocation date is the first allocation date
 	  	  return firstAllocation;
 	  }
   }
@@ -205,6 +221,7 @@ public class Task {
 	  return timeTaken;
   }
   
+  // get time taken in string format
   public String getFormattedTimeTaken() { 
 	  int hours = timeTaken / 60;
 	  int minutes = timeTaken - (hours * 60);
@@ -215,42 +232,6 @@ public class Task {
 	  this.lastAllocated = lastAllocated;
   }
   
-  
-  
-  /*
-   * allocates the task to a caretaker. Sets the dateAllocated to today, 
-   * calls the finToAssign function to get a list of eligible caretakers and 
-   * randomly selects one of them to assign the task to.
-   */
-  public void allocateTask(UserList allUsers, TaskList allTasks) throws SQLException, ParseException {
-	  Database db = new Database();
-	  // new date format
-	  DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-	  Date currentDate = new Date();
-	  // set dateIssued and last allocated to today
-	  dateIssued = dateFormat.format(currentDate);
-	  lastAllocated = dateFormat.format(currentDate);
-	  db.updateLastAllocated(taskID, lastAllocated);
-	  allTasks.updateLastAllocation(taskID, lastAllocated);
-	  
-	  // create list for eligible users
-	  ArrayList<User> eligibleUsers = new ArrayList<User>();
-	  
-	  // run findToAssign, returns a lit of eligible users
-	  // eligibleUsers = allUsers.findToAssign(taskCat, allTasks);
-	  
-	  // get a random index
-	  int numEligible = eligibleUsers.size();
-	  int index = ThreadLocalRandom.current().nextInt(0, numEligible);
-	  
-	  // assign to random caretaker
-	  caretaker = eligibleUsers.get(index).getUsername();
-	  
-	  db.insertTaskList(taskID, caretaker, dateIssued, completed, timeTaken, issue, issueDesc, signedOff, signedOffOn, dateDue);
-	  
-	  
-	  System.out.println("Task No. " + taskID + ". " + taskName + ". Category: " + taskCat + ". Allocated to: " + caretaker);
-  } // function
   
   /*
    * function to allocate to a specific caretaker
@@ -289,36 +270,52 @@ public class Task {
 	  priority = "1";
   }
   
+  /**
+   * deallocate a task
+   */
   public void deallocateTask() {
 	  caretaker = "Not Assigned";
 	  dateIssued = null;
   }
   
+  /**
+   * completes a task
+   * @param timeTaken the amount of time taken to complete the task
+   * @throws SQLException
+   * @throws ParseException
+   */
   public void completeTask(int timeTaken) throws SQLException, ParseException {
 	  Database database = new Database();
+	  // set completed to true
 	  completed = true;
 	  
+	  // update database
 	  database.completeTask(jobID, timeTaken);
+	  // if the caretaker can sign off this task
 	  if (caretakerSignOff == true) { 
-		  signedOff = true;
-		  SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		  Date currentDate = new Date();
-		  signedOffOn = dateFormat.format(currentDate);
+		  // sign it off
 		  signOffTask();
 	  }
 	  this.timeTaken = timeTaken;
 	  
+	  // calculate how efficient they were
 	  float efficiencyForTask = (float) timeEstimate / (float) timeTaken;
 	  UserList allUsers = database.getUsers();
 	  
+	  // update the users average efficiency for this category of task
 	  allUsers.getUserCaretaker(caretaker).updateEfficiency(taskCat, efficiencyForTask);
   }
   
+  /**
+   * uncompletes a task
+   * @throws SQLException
+   */
   public void uncompleteTask() throws SQLException {
 	  Database database = new Database();
 	  UserList allUsers = database.getUsers();
 	  completed = false;
 	  
+	  // revert update to efficiency
 	  float efficiencyForTask = (float) timeEstimate / (float) timeTaken;
 	  allUsers.getUserCaretaker(caretaker).undoUpdateEfficiency(taskCat, efficiencyForTask);
 	  timeTaken = 0;
@@ -328,13 +325,20 @@ public class Task {
 	  database.uncompleteTask(jobID);
   }
   
+  /**
+   * sign off a task
+   * @throws SQLException
+   * @throws ParseException
+   */
   public void signOffTask() throws SQLException, ParseException {
+	  // set sign off date to the current date
 	  Database database = new Database();
 	  signedOff = true;
 	  SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 	  Date currentDate = new Date();
 	  signedOffOn = dateFormat.format(currentDate);
 	  
+	  // update database
 	  database.signOffTask(jobID, signedOffOn);
   }
   
@@ -365,12 +369,8 @@ public class Task {
     private boolean signedOff;
     private String signedOffOn;
     
-    // private String lastCompleted
     
-    /*public TaskBuilder(int taskID) {
-      this.taskID = taskID;
-    }*/
-    
+    // builders
     public TaskBuilder jobID (int val) {
     	jobID = val; 
     	return this;
@@ -513,34 +513,21 @@ public class Task {
     
     public Task build() { 
       if (taskID == 0) {
-        throw new IllegalStateException("");
+        throw new IllegalStateException("No ID");
       }
       
       if (taskCat == null) {
-        throw new IllegalStateException("");
+        throw new IllegalStateException("No Category");
       }
             
       if (priority == null) {
-          throw new IllegalStateException("");
+          throw new IllegalStateException("No Priority");
         }
               
-              /*
         if (taskName == null) {
-          throw new IllegalStateException("");
+          throw new IllegalStateException("No Name");
         }
-              /*
-        if (taskDesc == null) {
-          throw new IllegalStateException("");
-        }
-              /*
-        if (timeEstimate == 0) {
-          throw new IllegalStateException("");
-        }
-              /*
-        if (location == null) {
-          throw new IllegalStateException("");
-        }*/
-        
+     
         return new Task(this);
       }
     }
